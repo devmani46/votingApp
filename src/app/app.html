@@ -122,6 +122,7 @@
     <app-fui-input
       formControlName="disabledField"
       placeholder="Can't type here"
+      [disabled]="true"
     ></app-fui-input>
   </app-fui-field>
 
@@ -136,9 +137,7 @@
     (valueChange)="onCountrySelected(0, $event)"
   ></app-combobox>
   @if (selectedCountries[0]) {
-  <p>
-    You selected: <strong>{{ selectedCountries[0] }}</strong>
-  </p>
+  <p>You selected: <strong>{{ selectedCountries[0] }}</strong></p>
   }
 
   <app-combobox
@@ -150,9 +149,7 @@
     (valueChange)="onCountrySelected(1, $event)"
   ></app-combobox>
   @if (selectedCountries[1]) {
-  <p>
-    You selected: <strong>{{ selectedCountries[1] }}</strong>
-  </p>
+  <p>You selected: <strong>{{ selectedCountries[1] }}</strong></p>
   }
 
   <app-combobox
@@ -164,9 +161,7 @@
     (valueChange)="onCountrySelected(2, $event)"
   ></app-combobox>
   @if (selectedCountries[2]) {
-  <p>
-    You selected: <strong>{{ selectedCountries[2] }}</strong>
-  </p>
+  <p>You selected: <strong>{{ selectedCountries[2] }}</strong></p>
   }
 
   <app-combobox
@@ -178,9 +173,7 @@
     (valueChange)="onCountrySelected(3, $event)"
   ></app-combobox>
   @if (selectedCountries[3]) {
-  <p>
-    You selected: <strong>{{ selectedCountries[3] }}</strong>
-  </p>
+  <p>You selected: <strong>{{ selectedCountries[3] }}</strong></p>
   }
 
   <div style="display: flex">
@@ -199,13 +192,38 @@
     ></app-fui-input>
   </div>
   @if (selectedCountries[4]) {
-  <p>
-    You selected: <strong>{{ selectedCountries[4] }}</strong>
-  </p>
+  <p>You selected: <strong>{{ selectedCountries[4] }}</strong></p>
   }
 
-  <div style="margin-top: 16px">
-    <button class="submit-btn" type="submit">Submit</button>
+  <!-- Buttons -->
+  <div style="margin-top: 16px; display: flex; gap: 12px">
+    <!-- Submit -->
+    <app-button
+      appearance="primary"
+      size="large"
+      type="submit"
+    >
+      Submit
+    </app-button>
+
+    <!-- Reset -->
+    <app-button
+      appearance="outline"
+      size="medium"
+      type="button"
+      (click)="onReset()"
+    >
+      Reset
+    </app-button>
+
+    <!-- Icon-only -->
+    <app-button
+      appearance="subtle"
+      type="button"
+      (click)="onIconAction()"
+    >
+      <span icon class="fa-solid fa-gear"></span>
+    </app-button>
   </div>
 </form>
 

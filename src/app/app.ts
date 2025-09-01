@@ -11,8 +11,9 @@ import { FuiField } from './components/fui-field/fui-field';
 import { FuiInput } from './components/fui-input/fui-input';
 import { Combobox } from './components/combobox/combobox';
 import { Country } from './services/country';
-import { CdkRecycleRows, CdkTableModule } from '@angular/cdk/table';
+import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTable } from './components/cdk-table/cdk-table';
+import { Button } from './components/button/button';
 
 @Component({
   selector: 'app-root',
@@ -26,6 +27,7 @@ import { CdkTable } from './components/cdk-table/cdk-table';
     Combobox,
     CdkTable,
     CdkTableModule,
+    Button,
   ],
   templateUrl: './app.html',
   styleUrls: ['./app.scss'],
@@ -51,7 +53,6 @@ export class App implements OnInit {
       horizontalSmall: [''],
       horizontalLarge: [''],
       disabledField: [{ value: '', disabled: true }],
-
       countriesControl: [[]],
     });
 
@@ -72,7 +73,17 @@ export class App implements OnInit {
       this.form.markAllAsTouched();
       return;
     }
-    console.log('Form submitted:', this.form.value);
+    console.log('✅ Form submitted:', this.form.value);
+  }
+
+  onReset(): void {
+    this.form.reset();
+    this.selectedCountries = [];
+    console.log('🔄 Form reset');
+  }
+
+  onIconAction(): void {
+    console.log('⚙️ Icon-only action triggered');
   }
 
   get f() {
