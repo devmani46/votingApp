@@ -1,0 +1,8 @@
+@import "./theme.css";
+
+@import "@angular/cdk/overlay-prebuilt.css";
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+@theme {
+  --color-*: initial;
+}

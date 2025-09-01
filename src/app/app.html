@@ -1,0 +1,212 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <h3>Input Sizes</h3>
+
+  <app-fui-field label="Small input">
+    <app-fui-input
+      formControlName="smallInput"
+      placeholder="Small input"
+      size="small"
+    ></app-fui-input>
+  </app-fui-field>
+
+  <app-fui-field label="Medium input">
+    <app-fui-input
+      formControlName="mediumInput"
+      placeholder="Medium input"
+      size="medium"
+    ></app-fui-input>
+  </app-fui-field>
+
+  <app-fui-field label="Large input">
+    <app-fui-input
+      formControlName="largeInput"
+      placeholder="Large input"
+      size="large"
+    ></app-fui-input>
+  </app-fui-field>
+
+  <h3>Validation States</h3>
+
+  <app-fui-field
+    label="Username"
+    hint="Your username"
+    [required]="true"
+    [message]="{
+      type: 'fw-error',
+      text: 'Username is required',
+      icon: 'fa-solid fa-triangle-exclamation'
+    }"
+  >
+    <app-fui-input
+      formControlName="username"
+      placeholder="Enter username"
+      size="large"
+      [invalid]="f['username'].invalid && f['username'].touched"
+      [required]="true"
+    ></app-fui-input>
+  </app-fui-field>
+
+  <app-fui-field
+    label="Email"
+    [horizontal]="true"
+    [message]="{
+      type: 'fw-success',
+      text: 'Looks good!',
+      icon: 'fa-solid fa-circle-check'
+    }"
+  >
+    <app-fui-input
+      formControlName="email"
+      placeholder="Enter email"
+      size="medium"
+      [invalid]="f['email'].invalid && f['email'].touched"
+      [required]="true"
+    ></app-fui-input>
+  </app-fui-field>
+
+  <app-fui-field
+    [horizontal]="true"
+    [noLabel]="true"
+    warningMessage="Double-check this"
+    warningIcon="fa-solid fa-circle-exclamation"
+  >
+    <app-fui-input
+      formControlName="noLabel"
+      placeholder="Something without a label"
+      size="small"
+    ></app-fui-input>
+  </app-fui-field>
+
+  <h3>Label Variants</h3>
+
+  <app-fui-field label="Default Vertical">
+    <app-fui-input
+      formControlName="defaultVertical"
+      placeholder="Default vertical input"
+    ></app-fui-input>
+  </app-fui-field>
+
+  <app-fui-field label="Vertical Large" [labelSize]="'vertical-large'">
+    <app-fui-input
+      formControlName="verticalLarge"
+      placeholder="Large vertical label"
+    ></app-fui-input>
+  </app-fui-field>
+
+  <app-fui-field
+    label="Horizontal Small"
+    [horizontal]="true"
+    [labelSize]="'horizontal-small'"
+  >
+    <app-fui-input
+      formControlName="horizontalSmall"
+      placeholder="Small horizontal label"
+    ></app-fui-input>
+  </app-fui-field>
+
+  <app-fui-field
+    label="Horizontal Large"
+    [horizontal]="true"
+    [labelSize]="'horizontal-large'"
+  >
+    <app-fui-input
+      formControlName="horizontalLarge"
+      placeholder="Large horizontal label"
+      size="large"
+    ></app-fui-input>
+  </app-fui-field>
+
+  <h3>Other States</h3>
+
+  <app-fui-field label="Disabled Field">
+    <app-fui-input
+      formControlName="disabledField"
+      placeholder="Can't type here"
+    ></app-fui-input>
+  </app-fui-field>
+
+  <h3>Comboboxes</h3>
+
+  <app-combobox
+    [options]="countries"
+    [searchable]="true"
+    [multiple]="true"
+    [title]="selectedCountries[0]"
+    placeholder="Select or search multiple countries"
+    (valueChange)="onCountrySelected(0, $event)"
+  ></app-combobox>
+  @if (selectedCountries[0]) {
+  <p>
+    You selected: <strong>{{ selectedCountries[0] }}</strong>
+  </p>
+  }
+
+  <app-combobox
+    [options]="countries"
+    [searchable]="true"
+    [multiple]="false"
+    [title]="selectedCountries[1]"
+    placeholder="Select or search a country"
+    (valueChange)="onCountrySelected(1, $event)"
+  ></app-combobox>
+  @if (selectedCountries[1]) {
+  <p>
+    You selected: <strong>{{ selectedCountries[1] }}</strong>
+  </p>
+  }
+
+  <app-combobox
+    [options]="countries"
+    [searchable]="false"
+    [multiple]="true"
+    [title]="selectedCountries[2]"
+    placeholder="Select multiple countries"
+    (valueChange)="onCountrySelected(2, $event)"
+  ></app-combobox>
+  @if (selectedCountries[2]) {
+  <p>
+    You selected: <strong>{{ selectedCountries[2] }}</strong>
+  </p>
+  }
+
+  <app-combobox
+    [options]="countries"
+    [searchable]="false"
+    [multiple]="false"
+    [title]="selectedCountries[3]"
+    placeholder="Select a country"
+    (valueChange)="onCountrySelected(3, $event)"
+  ></app-combobox>
+  @if (selectedCountries[3]) {
+  <p>
+    You selected: <strong>{{ selectedCountries[3] }}</strong>
+  </p>
+  }
+
+  <div style="display: flex">
+    <app-combobox
+      [options]="countries"
+      [searchable]="false"
+      [multiple]="false"
+      [disabled]="true"
+      [title]="selectedCountries[4]"
+      placeholder="Select a country"
+      (valueChange)="onCountrySelected(4, $event)"
+    ></app-combobox>
+    <app-fui-input
+      formControlName="smallInput"
+      placeholder="Small input"
+    ></app-fui-input>
+  </div>
+  @if (selectedCountries[4]) {
+  <p>
+    You selected: <strong>{{ selectedCountries[4] }}</strong>
+  </p>
+  }
+
+  <div style="margin-top: 16px">
+    <button class="submit-btn" type="submit">Submit</button>
+  </div>
+</form>
+
+<app-cdk-table />

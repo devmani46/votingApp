@@ -1,0 +1,94 @@
+.fw-field {
+  display: grid;
+
+  &.fw-horizontal {
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    grid-template-rows: auto auto auto 1fr;
+  }
+
+  &.fw-horizontalNoLabel {
+    padding-left: auto;
+    grid-template-columns: 1fr;
+  }
+
+  .fw-field-label {
+    display: inline-block;
+    padding-top: var(--spacingVerticalXXS);
+    padding-bottom: var(--spacingVerticalXXS);
+    margin-bottom: var(--spacingVerticalXXS);
+    font-weight: 500;
+  }
+
+  /* --- Label size/orientation modifiers --- */
+  .fw-field-label.fw-vertical-large {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    margin-bottom: var(--spacingVerticalXS);
+    font-size: 1.1rem;
+  }
+
+  .fw-field-label.fw-horizontal {
+    padding-top: var(--spacingVerticalSNudge);
+    padding-bottom: var(--spacingVerticalSNudge);
+    margin-right: var(--spacingHorizontalM);
+  }
+
+  .fw-field-label.fw-horizontal-small {
+    padding-top: var(--spacingVerticalXS);
+    padding-bottom: var(--spacingVerticalXS);
+    font-size: 0.85rem;
+  }
+
+  .fw-field-label.fw-horizontal-large {
+    padding-top: 9px;
+    padding-bottom: 9px;
+    font-size: 1.25rem;
+  }
+
+  .fw-required {
+    margin-left: 4px;
+    color: var(--colorPaletteRedForeground1);
+  }
+
+  /* --- Hint + validation --- */
+  .fw-field-hint,
+  .fw-field-validationMessage {
+    margin-top: var(--spacingVerticalXXS);
+    color: var(--colorNeutralForeground3);
+    font-size: var(--fontSizeBase200);
+    line-height: var(--lineHeightBase200);
+    font-weight: var(--fontWeightRegular);
+  }
+
+  .fw-field-validationMessage {
+    &.fw-error {
+      color: var(--colorPaletteRedForeground1);
+    }
+    &.fw-success {
+      color: var(--colorPaletteGreenForeground1);
+    }
+    &.fw-withIcon {
+      padding-left: calc(12px + var(--spacingHorizontalXS));
+    }
+  }
+
+  .fw-field-validationMessageIcon {
+    display: inline-block;
+    font-size: 12px;
+    margin-left: calc(-12px - var(--spacingHorizontalXS));
+    margin-right: var(--spacingHorizontalXS);
+    line-height: 0;
+    vertical-align: -1px;
+
+    &.fw-error {
+      color: var(--colorPaletteRedForeground1);
+    }
+    &.fw-warning {
+      color: var(--colorPaletteDarkOrangeForeground1);
+    }
+    &.fw-success {
+      color: var(--colorPaletteGreenForeground1);
+    }
+  }
+}

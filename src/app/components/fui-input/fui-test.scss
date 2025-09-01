@@ -1,0 +1,278 @@
+/* 
+  Full translation of Fluent Input styles (slot-by-slot).
+  - Many JS constants map to these blocks (comments show mappings)
+  - Token vars used where appropriate with sensible hex fallbacks
+*/
+
+/* -------------------------
+   Root / wrapper (useRootClassName)
+   ------------------------- */
+.fw-input {
+  box-sizing: border-box;
+  display: inline-flex; /* align content & adornments */
+  align-items: center;
+  position: relative; /* for underline ::after */
+  width: 100%;
+  vertical-align: middle;
+  user-select: text;
+
+  /* tokens (fallback hex values so behavior is visible without them) */
+  --bg: var(--colorNeutralBackground1, #ffffff);
+  --bg-hover: var(--colorNeutralBackground1Hover, #f3f2f1);
+  --bg-pressed: var(--colorNeutralBackground1Pressed, #e9e7e6);
+  --stroke: var(--colorNeutralStroke1, #8a8886);
+  --stroke-hover: var(--colorNeutralStroke1Hover, #8a8886);
+  --stroke-pressed: var(--colorNeutralStroke1Pressed, #797775);
+  --text: var(--colorNeutralForeground1, #323130);
+  --placeholder: var(--colorNeutralForeground4, #a19f9d);
+  --adornment: var(--colorNeutralForeground3, #605e5c);
+  --focus: var(--colorStrokeFocus2, #0078d4); /* blue focus/underline */
+  --disabled-bg: var(--colorNeutralBackgroundDisabled, #f3f2f1);
+  --disabled-stroke: var(--colorNeutralStrokeDisabled, #e1dfdd);
+  --disabled-text: var(--colorNeutralForegroundDisabled, #c8c6c4);
+
+  background-color: var(--bg);
+  border: 1px solid var(--stroke);
+  border-radius: 4px;
+  padding-inline: 8px; /* uses logical properties for RTL friendliness */
+  padding-block: 4px; /* vertical padding */
+  min-height: 32px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+
+  transition: background-color 120ms cubic-bezier(0.33, 0, 0.67, 1),
+    border-color 120ms cubic-bezier(0.33, 0, 0.67, 1),
+    box-shadow 120ms cubic-bezier(0.33, 0, 0.67, 1);
+
+  /* -------------------------
+     Underline animation ::after (used by focused/active states)
+     JS analogue: focus/active class styles that animate an underline
+     ------------------------- */
+  &::after {
+    content: "";
+    position: absolute;
+    left: 8px; /* matches padding-inline to avoid overflow */
+    right: 8px;
+    bottom: 0;
+    height: 2px;
+    background-color: transparent;
+    transform-origin: center;
+    transform: scaleX(0);
+    transition: transform 180ms cubic-bezier(0.33, 0, 0.67, 1),
+      background-color 180ms;
+    pointer-events: none;
+  }
+
+  /* -------------------------
+     Input slot (useInputClassName)
+     ------------------------- */
+  input {
+    flex: 1;
+    min-width: 0; /* critical in flex layouts (maps exactly to minWidth: 0 in JS) */
+    display: block;
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    line-height: inherit;
+    padding: 6px 0; /* caret & clickable area spacing */
+    outline: none; /* wrapper handles focus ring */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    caret-color: var(--focus);
+
+    &::placeholder {
+      color: var(--placeholder);
+      opacity: 1;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      color: var(--disabled-text);
+      background: transparent;
+    }
+
+    &:read-only {
+      cursor: default;
+    }
+  }
+
+  /* -------------------------
+     Adornments: before / after (useContentBeforeClassName / useContentAfterClassName)
+     ------------------------- */
+  .fw-input-before,
+  .fw-input-after {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--adornment);
+    line-height: 1;
+    font-size: 16px; /* typical Fluent icon size */
+    user-select: none;
+    pointer-events: none; /* icons typically decorative; set to auto if interactive */
+  }
+
+  .fw-input-before {
+    margin-inline-end: 8px;
+  } /* left in LTR, right in RTL */
+  .fw-input-after {
+    margin-inline-start: 8px;
+  }
+
+  /* -------------------------
+     Hover state (useHoverClassName)
+     JS: hover tokens set bg and stroke on root
+     ------------------------- */
+  &:hover {
+    background-color: var(--bg-hover);
+    border-color: var(--stroke-hover);
+  }
+
+  /* -------------------------
+     Pressed / pointer active (useActiveClassName)
+     - JS sometimes adds an "active" class on pointer down for accurate pressed visuals.
+     - In pure CSS you can use :active, but if you want the Fluent exact behavior
+       (persisting during drag and before mouseup), toggle `.fw-active` in TS on mousedown/up.
+     ------------------------- */
+  &:active,
+  &.fw-active {
+    background-color: var(--bg-pressed);
+    border-color: var(--stroke-pressed);
+
+    &::after {
+      transform: scaleX(1);
+      background-color: var(--focus);
+    }
+  }
+
+  /* -------------------------
+     Focus (useFocusWithinStyles)
+     - JS applies focus styles to wrapper when input receives focus
+     - CSS equivalent is :focus-within
+     ------------------------- */
+  &:focus-within {
+    border-color: var(--focus) !important;
+    z-index: 1;
+    outline: none;
+
+    &::after {
+      transform: scaleX(1);
+      background-color: var(--focus);
+    }
+  }
+
+  /* optional focus-visible (keyboard focus) stronger ring - mirror JS focus-visible logic */
+  &:focus-within:focus-visible {
+    /* only browsers that support focus-visible will apply true keyboard focus */
+    outline: none;
+  }
+
+  /* -------------------------
+     Disabled wrapper styles (useDisabledStyles / useRootDisabledStyles / useInputDisabledStyles)
+     ------------------------- */
+  &.fw-disabled,
+  &[data-disabled="true"] {
+    background-color: var(--disabled-bg);
+    border-color: var(--disabled-stroke);
+    color: var(--disabled-text);
+    cursor: not-allowed;
+    pointer-events: none;
+
+    input {
+      color: var(--disabled-text);
+      background: transparent;
+    }
+    &::after {
+      transform: scaleX(0);
+      background: transparent;
+    }
+  }
+
+  /* -------------------------
+     Clear button (useClearButtonStyles)
+     - in JS it's a separate slot; here it's styled as .fw-input-clear
+     ------------------------- */
+  .fw-input-clear {
+    background: transparent;
+    border: none;
+    margin-inline-start: 6px;
+    padding: 2px 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    color: var(--adornment);
+    font-size: 16px;
+    line-height: 1;
+
+    transition: transform 80ms, color 80ms;
+    &:hover {
+      color: var(--text);
+    }
+    &:active {
+      transform: translateY(1px);
+    }
+  }
+
+  /* -------------------------
+     Error / invalid state (not always in the small JS file but common)
+     - JS will usually apply an "invalid" state; map that to .fw-invalid
+     ------------------------- */
+  &.fw-invalid {
+    border-color: var(--colorDanger, #d13438);
+    &::after {
+      background-color: var(--colorDanger, #d13438);
+      transform: scaleX(1);
+    }
+  }
+
+  /* -------------------------
+     Size variants (useSizeClassName or size tokens)
+     ------------------------- */
+  &.fw-small {
+    min-height: 24px;
+    padding-block: 2px;
+    padding-inline: 6px;
+    font-size: 12px;
+
+    input {
+      padding: 4px 0;
+    }
+    &::after {
+      left: 6px;
+      right: 6px;
+      height: 1.5px;
+    }
+  }
+
+  &.fw-large {
+    min-height: 40px;
+    padding-block: 8px;
+    padding-inline: 12px;
+    font-size: 16px;
+
+    input {
+      padding: 8px 0;
+    }
+    &::after {
+      left: 0px;
+      right: 0px;
+      height: 2px;
+    }
+  }
+
+  /* -------------------------
+     Reduced motion & accessibility
+     ------------------------- */
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    &::after {
+      transition: none;
+    }
+  }
+}

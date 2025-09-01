@@ -1,0 +1,17 @@
+<div
+  class="fw-input"
+  [class.fw-small]="size === 'small'"
+  [class.fw-large]="size === 'large'"
+  [class.fw-invalid]="invalid"
+  [attr.data-disabled]="disabled ? 'true' : null"
+>
+  <input
+    [placeholder]="placeholder"
+    [disabled]="disabled"
+    [attr.aria-invalid]="invalid"
+    [attr.aria-required]="required ? 'true' : null"
+    [value]="value"
+    (input)="onInput($event)"
+    (blur)="onTouched()"
+  />
+</div>

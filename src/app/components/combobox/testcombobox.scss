@@ -1,0 +1,173 @@
+.fw-combobox {
+  align-items: center;
+  border-radius: var(--borderRadiusMedium);
+  box-sizing: border-box;
+  column-gap: var(--spacingHorizontalXXS);
+  display: -ms-inline-grid;
+  grid-template-columns: 1fr auto;
+  justify-content: space-between;
+  min-width: 250px;
+  position: relative;
+  vertical-align: middle;
+
+  &:focus-within {
+    outline-width: 2px;
+    outline-style: solid;
+    outline-color: transparent;
+  }
+
+  &::after {
+    box-sizing: border-box;
+    content: "";
+    position: absolute;
+    left: -1px;
+    bottom: -1px;
+    right: -1px;
+    height: max(2px, var(--borderRadiusMedium));
+    border-bottom-left-radius: var(--borderRadiusMedium);
+    border-bottom-right-radius: var(--borderRadiusMedium);
+    border-bottom: var(--strokeWidthThick) solid var(--colorCompoundBrandStroke);
+    clip-path: inset(calc(100% - 2px) 0 0 0);
+    transform: scaleX(0);
+    transition-property: transform;
+    transition-duration: var(--durationUltraFast);
+    transition-delay: var(--curveAccelerateMid);
+  }
+
+  &:focus-within::after {
+    transform: scaleX(1);
+    transition-property: transform;
+    transition-duration: var(--durationNormal);
+    transition-delay: var(--curveDecelerateMid);
+  }
+
+  &:focus-within:active::after {
+    border-bottom: var(--colorCompoundBrandStrokePressed);
+  }
+
+  &.fw-listbox {
+    box-shadow: var(--shadow16);
+    border-radius: var(--borderRadiusMedium);
+    max-height: 80vh;
+    box-sizing: border-box;
+  }
+
+  &.fw-listboxcollapsed {
+    display: none;
+  }
+
+  &.fw-small {
+    height: 24px;
+    padding-right: var(--spacingHorizontalSNudge);
+  }
+
+  &.fw-medium {
+    height: 32px;
+    padding-right: var(--spacingHorizontalMNudge);
+  }
+
+  &.fw-large {
+    column-gap: var(--spacingHorizontalSNudge);
+    height: 40px;
+    padding-right: var(--spacingHorizontalM);
+  }
+
+  &.outline {
+    background-color: var(--colorNeutralBackground1);
+    border: var(--strokeWidthThin) solid var(--colorNeutralStroke1);
+  }
+
+  &.outlineInteractive {
+    &:hover {
+      border-color: var(--colorNeutralStroke1Hover);
+      border-bottom-color: var(--colorNeutralStrokeAccessibleHover);
+    }
+
+    &:active {
+      border-color: var(--colorNeutralStroke1Pressed);
+      border-bottom-color: var(--colorNeutralStrokeAccessiblePressed);
+    }
+
+    &:focus-within {
+      border-color: var(--colorNeutralStroke1Pressed);
+      border-bottom-color: var(--colorNeutralStrokeAccessiblePressed);
+    }
+  }
+
+  &.underline {
+    background-color: var(--colorTransparentBackground);
+    border-bottom: var(--strokeWidthThin) solid
+      var(--colorNeutralStrokeAccessible);
+    border-radius: 0;
+  }
+
+  &.filled-lighter {
+    background-color: var(--colorNeutralBackground1);
+    border: var(--strokeWidthThin) solid var(--colortransparentStroke);
+  }
+
+  // .invalidUndeline {
+  //     :not(:focus-within), :hover:not(:focus-within) : {
+
+  //     }
+  // }
+
+  &.filled-darker {
+    background-color: var(--colorNeutralBackground1);
+    border: var(--strokeWidthThin) solid var(--colorTransparentStroke);
+  }
+
+  //   &.invalid {
+
+  //   }
+
+  //  &.invalidUnderline {
+
+  //  }
+
+  &.disabled {
+    cursor: not-allowed;
+    background-color: var(--colorTransparentBackground);
+    border-color: var(--colorNeutralStrokeDisabled);
+  }
+
+  input {
+    align-self: stretch;
+    background-color: var(--colortransparentbackground);
+    border: none;
+    color: var(--colorNeutralForeground1);
+
+    &:focus {
+      outline-style: none;
+    }
+
+    &::placeholder {
+      color: var(--colorNeutralForeground4);
+      opacity: 1;
+    }
+
+    &.small {
+      padding: 0 0 0
+        calc(var(--spacingHorizontalSNudge) + var(--spacingHorizontalXXS));
+    }
+
+    &.medium {
+      padding: 0 0 0
+        calc(var(--spacingHorizontalMNudge) + var(--spacingHorizontalXXS));
+    }
+
+    &.large {
+      padding: 0 0 0
+        calc(var(--spacingHorizontalMNudge) + var(--spacingHorizontalSNudge));
+    }
+
+    &.disabled {
+      color: var(--colorNeutralForegroundDisabled);
+      background-color: var(--colorTransparentBackground);
+      cursor: not-allowed;
+      &::placeholder {
+        color: var(--colorNeutralForegroundDisabled);
+      }
+    }
+  }
+}
