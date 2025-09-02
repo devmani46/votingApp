@@ -1,1 +1,30 @@
-<p>campaign-status works!</p>
+<div class="campaign-status-page">
+  <h2>Campaigns</h2>
+
+  <div class="campaign-list">
+    <app-campaign-card
+      title="Vote for the best dog"
+      description="Choose your favorite dog among the candidates."
+      image="assets/dog.jpg"
+      size="medium"
+    >
+    </app-campaign-card>
+
+    <app-campaign-card
+      title="Best Cat Contest"
+      description="Help us decide which cat is the cutest!"
+      image="assets/cat.jpg"
+      size="large"
+    >
+    </app-campaign-card>
+
+    <app-campaign-card
+      title="Puppy Poll"
+      description="Vote for the cutest puppy today."
+      image="assets/puppy.jpg"
+      size="small"
+      [disabled]="true"
+    >
+    </app-campaign-card>
+  </div>
+</div>
