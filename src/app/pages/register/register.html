@@ -2,80 +2,113 @@
   <h2>Register</h2>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-
     <app-fui-field
       label="First Name"
-      [errorMessage]="firstName.touched && firstName.hasError('required') ? 'First name is required' : ''">
+      [errorMessage]="
+        submitted && firstName.hasError('required')
+          ? 'First name is required'
+          : ''
+      "
+    >
       <app-fui-input
         placeholder="Enter first name"
         type="text"
         [required]="true"
-        formControlName="firstName">
-      </app-fui-input>
+        formControlName="firstName"
+      ></app-fui-input>
     </app-fui-field>
 
     <app-fui-field
       label="Last Name"
-      [errorMessage]="lastName.touched && lastName.hasError('required') ? 'Last name is required' : ''">
+      [errorMessage]="
+        submitted && lastName.hasError('required')
+          ? 'Last name is required'
+          : ''
+      "
+    >
       <app-fui-input
         placeholder="Enter last name"
         type="text"
         [required]="true"
-        formControlName="lastName">
-      </app-fui-input>
+        formControlName="lastName"
+      ></app-fui-input>
     </app-fui-field>
 
     <app-fui-field
       label="Username"
-      [errorMessage]="username.touched && username.hasError('required') ? 'Username is required' : ''">
+      [errorMessage]="
+        submitted && username.hasError('required')
+          ? 'Username is required'
+          : ''
+      "
+    >
       <app-fui-input
         placeholder="Choose a username"
         type="text"
         [required]="true"
-        formControlName="username">
-      </app-fui-input>
+        formControlName="username"
+      ></app-fui-input>
     </app-fui-field>
 
     <app-fui-field
       label="Email"
       [errorMessage]="
-        email.touched && email.hasError('required') ? 'Email is required' :
-        email.hasError('email') ? 'Invalid email' : ''">
+        submitted && email.hasError('required')
+          ? 'Email is required'
+          : submitted && email.hasError('email')
+          ? 'Invalid email'
+          : ''
+      "
+    >
       <app-fui-input
         placeholder="Enter your email"
         type="text"
         [required]="true"
-        formControlName="email">
-      </app-fui-input>
+        formControlName="email"
+      ></app-fui-input>
     </app-fui-field>
 
     <app-fui-field
       label="Password"
-      [errorMessage]="password.touched && password.hasError('required') ? 'Password is required' : ''">
+      [errorMessage]="
+        submitted && password.hasError('required')
+          ? 'Password is required'
+          : ''
+      "
+    >
       <app-fui-input
         placeholder="Enter password"
         type="password"
         [required]="true"
-        formControlName="password">
-      </app-fui-input>
+        formControlName="password"
+      ></app-fui-input>
     </app-fui-field>
 
     <app-fui-field
       label="Confirm Password"
       [errorMessage]="
-        confirmPassword.touched && confirmPassword.hasError('required') ? 'Confirm password is required' :
-        password.value !== confirmPassword.value ? 'Passwords do not match' : ''">
+        submitted && confirmPassword.hasError('required')
+          ? 'Confirm password is required'
+          : submitted && confirmPassword.hasError('mismatch')
+          ? 'Passwords do not match'
+          : ''
+      "
+    >
       <app-fui-input
         placeholder="Confirm password"
         type="password"
         [required]="true"
-        formControlName="confirmPassword">
-      </app-fui-input>
+        formControlName="confirmPassword"
+      ></app-fui-input>
     </app-fui-field>
 
     <div class="btn-group">
-      <app-button appearance="primary" size="medium" type="submit">Register</app-button>
-      <app-button appearance="outline" size="medium" routerLink="/login">Cancel</app-button>
+      <app-button appearance="primary" size="medium" type="button" (click)="onSubmit()">
+        Register
+      </app-button>
+      <app-button appearance="outline" size="medium" routerLink="/login">
+        Cancel
+      </app-button>
     </div>
   </form>
 

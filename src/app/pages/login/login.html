@@ -5,9 +5,9 @@
     <app-fui-field
       label="Email"
       [errorMessage]="
-        (submitted || email.touched) && email.hasError('required')
+        submitted && email.hasError('required')
           ? 'Email is required'
-          : email.hasError('email')
+          : submitted && email.hasError('email')
           ? 'Invalid email'
           : ''
       "
@@ -20,24 +20,25 @@
     </app-fui-field>
 
     <app-fui-field
-  label="Password"
-  [errorMessage]="password.touched && password.hasError('required') ? 'Password is required' : ''">
-
-        <app-fui-input
-          placeholder="Enter password"
-          type="password"
-          [required]="true"
-          [formControl]="password"
-          [allowGenerate]="false">
-        </app-fui-input>
-
-
-</app-fui-field>
-
-
-    <app-button appearance="primary" size="medium" type="submit"
-      >Login</app-button
+      label="Password"
+      [errorMessage]="
+        submitted && password.hasError('required')
+          ? 'Password is required'
+          : ''
+      "
     >
+      <app-fui-input
+        placeholder="Enter password"
+        type="password"
+        [required]="true"
+        formControlName="password"
+        [allowGenerate]="false"
+      ></app-fui-input>
+    </app-fui-field>
+
+    <app-button appearance="primary" size="medium" type="button" (click)="onSubmit()">
+      Login
+    </app-button>
   </form>
 
   <p class="auth-link">

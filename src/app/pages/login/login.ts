@@ -39,6 +39,7 @@ export class Login implements OnInit {
 
   onSubmit() {
     this.submitted = true;
+
     if (this.form.valid) {
       console.log('Login data:', this.form.getRawValue());
     } else {

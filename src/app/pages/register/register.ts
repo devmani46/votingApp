@@ -5,6 +5,9 @@ import {
   NonNullableFormBuilder,
   FormGroup,
   FormControl,
+  AbstractControl,
+  ValidatorFn,
+  ValidationErrors,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FuiField } from '../../components/fui-field/fui-field';
@@ -20,6 +23,38 @@ type RegisterForm = {
   confirmPassword: FormControl<string>;
 };
 
+function matchFieldsValidator(
+  field: keyof RegisterForm,
+  matchingField: keyof RegisterForm
+): ValidatorFn {
+  return (group: AbstractControl): ValidationErrors | null => {
+    const fg = group as FormGroup<RegisterForm>;
+    const control = fg.controls[field];
+    const matchControl = fg.controls[matchingField];
+
+    if (!control || !matchControl) return null;
+
+    if (!matchControl.value) {
+      if (matchControl.errors?.['mismatch']) {
+        const { mismatch, ...rest } = matchControl.errors;
+        matchControl.setErrors(Object.keys(rest).length ? rest : null);
+      }
+      return null;
+    }
+
+    if (control.value !== matchControl.value) {
+      matchControl.setErrors({ ...(matchControl.errors || {}), mismatch: true });
+      return { mismatch: true };
+    } else {
+      if (matchControl.errors) {
+        const { mismatch, ...rest } = matchControl.errors;
+        matchControl.setErrors(Object.keys(rest).length ? rest : null);
+      }
+      return null;
+    }
+  };
+}
+
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -28,22 +63,30 @@ type RegisterForm = {
 })
 export class Register implements OnInit {
   form!: FormGroup<RegisterForm>;
+  submitted = false;
 
   constructor(private fb: NonNullableFormBuilder) {}
 
   ngOnInit(): void {
-    this.form = this.fb.group<RegisterForm>({
-      firstName: this.fb.control('', Validators.required),
-      lastName: this.fb.control('', Validators.required),
-      username: this.fb.control('', Validators.required),
-      email: this.fb.control('', [Validators.required, Validators.email]),
-      password: this.fb.control('', Validators.required),
-      confirmPassword: this.fb.control('', Validators.required),
-    });
+    this.form = this.fb.group<RegisterForm>(
+      {
+        firstName: this.fb.control('', Validators.required),
+        lastName: this.fb.control('', Validators.required),
+        username: this.fb.control('', Validators.required),
+        email: this.fb.control('', [Validators.required, Validators.email]),
+        password: this.fb.control('', Validators.required),
+        confirmPassword: this.fb.control('', Validators.required),
+      },
+      {
+        validators: [matchFieldsValidator('password', 'confirmPassword')],
+      }
+    );
   }
 
   onSubmit() {
-    if (this.form.valid && this.form.value.password === this.form.value.confirmPassword) {
+    this.submitted = true;
+
+    if (this.form.valid) {
       console.log('Register data:', this.form.getRawValue());
     } else {
       this.form.markAllAsTouched();
@@ -53,23 +96,18 @@ export class Register implements OnInit {
   get firstName() {
     return this.form.controls.firstName;
   }
-
   get lastName() {
     return this.form.controls.lastName;
   }
-
   get username() {
     return this.form.controls.username;
   }
-
   get email() {
     return this.form.controls.email;
   }
-
   get password() {
     return this.form.controls.password;
   }
-
   get confirmPassword() {
     return this.form.controls.confirmPassword;
   }
