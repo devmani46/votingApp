@@ -25,6 +25,7 @@ export class FuiField {
   @Input() message?: FieldMessage;
 
   @Input() errorMessage = '';
+
   @Input() successMessage = '';
   @Input() warningMessage = '';
 

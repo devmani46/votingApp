@@ -1,0 +1,19 @@
+<div class="auth-container">
+  <h2>Login</h2>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <app-fui-field label="Email" [errorMessage]="email.touched && email.hasError('required') ? 'Email is required' : email.hasError('email') ? 'Invalid email' : ''">
+      <app-fui-input placeholder="Enter your email" formControlName="email"></app-fui-input>
+    </app-fui-field>
+
+    <app-fui-field label="Password" [errorMessage]="password.touched && password.hasError('required') ? 'Password is required' : ''">
+      <app-fui-input placeholder="Enter your password" formControlName="password"></app-fui-input>
+    </app-fui-field>
+
+    <app-button appearance="primary" size="medium" type="submit">Login</app-button>
+  </form>
+
+  <p class="auth-link">
+    Don’t have an account? <a routerLink="/register">Sign up</a>
+  </p>
+</div>
