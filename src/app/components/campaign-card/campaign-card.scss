@@ -8,9 +8,12 @@
   transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
+  max-height: 11rem;
 
   .card-image {
     width: 100%;
+    max-height: 8rem;
+
     overflow: hidden;
     img {
       width: 100%;
@@ -23,17 +26,18 @@
   .card-content {
     padding: 12px;
     text-align: center;
+    transition: all 0.4s ease;
     h3 {
       margin: 0;
       font-size: 1rem;
       font-weight: 600;
     }
     .description {
+      max-height: 0;
       margin: 8px 0 0;
       font-size: 0.9rem;
       color: #666;
       opacity: 0;
-      transform: translateY(20px);
       transition: all 0.4s ease;
     }
   }
@@ -41,16 +45,15 @@
   // Hover animation
   &:hover {
     .card-image img {
-      transform: scale(0.7);
+      transform: scale(1);
     }
     .card-content {
       h3 {
-        transform: translateY(-10px);
         transition: transform 0.4s ease;
       }
       .description {
+        max-height: 200px;
         opacity: 1;
-        transform: translateY(0);
       }
     }
   }
