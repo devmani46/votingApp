@@ -1,0 +1,30 @@
+<div class="campaign-status-page">
+  <h2>Campaigns</h2>
+
+  <div class="campaign-list">
+    <app-campaign-card
+      title="Vote for the best dog"
+      description="Choose your favorite dog among the candidates."
+      image="../../../assests/dog.jpg"
+      size="medium"
+    >
+    </app-campaign-card>
+
+    <app-campaign-card
+      title="Best Cat Contest"
+      description="Help us decide which cat is the cutest!"
+      image="../../../assests/cat.jpeg"
+      size="medium"
+    >
+    </app-campaign-card>
+
+    <app-campaign-card
+      title="Puppy Poll"
+      description="Vote for the cutest puppy today."
+      image="../../../assests/dog.jpeg"
+      size="small"
+      [disabled]="true"
+    >
+    </app-campaign-card>
+  </div>
+</div>

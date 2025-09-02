@@ -1,0 +1,15 @@
+.campaign-status-page {
+  padding: 20px;
+
+  h2 {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  .campaign-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+}

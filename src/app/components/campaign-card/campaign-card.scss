@@ -1,0 +1,87 @@
+.campaign-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--colorNeutralStroke1, #ccc);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--colorNeutralBackground1, #fff);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+
+  .card-image {
+    width: 100%;
+    overflow: hidden;
+    img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+  }
+
+  .card-content {
+    padding: 12px;
+    text-align: center;
+    h3 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .description {
+      margin: 8px 0 0;
+      font-size: 0.9rem;
+      color: #666;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s ease;
+    }
+  }
+
+  // Hover animation
+  &:hover {
+    .card-image img {
+      transform: scale(0.7);
+    }
+    .card-content {
+      h3 {
+        transform: translateY(-10px);
+        transition: transform 0.4s ease;
+      }
+      .description {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+
+  // Sizes
+  &.card-small {
+    width: 200px;
+    h3 {
+      font-size: 0.85rem;
+    }
+    .description {
+      font-size: 0.75rem;
+    }
+  }
+  &.card-large {
+    width: 400px;
+    h3 {
+      font-size: 1.25rem;
+    }
+    .description {
+      font-size: 1rem;
+    }
+  }
+  &:not(.card-small):not(.card-large) {
+    width: 300px; // default medium
+  }
+
+  // Disabled
+  &[data-disabled="true"] {
+    opacity: 0.6;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+}
