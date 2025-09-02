@@ -50,10 +50,27 @@ export class Register implements OnInit {
     }
   }
 
-  get firstName() { return this.form.controls.firstName; }
-  get lastName() { return this.form.controls.lastName; }
-  get username() { return this.form.controls.username; }
-  get email() { return this.form.controls.email; }
-  get password() { return this.form.controls.password; }
-  get confirmPassword() { return this.form.controls.confirmPassword; }
+  get firstName() {
+    return this.form.controls.firstName;
+  }
+
+  get lastName() {
+    return this.form.controls.lastName;
+  }
+
+  get username() {
+    return this.form.controls.username;
+  }
+
+  get email() {
+    return this.form.controls.email;
+  }
+
+  get password() {
+    return this.form.controls.password;
+  }
+
+  get confirmPassword() {
+    return this.form.controls.confirmPassword;
+  }
 }

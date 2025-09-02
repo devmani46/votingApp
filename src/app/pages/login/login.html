@@ -15,22 +15,25 @@
       <app-fui-input
         placeholder="Enter your email"
         formControlName="email"
+        [required]="true"
       ></app-fui-input>
     </app-fui-field>
 
     <app-fui-field
-      label="Password"
-      [errorMessage]="
-        (submitted || password.touched) && password.hasError('required')
-          ? 'Password is required'
-          : ''
-      "
-    >
-      <app-fui-input
-        placeholder="Enter your password"
-        formControlName="password"
-      ></app-fui-input>
-    </app-fui-field>
+  label="Password"
+  [errorMessage]="password.touched && password.hasError('required') ? 'Password is required' : ''">
+
+        <app-fui-input
+          placeholder="Enter password"
+          type="password"
+          [required]="true"
+          [formControl]="password"
+          [allowGenerate]="false">
+        </app-fui-input>
+
+
+</app-fui-field>
+
 
     <app-button appearance="primary" size="medium" type="submit"
       >Login</app-button

@@ -6,6 +6,7 @@
   [attr.data-disabled]="disabled ? 'true' : null"
 >
   <input
+    [type]="type === 'password' && !showPassword ? 'password' : 'text'"
     [placeholder]="placeholder"
     [disabled]="disabled"
     [attr.aria-invalid]="invalid"
@@ -14,4 +15,23 @@
     (input)="onInput($event)"
     (blur)="onTouched()"
   />
+
+    @if (type === 'password') {
+        <button type="button" class="fw-input-after" (click)="togglePassword()">
+          {{ showPassword ? '🙈' : '👁' }}
+        </button>
+
+        @if (allowGenerate) {
+          <button type="button" class="fw-input-after" (click)="generatePassword()">
+            🔑
+          </button>
+        }
+      }
 </div>
+
+@if (type === 'password' && getPasswordStrength()) {
+  <div class="fw-password-strength">
+    Strength:
+    <span [ngClass]="getPasswordStrength()">{{ getPasswordStrength() }}</span>
+  </div>
+}

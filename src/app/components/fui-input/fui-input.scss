@@ -1,5 +1,5 @@
 .fw-input {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   position: relative;
   flex-wrap: nowrap;
@@ -35,8 +35,9 @@
   }
 
   input {
-    flex: 1;
+    flex: 1 1 auto;
     min-width: 0;
+    width: 100%;
     border: none;
     outline: none;
     background: transparent;
@@ -63,21 +64,26 @@
 
   .fw-input-before,
   .fw-input-after {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     color: var(--colorNeutralForeground3);
     line-height: 1;
     font-size: var(--fontSizeBase400);
     user-select: none;
-    pointer-events: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    pointer-events: auto;
+    margin-inline-start: 8px;
+    padding: 0 8px;
+    height: 32px;
+    min-width: 32px;
+    transition: background 0.2s;
   }
 
   .fw-input-before {
     margin-inline-end: 8px;
-  }
-  .fw-input-after {
-    margin-inline-start: 8px;
   }
 
   &:hover {
@@ -122,6 +128,10 @@
       transform: scaleX(0);
       background: transparent;
     }
+    .fw-input-after {
+      pointer-events: none;
+      color: var(--colorNeutralForegroundDisabled);
+    }
   }
 
   .fw-input-clear {
@@ -129,7 +139,7 @@
     border: none;
     margin-inline-start: 6px;
     padding: 2px 6px;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
@@ -164,6 +174,12 @@
     input {
       padding: 4px 0;
     }
+    .fw-input-after {
+      height: 24px;
+      min-width: 24px;
+      font-size: 16px;
+      padding: 0 6px;
+    }
     &::after {
       height: 1.5px;
     }
@@ -178,6 +194,12 @@
     input {
       padding: 8px 0;
     }
+    .fw-input-after {
+      height: 40px;
+      min-width: 40px;
+      font-size: 20px;
+      padding: 0 10px;
+    }
     &::after {
       height: 2px;
     }
@@ -186,4 +208,22 @@
 
 .fw-input.fw-disabled {
   pointer-events: none;
+}
+
+.fw-password-strength {
+  margin-top: 4px;
+  font-size: 12px;
+
+  .Strong {
+    color: green;
+    font-weight: 600;
+  }
+  .Medium {
+    color: orange;
+    font-weight: 600;
+  }
+  .Weak {
+    color: red;
+    font-weight: 600;
+  }
 }

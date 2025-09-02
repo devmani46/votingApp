@@ -2,28 +2,75 @@
   <h2>Register</h2>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <app-fui-field label="First Name" [errorMessage]="firstName.touched && firstName.hasError('required') ? 'First name is required' : ''">
-      <app-fui-input placeholder="Enter first name" formControlName="firstName"></app-fui-input>
+
+    <app-fui-field
+      label="First Name"
+      [errorMessage]="firstName.touched && firstName.hasError('required') ? 'First name is required' : ''">
+      <app-fui-input
+        placeholder="Enter first name"
+        type="text"
+        [required]="true"
+        formControlName="firstName">
+      </app-fui-input>
     </app-fui-field>
 
-    <app-fui-field label="Last Name" [errorMessage]="lastName.touched && lastName.hasError('required') ? 'Last name is required' : ''">
-      <app-fui-input placeholder="Enter last name" formControlName="lastName"></app-fui-input>
+    <app-fui-field
+      label="Last Name"
+      [errorMessage]="lastName.touched && lastName.hasError('required') ? 'Last name is required' : ''">
+      <app-fui-input
+        placeholder="Enter last name"
+        type="text"
+        [required]="true"
+        formControlName="lastName">
+      </app-fui-input>
     </app-fui-field>
 
-    <app-fui-field label="Username" [errorMessage]="username.touched && username.hasError('required') ? 'Username is required' : ''">
-      <app-fui-input placeholder="Choose a username" formControlName="username"></app-fui-input>
+    <app-fui-field
+      label="Username"
+      [errorMessage]="username.touched && username.hasError('required') ? 'Username is required' : ''">
+      <app-fui-input
+        placeholder="Choose a username"
+        type="text"
+        [required]="true"
+        formControlName="username">
+      </app-fui-input>
     </app-fui-field>
 
-    <app-fui-field label="Email" [errorMessage]="email.touched && email.hasError('required') ? 'Email is required' : email.hasError('email') ? 'Invalid email' : ''">
-      <app-fui-input placeholder="Enter your email" formControlName="email"></app-fui-input>
+    <app-fui-field
+      label="Email"
+      [errorMessage]="
+        email.touched && email.hasError('required') ? 'Email is required' :
+        email.hasError('email') ? 'Invalid email' : ''">
+      <app-fui-input
+        placeholder="Enter your email"
+        type="text"
+        [required]="true"
+        formControlName="email">
+      </app-fui-input>
     </app-fui-field>
 
-    <app-fui-field label="Password" [errorMessage]="password.touched && password.hasError('required') ? 'Password is required' : ''">
-      <app-fui-input placeholder="Enter password" formControlName="password"></app-fui-input>
+    <app-fui-field
+      label="Password"
+      [errorMessage]="password.touched && password.hasError('required') ? 'Password is required' : ''">
+      <app-fui-input
+        placeholder="Enter password"
+        type="password"
+        [required]="true"
+        formControlName="password">
+      </app-fui-input>
     </app-fui-field>
 
-    <app-fui-field label="Confirm Password" [errorMessage]="confirmPassword.touched && confirmPassword.hasError('required') ? 'Confirm password is required' : password.value !== confirmPassword.value ? 'Passwords do not match' : ''">
-      <app-fui-input placeholder="Confirm password" formControlName="confirmPassword"></app-fui-input>
+    <app-fui-field
+      label="Confirm Password"
+      [errorMessage]="
+        confirmPassword.touched && confirmPassword.hasError('required') ? 'Confirm password is required' :
+        password.value !== confirmPassword.value ? 'Passwords do not match' : ''">
+      <app-fui-input
+        placeholder="Confirm password"
+        type="password"
+        [required]="true"
+        formControlName="confirmPassword">
+      </app-fui-input>
     </app-fui-field>
 
     <div class="btn-group">
