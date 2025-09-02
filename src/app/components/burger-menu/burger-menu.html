@@ -1,1 +1,39 @@
-<p>burger-menu works!</p>
+@if (!isOpen) {
+  <div class="burger-icon" (click)="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+}
+
+<div class="sidebar" [class.open]="isOpen">
+  <div class="sidebar-header">
+    <button class="close-btn" (click)="closeMenu()">&#10005;</button>
+    <img src="assets/logo.svg" alt="Logo" class="logo" />
+  </div>
+
+  <nav>
+    <ul>
+      @for (link of [
+        { path: '/menu', label: 'Menu' },
+        { path: '/campaign-status', label: 'Campaign Status' },
+        { path: '/create-campaign', label: 'Create Campaign' },
+        { path: '/notifications', label: 'Notifications' },
+        { path: '/reports', label: 'Reports' }
+      ]; track link.path) {
+        <li>
+          <a
+            [routerLink]="link.path"
+            routerLinkActive="active"
+            (click)="closeMenu()">
+            {{ link.label }}
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+</div>
+
+@if (isOpen) {
+  <div class="overlay" (click)="closeMenu()"></div>
+}

@@ -1,11 +1,21 @@
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-burger-menu',
-  imports: [],
+  standalone: true,
+  imports: [RouterModule],
   templateUrl: './burger-menu.html',
-  styleUrl: './burger-menu.scss'
+  styleUrls: ['./burger-menu.scss']
 })
 export class BurgerMenu {
+  isOpen = false;
 
+  toggleMenu() {
+    this.isOpen = !this.isOpen;
+  }
+
+  closeMenu() {
+    this.isOpen = false;
+  }
 }

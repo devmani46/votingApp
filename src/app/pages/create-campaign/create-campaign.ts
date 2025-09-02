@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
+import { BurgerMenu } from '../../components/burger-menu/burger-menu';
 
 @Component({
   selector: 'app-create-campaign',
-  imports: [],
+  standalone: true,
+  imports: [BurgerMenu],
   templateUrl: './create-campaign.html',
   styleUrl: './create-campaign.scss'
 })
