@@ -1,27 +1,17 @@
-<button
-  class="btn"
-  [disabled]="disabled"
-  type="button"
->
+<button [class]="classes" [disabled]="disabled" type="button">
   @if (!iconOnly) {
-    <span class="icon before">
-      <ng-content select="[icon][before]"></ng-content>
-    </span>
-  }
-
-  @if (!iconOnly) {
-    <ng-content></ng-content>
-  }
-
-  @if (iconOnly) {
-    <span class="icon-only-wrapper">
-      <ng-content select="[icon]"></ng-content>
-    </span>
-  }
-
-  @if (!iconOnly) {
-    <span class="icon after">
-      <ng-content select="[icon][after]"></ng-content>
-    </span>
+  <span class="icon before">
+    <ng-content select="[icon][before]"></ng-content>
+  </span>
+  } @if (!iconOnly) {
+  <ng-content></ng-content>
+  } @if (iconOnly) {
+  <span class="icon-only-wrapper">
+    <ng-content select="[icon]"></ng-content>
+  </span>
+  } @if (!iconOnly) {
+  <span class="icon after">
+    <ng-content select="[icon][after]"></ng-content>
+  </span>
   }
 </button>

@@ -1,4 +1,4 @@
-:host {
+.btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -37,7 +37,7 @@
 }
 
 /* variants */
-:host(.btn--primary) {
+.btn--primary {
   background-color: var(--colorBrand90);
   color: var(--colorNeutralBackground1);
   border-color: var(--colorNeutralBackground1);
@@ -51,7 +51,7 @@
   }
 }
 
-:host(.btn--outline) {
+.btn--outline {
   background-color: transparent;
   border-color: var(--colorNeutralBackground1);
   color: var(--colorNeutralForeground1);
@@ -61,7 +61,7 @@
   }
 }
 
-:host(.btn--subtle) {
+.btn--subtle {
   background-color: #f9f9f9;
   color: #666;
 
@@ -70,23 +70,23 @@
   }
 }
 
-:host(.btn--circular) {
+.btn--circular {
   border-radius: 50%;
 }
-:host(.btn--square) {
+.btn--square {
   border-radius: 0;
 }
 
 /* Sizes */
-:host(.btn--small) {
+.btn--small {
   font-size: 12px;
   padding: 4px 8px;
 }
-:host(.btn--medium) {
+.btn--medium {
   font-size: 14px;
   padding: 6px 12px;
 }
-:host(.btn--large) {
+.btn--large {
   font-size: 16px;
   padding: 10px 20px;
 }
@@ -104,8 +104,7 @@
     margin-left: 6px;
   }
 }
-
-:host(.icon-only) {
+.icon-only {
   padding: 6px;
   width: 32px;
   height: 32px;

@@ -30,7 +30,6 @@ export class Button {
 
   @Input() type: 'button' | 'submit' | 'reset' = 'button';
 
-  @HostBinding('class')
   get classes(): string {
     return `
       btn

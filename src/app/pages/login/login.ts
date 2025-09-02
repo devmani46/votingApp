@@ -24,17 +24,21 @@ type LoginForm = {
 })
 export class Login implements OnInit {
   form!: FormGroup<LoginForm>;
+  submitted = false;
 
   constructor(private fb: NonNullableFormBuilder) {}
 
   ngOnInit(): void {
     this.form = this.fb.group<LoginForm>({
-      email: this.fb.control('', { validators: [Validators.required, Validators.email] }),
+      email: this.fb.control('', {
+        validators: [Validators.required, Validators.email],
+      }),
       password: this.fb.control('', { validators: [Validators.required] }),
     });
   }
 
   onSubmit() {
+    this.submitted = true;
     if (this.form.valid) {
       console.log('Login data:', this.form.getRawValue());
     } else {
@@ -42,6 +46,10 @@ export class Login implements OnInit {
     }
   }
 
-  get email() { return this.form.controls.email; }
-  get password() { return this.form.controls.password; }
+  get email() {
+    return this.form.controls.email;
+  }
+  get password() {
+    return this.form.controls.password;
+  }
 }
