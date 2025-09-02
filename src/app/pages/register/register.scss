@@ -1,0 +1,39 @@
+.register-page {
+  display: flex;
+  min-height: 100vh;
+  background-color: #ead1b1;
+  justify-content: center;
+  align-items: center;
+  //overriding component-specific styles through variables
+  font-family: Manrope;
+  --colorNeutralBackground1: #faefdf;
+  --colorNeutralStroke1: #20160b;
+  --colorBrand90: #20160b;
+}
+
+.auth-container {
+  background-color: #faefdf;
+  max-width: 500px;
+  max-height: 900px;
+  padding: 1.4rem 3rem;
+  border-radius: 10px;
+
+  h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -2.5px;
+    margin-bottom: 3rem;
+    margin-top: 3rem;
+    text-align: center;
+  }
+}
+
+.btn-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.register-form {
+  display: flex;
+  gap: 1.5rem;
+}

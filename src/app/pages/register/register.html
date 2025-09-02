@@ -1,118 +1,126 @@
-<div class="auth-container">
-  <h2>Register</h2>
+<div class="register-page">
+  <div class="auth-container">
+    <h2>Create an account</h2>
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <app-fui-field
-      label="First Name"
-      [errorMessage]="
-        submitted && firstName.hasError('required')
-          ? 'First name is required'
-          : ''
-      "
-    >
-      <app-fui-input
-        placeholder="Enter first name"
-        type="text"
-        [required]="true"
-        formControlName="firstName"
-      ></app-fui-input>
-    </app-fui-field>
+    <form class="register-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="names" style="display: flex; gap: 1rem">
+        <app-fui-field
+          label="First Name"
+          [errorMessage]="
+            submitted && firstName.hasError('required')
+              ? 'First name is required'
+              : ''
+          "
+        >
+          <app-fui-input
+            placeholder="Enter first name"
+            type="text"
+            [required]="true"
+            formControlName="firstName"
+          ></app-fui-input>
+        </app-fui-field>
 
-    <app-fui-field
-      label="Last Name"
-      [errorMessage]="
-        submitted && lastName.hasError('required')
-          ? 'Last name is required'
-          : ''
-      "
-    >
-      <app-fui-input
-        placeholder="Enter last name"
-        type="text"
-        [required]="true"
-        formControlName="lastName"
-      ></app-fui-input>
-    </app-fui-field>
+        <app-fui-field
+          label="Last Name"
+          [errorMessage]="
+            submitted && lastName.hasError('required')
+              ? 'Last name is required'
+              : ''
+          "
+        >
+          <app-fui-input
+            placeholder="Enter last name"
+            type="text"
+            [required]="true"
+            formControlName="lastName"
+          ></app-fui-input>
+        </app-fui-field>
+      </div>
+      <app-fui-field
+        label="Username"
+        [errorMessage]="
+          submitted && username.hasError('required')
+            ? 'Username is required'
+            : ''
+        "
+      >
+        <app-fui-input
+          placeholder="Choose a username"
+          type="text"
+          [required]="true"
+          formControlName="username"
+        ></app-fui-input>
+      </app-fui-field>
 
-    <app-fui-field
-      label="Username"
-      [errorMessage]="
-        submitted && username.hasError('required')
-          ? 'Username is required'
-          : ''
-      "
-    >
-      <app-fui-input
-        placeholder="Choose a username"
-        type="text"
-        [required]="true"
-        formControlName="username"
-      ></app-fui-input>
-    </app-fui-field>
+      <app-fui-field
+        label="Email"
+        [errorMessage]="
+          submitted && email.hasError('required')
+            ? 'Email is required'
+            : submitted && email.hasError('email')
+            ? 'Invalid email'
+            : ''
+        "
+      >
+        <app-fui-input
+          placeholder="Enter your email"
+          type="text"
+          [required]="true"
+          formControlName="email"
+        ></app-fui-input>
+      </app-fui-field>
 
-    <app-fui-field
-      label="Email"
-      [errorMessage]="
-        submitted && email.hasError('required')
-          ? 'Email is required'
-          : submitted && email.hasError('email')
-          ? 'Invalid email'
-          : ''
-      "
-    >
-      <app-fui-input
-        placeholder="Enter your email"
-        type="text"
-        [required]="true"
-        formControlName="email"
-      ></app-fui-input>
-    </app-fui-field>
+      <app-fui-field
+        label="Password"
+        [errorMessage]="
+          submitted && password.hasError('required')
+            ? 'Password is required'
+            : ''
+        "
+      >
+        <app-fui-input
+          placeholder="Enter password"
+          type="password"
+          [required]="true"
+          formControlName="password"
+        ></app-fui-input>
+      </app-fui-field>
 
-    <app-fui-field
-      label="Password"
-      [errorMessage]="
-        submitted && password.hasError('required')
-          ? 'Password is required'
-          : ''
-      "
-    >
-      <app-fui-input
-        placeholder="Enter password"
-        type="password"
-        [required]="true"
-        formControlName="password"
-      ></app-fui-input>
-    </app-fui-field>
+      <app-fui-field
+        label="Confirm Password"
+        [errorMessage]="
+          submitted && confirmPassword.hasError('required')
+            ? 'Confirm password is required'
+            : submitted && confirmPassword.hasError('mismatch')
+            ? 'Passwords do not match'
+            : ''
+        "
+      >
+        <app-fui-input
+          placeholder="Confirm password"
+          type="password"
+          [required]="true"
+          formControlName="confirmPassword"
+        ></app-fui-input>
+      </app-fui-field>
 
-    <app-fui-field
-      label="Confirm Password"
-      [errorMessage]="
-        submitted && confirmPassword.hasError('required')
-          ? 'Confirm password is required'
-          : submitted && confirmPassword.hasError('mismatch')
-          ? 'Passwords do not match'
-          : ''
-      "
-    >
-      <app-fui-input
-        placeholder="Confirm password"
-        type="password"
-        [required]="true"
-        formControlName="confirmPassword"
-      ></app-fui-input>
-    </app-fui-field>
+      <div class="btn-group">
+        <app-button
+          appearance="primary"
+          size="medium"
+          type="button"
+          (click)="onSubmit()"
+        >
+          Register
+        </app-button>
+        <app-button appearance="outline" size="medium" routerLink="/login">
+          Cancel
+        </app-button>
+      </div>
+    </form>
 
-    <div class="btn-group">
-      <app-button appearance="primary" size="medium" type="button" (click)="onSubmit()">
-        Register
-      </app-button>
-      <app-button appearance="outline" size="medium" routerLink="/login">
-        Cancel
-      </app-button>
-    </div>
-  </form>
-
-  <p class="auth-link">
-    Already have an account? <a routerLink="/login">Login</a>
-  </p>
+    <p class="auth-link" style="text-align: center">
+      Already have an account? <a routerLink="/login">Login</a>
+    </p>
+  </div>
 </div>

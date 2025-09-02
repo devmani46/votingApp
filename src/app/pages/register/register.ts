@@ -43,7 +43,10 @@ function matchFieldsValidator(
     }
 
     if (control.value !== matchControl.value) {
-      matchControl.setErrors({ ...(matchControl.errors || {}), mismatch: true });
+      matchControl.setErrors({
+        ...(matchControl.errors || {}),
+        mismatch: true,
+      });
       return { mismatch: true };
     } else {
       if (matchControl.errors) {
@@ -60,6 +63,7 @@ function matchFieldsValidator(
   standalone: true,
   imports: [ReactiveFormsModule, RouterModule, FuiField, FuiInput, Button],
   templateUrl: './register.html',
+  styleUrls: ['./register.scss'],
 })
 export class Register implements OnInit {
   form!: FormGroup<RegisterForm>;

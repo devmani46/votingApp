@@ -1,47 +1,54 @@
-<div class="auth-container">
-  <h2>Login</h2>
+<div class="login-page">
+  <div class="auth-container">
+    <h2>Sign in to your account</h2>
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <app-fui-field
-      label="Email"
-      [errorMessage]="
-        submitted && email.hasError('required')
-          ? 'Email is required'
-          : submitted && email.hasError('email')
-          ? 'Invalid email'
-          : ''
-      "
-    >
-      <app-fui-input
-        placeholder="Enter your email"
-        formControlName="email"
-        [required]="true"
-      ></app-fui-input>
-    </app-fui-field>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <app-fui-field
+        label="Email"
+        [errorMessage]="
+          submitted && email.hasError('required')
+            ? 'Email is required'
+            : submitted && email.hasError('email')
+            ? 'Invalid email'
+            : ''
+        "
+      >
+        <app-fui-input
+          placeholder="Enter your email"
+          formControlName="email"
+          [required]="true"
+        ></app-fui-input>
+      </app-fui-field>
 
-    <app-fui-field
-      label="Password"
-      [errorMessage]="
-        submitted && password.hasError('required')
-          ? 'Password is required'
-          : ''
-      "
-    >
-      <app-fui-input
-        placeholder="Enter password"
-        type="password"
-        [required]="true"
-        formControlName="password"
-        [allowGenerate]="false"
-      ></app-fui-input>
-    </app-fui-field>
+      <app-fui-field
+        label="Password"
+        [errorMessage]="
+          submitted && password.hasError('required')
+            ? 'Password is required'
+            : ''
+        "
+      >
+        <app-fui-input
+          placeholder="Enter password"
+          type="password"
+          [required]="true"
+          formControlName="password"
+          [allowGenerate]="false"
+        ></app-fui-input>
+      </app-fui-field>
 
-    <app-button appearance="primary" size="medium" type="button" (click)="onSubmit()">
-      Login
-    </app-button>
-  </form>
+      <app-button
+        appearance="primary"
+        size="medium"
+        type="button"
+        (click)="onSubmit()"
+      >
+        Login
+      </app-button>
+    </form>
 
-  <p class="auth-link">
-    Don’t have an account? <a routerLink="/register">Sign up</a>
-  </p>
+    <p class="auth-link" style="text-align: center">
+      Don’t have an account? <a routerLink="/register">Sign up</a>
+    </p>
+  </div>
 </div>

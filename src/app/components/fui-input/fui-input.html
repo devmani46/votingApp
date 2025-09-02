@@ -16,22 +16,29 @@
     (blur)="onTouched()"
   />
 
-    @if (type === 'password') {
-        <button type="button" class="fw-input-after" (click)="togglePassword()">
-          {{ showPassword ? '🙈' : '👁' }}
-        </button>
+  @if (type === 'password') {
+  <button
+    type="button"
+    class="fw-input-after material-symbols-outlined"
+    (click)="togglePassword()"
+  >
+    {{ showPassword ? "visibility_off" : "visibility" }}
+  </button>
 
-        @if (allowGenerate) {
-          <button type="button" class="fw-input-after" (click)="generatePassword()">
-            🔑
-          </button>
-        }
-      }
+  @if (allowGenerate) {
+  <button
+    type="button"
+    class="fw-input-after material-symbols-outlined"
+    (click)="generatePassword()"
+  >
+    key
+  </button>
+  } }
 </div>
 
 @if (type === 'password' && getPasswordStrength()) {
-  <div class="fw-password-strength">
-    Strength:
-    <span [ngClass]="getPasswordStrength()">{{ getPasswordStrength() }}</span>
-  </div>
+<div class="fw-password-strength">
+  Strength:
+  <span [ngClass]="getPasswordStrength()">{{ getPasswordStrength() }}</span>
+</div>
 }

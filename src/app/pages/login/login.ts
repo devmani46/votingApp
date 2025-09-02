@@ -21,6 +21,7 @@ type LoginForm = {
   standalone: true,
   imports: [ReactiveFormsModule, RouterModule, FuiField, FuiInput, Button],
   templateUrl: './login.html',
+  styleUrl: './login.scss',
 })
 export class Login implements OnInit {
   form!: FormGroup<LoginForm>;
