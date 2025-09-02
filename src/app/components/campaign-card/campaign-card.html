@@ -1,0 +1,15 @@
+<div
+  class="campaign-card"
+  [class.card-small]="size === 'small'"
+  [class.card-large]="size === 'large'"
+  [attr.data-disabled]="disabled ? 'true' : null"
+>
+  <div class="card-image">
+    <img [src]="image" [alt]="title" />
+  </div>
+
+  <div class="card-content">
+    <h3>{{ title }}</h3>
+    <p class="description">{{ description }}</p>
+  </div>
+</div>
