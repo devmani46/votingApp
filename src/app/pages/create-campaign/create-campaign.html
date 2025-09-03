@@ -44,24 +44,23 @@
       </div>
 
       <div class="candidates-list">
-        @for (c of candidates; let i = $index; track c.name) {
+        @for (c of candidates; track c.name) {
         <app-campaign-card
           [title]="c.name"
           [description]="c.bio"
           [image]="c.photo"
           size="medium"
-          (delete)="deleteCandidate(i)"
-          (edit)="openDialog(i)"
         >
         </app-campaign-card>
         }
+
         <app-button appearance="primary" (click)="openDialog()">Add</app-button>
       </div>
 
       @if (showDialog) {
       <div class="dialog">
         <div class="dialog-content">
-          <h3>{{ editIndex !== null ? 'Edit Candidate' : 'Add Candidate' }}</h3>
+          <h3>{{ editIndex !== null ? "Edit Candidate" : "Add Candidate" }}</h3>
 
           <div class="candidate-form">
             <div class="candidate-photo-upload">
@@ -72,12 +71,19 @@
                 hidden
                 #candidateFile
               />
-              <app-button appearance="secondary" (click)="candidateFile.click()">
+              <app-button
+                appearance="secondary"
+                (click)="candidateFile.click()"
+              >
                 Choose Photo
               </app-button>
 
               @if (candidatePhotoPreview) {
-              <img [src]="candidatePhotoPreview" alt="Candidate Photo" />
+              <img
+                class="candidate-photo"
+                [src]="candidatePhotoPreview"
+                alt="Candidate Photo"
+              />
               }
             </div>
 
@@ -131,10 +137,14 @@
       }
 
       <div class="row">
-        <label>Start Date:</label>
-        <input type="date" formControlName="startDate" />
-        <label>End Date:</label>
-        <input type="date" formControlName="endDate" />
+        <div class="start-date">
+          <label>Start Date:</label>
+          <input type="date" formControlName="startDate" />
+        </div>
+        <div class="end-date">
+          <label>End Date:</label>
+          <input type="date" formControlName="endDate" />
+        </div>
       </div>
 
       <app-button type="submit" appearance="primary">Submit</app-button>
