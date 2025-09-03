@@ -220,3 +220,34 @@
     font-size: 1.5rem;
   }
 }
+
+.candidate-card-wrapper {
+  position: relative;
+  display: inline-block;
+  margin: 12px;
+  cursor: pointer;
+}
+
+.delete-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 10;
+  border: none;
+  background: #e63946;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  line-height: 24px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: background 0.2s ease;
+}
+
+.delete-btn:hover {
+  background: #d62828;
+}

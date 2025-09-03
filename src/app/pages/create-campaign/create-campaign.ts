@@ -71,19 +71,24 @@ export class CreateCampaign {
   }
 
   openDialog(candidateIndex: number | null = null) {
-    this.showDialog = true;
-    if (candidateIndex !== null) {
-      this.editIndex = candidateIndex;
-      const c = this.candidates[candidateIndex];
-      this.nameControl.setValue(c.name);
-      this.bioControl.setValue(c.bio);
-      this.candidatePhotoPreview = c.photo;
-      this.candidateProperties = [...c.properties];
-    } else {
-      this.editIndex = null;
-      this.resetCandidateForm();
-    }
+  this.showDialog = true;
+  if (candidateIndex !== null) {
+    this.editIndex = candidateIndex;
+    const c = this.candidates[candidateIndex];
+    this.nameControl.setValue(c.name);
+    this.bioControl.setValue(c.bio);
+    this.candidatePhotoPreview = c.photo;
+    this.candidateProperties = [...c.properties];
+  } else {
+    this.editIndex = null;
+    this.resetCandidateForm();
   }
+}
+
+deleteCandidate(index: number) {
+  this.candidates.splice(index, 1);
+}
+
 
   closeDialog() {
     this.showDialog = false;
@@ -131,9 +136,6 @@ export class CreateCampaign {
     this.closeDialog();
   }
 
-  deleteCandidate(index: number) {
-    this.candidates.splice(index, 1);
-  }
 
   resetCandidateForm() {
     this.nameControl.reset();
