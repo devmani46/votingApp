@@ -25,9 +25,7 @@
 
         <div class="add-candidates row">
           <label>Candidates</label>
-          <app-button appearance="primary" (click)="openDialog()"
-            >Add</app-button
-          >
+          <app-button appearance="primary" (click)="openDialog()">Add</app-button>
         </div>
 
         <div class="candidates-list">
@@ -53,11 +51,9 @@
         </div>
 
         @if (showDialog) {
-        <div class="dialog">
-          <div class="dialog-content">
-            <h3>
-              {{ editIndex !== null ? "Edit Candidate" : "Add Candidate" }}
-            </h3>
+        <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">
+          <div class="dialog-content" (click)="$event.stopPropagation()">
+            <h3>{{ editIndex !== null ? "Edit Candidate" : "Add Candidate" }}</h3>
 
             <div class="candidate-form">
               <div class="candidate-form-divided">
@@ -69,10 +65,7 @@
                     hidden
                     #candidateFile
                   />
-                  <button
-                    class="choose-photo-btn"
-                    (click)="candidateFile.click()"
-                  >
+                  <button class="choose-photo-btn" (click)="candidateFile.click()">
                     @if (candidatePhotoPreview) {
                     <img
                       class="candidate-photo"
@@ -80,26 +73,26 @@
                       alt="Candidate Photo"
                     />
                     } @else {
-                    <span class="material-symbols-outlined"
-                      >add_photo_alternate</span
-                    >
+                    <span class="material-symbols-outlined">add_photo_alternate</span>
                     <h2>Add Photo</h2>
                     }
                   </button>
                 </div>
 
                 <div class="candidate-details">
+                  <label for="name">Enter your name:</label>
                   <app-fui-input
                     [formControl]="nameControl"
                     placeholder="Name"
                   ></app-fui-input>
 
+                  <label for="bio">Enter your bio:</label>
                   <textarea
                     class="bio-box"
                     [formControl]="bioControl"
                     placeholder="Bio"
                   ></textarea>
-
+                  <label for="properties">Enter your properties:</label>
                   <div class="properties">
                     <div class="row">
                       <app-fui-input
@@ -111,13 +104,11 @@
                       </app-button>
                     </div>
 
-                    <ul>
+                    <ul class="properties-list">
                       @for (p of candidateProperties; let j = $index; track j) {
                       <li>
-                        {{ p }}
-                        <span class="remove-prop" (click)="removeProperty(j)"
-                          >✕</span
-                        >
+                        <span class="prop-text">{{ p }}</span>
+                        <span class="remove-prop" (click)="removeProperty(j)">✕</span>
                       </li>
                       }
                     </ul>
@@ -127,12 +118,8 @@
             </div>
 
             <div class="dialog-actions">
-              <app-button appearance="secondary" (click)="closeDialog()">
-                Cancel
-              </app-button>
-              <app-button appearance="primary" (click)="saveCandidate()">
-                Save
-              </app-button>
+              <app-button appearance="secondary" (click)="closeDialog()">Cancel</app-button>
+              <app-button appearance="primary" (click)="saveCandidate()">Save</app-button>
             </div>
           </div>
         </div>

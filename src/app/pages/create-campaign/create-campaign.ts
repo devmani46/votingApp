@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -29,7 +29,7 @@ import { CampaignCard } from '../../components/campaign-card/campaign-card';
   templateUrl: './create-campaign.html',
   styleUrls: ['./create-campaign.scss']
 })
-export class CreateCampaign implements OnInit {
+export class CreateCampaign implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private campaignService = inject(CampaignService);
   private route = inject(ActivatedRoute);
@@ -82,13 +82,19 @@ export class CreateCampaign implements OnInit {
                 name: [c.name, Validators.required],
                 bio: [c.bio],
                 photo: [c.photo],
-                properties: [c.properties]
+                properties: [Array.isArray(c.properties) ? c.properties : []] // ✅ fix
               })
             );
           });
         }
       }
     });
+
+    document.addEventListener('keydown', this.handleEsc);
+  }
+
+  ngOnDestroy() {
+    document.removeEventListener('keydown', this.handleEsc);
   }
 
   get candidates() {
@@ -116,7 +122,9 @@ export class CreateCampaign implements OnInit {
       this.nameControl.setValue(candidate.name);
       this.bioControl.setValue(candidate.bio);
       this.candidatePhotoPreview = candidate.photo;
-      this.candidateProperties = [...candidate.properties];
+      this.candidateProperties = Array.isArray(candidate.properties)
+        ? [...candidate.properties]
+        : [];
     } else {
       this.nameControl.reset('');
       this.bioControl.reset('');
@@ -134,6 +142,18 @@ export class CreateCampaign implements OnInit {
     this.propertyControl.reset('');
     this.candidatePhotoPreview = null;
     this.candidateProperties = [];
+  }
+
+  handleEsc = (event: KeyboardEvent) => {
+    if (event.key === 'Escape' && this.showDialog) {
+      this.closeDialog();
+    }
+  };
+
+  closeDialogOnBackdrop(event: MouseEvent) {
+    if (event.target === event.currentTarget) {
+      this.closeDialog();
+    }
   }
 
   onCandidatePhotoSelected(event: Event) {
