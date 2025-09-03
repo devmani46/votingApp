@@ -27,7 +27,7 @@
           hidden
           #logoInput
         />
-        <button class="image-upload" (click)="logoInput.click()">
+        <button class="image-upload" type="button" (click)="logoInput.click()">
           <span class="material-symbols-outlined">add_photo_alternate</span>
           <p>Add banner photo</p>
         </button>
@@ -60,7 +60,7 @@
       @if (showDialog) {
       <div class="dialog">
         <div class="dialog-content">
-          <h3>Add Candidate</h3>
+          <h3>{{ editIndex !== null ? "Edit Candidate" : "Add Candidate" }}</h3>
 
           <div class="candidate-form">
             <div class="candidate-photo-upload">
@@ -105,14 +105,19 @@
                     [formControl]="propertyControl"
                     placeholder="Property"
                   ></app-fui-input>
-                  <app-button appearance="primary" (click)="addProperty()"
-                    >Add</app-button
-                  >
+                  <app-button appearance="primary" (click)="addProperty()">
+                    Add
+                  </app-button>
                 </div>
 
                 <ul>
-                  @for (p of candidateProperties; track p) {
-                  <li>{{ p }}</li>
+                  @for (p of candidateProperties; let j = $index; track p) {
+                  <li>
+                    {{ p }}
+                    <span class="remove-prop" (click)="removeProperty(j)"
+                      >✕</span
+                    >
+                  </li>
                   }
                 </ul>
               </div>

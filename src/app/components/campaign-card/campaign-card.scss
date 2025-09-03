@@ -42,7 +42,6 @@
     }
   }
 
-  // Hover animation
   &:hover {
     .card-image img {
       transform: scale(1);
@@ -78,13 +77,38 @@
     }
   }
   &:not(.card-small):not(.card-large) {
-    width: 300px; // default medium
+    width: 300px;
   }
 
-  // Disabled
   &[data-disabled="true"] {
     opacity: 0.6;
     pointer-events: none;
     cursor: not-allowed;
+  }
+}
+
+.campaign-card {
+  position: relative;
+  cursor: pointer;
+
+  .delete-btn {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  &:hover .delete-btn {
+    opacity: 1;
   }
 }

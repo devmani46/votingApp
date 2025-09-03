@@ -3,7 +3,12 @@
   [class.card-small]="size === 'small'"
   [class.card-large]="size === 'large'"
   [attr.data-disabled]="disabled ? 'true' : null"
+  (click)="onCardClick()"
 >
+  <div class="delete-btn" (click)="onDeleteClick($event)">
+    ✕
+  </div>
+
   <div class="card-image">
     <img [src]="image" [alt]="title || 'Campaign logo'" />
   </div>
