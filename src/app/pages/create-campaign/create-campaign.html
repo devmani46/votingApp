@@ -1,55 +1,42 @@
 <div class="campaign-container">
   <div class="header">
     <app-burger-menu></app-burger-menu>
-    <h2>{{ editMode ? 'Edit Campaign' : 'Create Campaign' }}</h2>
+    <h2>{{ editMode ? "Edit Campaign" : "Create Campaign" }}</h2>
     <img class="admin-photo" src="/assets/admin.png" alt="Admin" />
   </div>
 
   <div class="create-form">
     <form [formGroup]="form" (ngSubmit)="submitForm()">
-      <app-fui-input
-        size="large"
-        formControlName="title"
-        placeholder="Campaign Title"
-      ></app-fui-input>
+      <div class="photo-divide">
+        <app-fui-input
+          class="campaign-title"
+          size="large"
+          formControlName="title"
+          placeholder="Campaign Title"
+        ></app-fui-input>
 
-      <textarea
-        class="description-box"
-        formControlName="description"
-        placeholder="Campaign Description"
-      ></textarea>
-
-      <div class="row">
-        <input
-          type="file"
-          accept="image/*"
-          (change)="onLogoSelected($event)"
-          hidden
-          #logoInput
-        />
-        <button class="image-upload" type="button" (click)="logoInput.click()">
-          <span class="material-symbols-outlined">add_photo_alternate</span>
-          <p>Add banner photo</p>
-        </button>
-      </div>
-
-      @if (logoPreview) {
-        <div class="logo-preview">
-          <img [src]="logoPreview" alt="Campaign Logo" />
+        <div class="two-inputs">
+          <textarea
+            class="description-box"
+            formControlName="description"
+            placeholder="Campaign Description"
+          ></textarea>
         </div>
-      }
 
-      <div class="add-candidates row">
-        <label>Candidates</label>
-      </div>
+        <div class="add-candidates row">
+          <label>Candidates</label>
+          <app-button appearance="primary" (click)="openDialog()"
+            >Add</app-button
+          >
+        </div>
 
-      <div class="candidates-list">
-        @for (c of candidates.controls; let i = $index; track i) {
+        <div class="candidates-list">
+          @for (c of candidates.controls; let i = $index; track i) {
           <div class="candidate-card-wrapper" (click)="openDialog(i)">
             <button
               class="delete-btn"
               type="button"
-              (click)="deleteCandidate(i); $event.stopPropagation();"
+              (click)="deleteCandidate(i); $event.stopPropagation()"
             >
               ✕
             </button>
@@ -62,68 +49,79 @@
             >
             </app-campaign-card>
           </div>
-        }
+          }
+        </div>
 
-        <app-button appearance="primary" (click)="openDialog()">Add</app-button>
-      </div>
-
-      @if (showDialog) {
+        @if (showDialog) {
         <div class="dialog">
           <div class="dialog-content">
-            <h3>{{ editIndex !== null ? 'Edit Candidate' : 'Add Candidate' }}</h3>
+            <h3>
+              {{ editIndex !== null ? "Edit Candidate" : "Add Candidate" }}
+            </h3>
 
             <div class="candidate-form">
-              <div class="candidate-photo-upload">
-                <input
-                  type="file"
-                  accept="image/*"
-                  (change)="onCandidatePhotoSelected($event)"
-                  hidden
-                  #candidateFile
-                />
-                <app-button
-                  appearance="secondary"
-                  (click)="candidateFile.click()"
-                >
-                  Choose Photo
-                </app-button>
+              <div class="candidate-form-divided">
+                <div class="candidate-photo-upload">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    (change)="onCandidatePhotoSelected($event)"
+                    hidden
+                    #candidateFile
+                  />
+                  <button
+                    class="choose-photo-btn"
+                    (click)="candidateFile.click()"
+                  >
+                    @if (candidatePhotoPreview) {
+                    <img
+                      class="candidate-photo"
+                      [src]="candidatePhotoPreview"
+                      alt="Candidate Photo"
+                    />
+                    } @else {
+                    <span class="material-symbols-outlined"
+                      >add_photo_alternate</span
+                    >
+                    <h2>Add Photo</h2>
+                    }
+                  </button>
+                </div>
 
-                @if (candidatePhotoPreview) {
-                  <img [src]="candidatePhotoPreview" alt="Candidate Photo" />
-                }
-              </div>
+                <div class="candidate-details">
+                  <app-fui-input
+                    [formControl]="nameControl"
+                    placeholder="Name"
+                  ></app-fui-input>
 
-              <div class="candidate-details">
-                <app-fui-input
-                  [formControl]="nameControl"
-                  placeholder="Name"
-                ></app-fui-input>
+                  <textarea
+                    class="bio-box"
+                    [formControl]="bioControl"
+                    placeholder="Bio"
+                  ></textarea>
 
-                <textarea
-                  class="bio-box"
-                  [formControl]="bioControl"
-                  placeholder="Bio"
-                ></textarea>
+                  <div class="properties">
+                    <div class="row">
+                      <app-fui-input
+                        [formControl]="propertyControl"
+                        placeholder="Property"
+                      ></app-fui-input>
+                      <app-button appearance="primary" (click)="addProperty()">
+                        Add
+                      </app-button>
+                    </div>
 
-                <div class="properties">
-                  <div class="row">
-                    <app-fui-input
-                      [formControl]="propertyControl"
-                      placeholder="Property"
-                    ></app-fui-input>
-                    <app-button appearance="primary" (click)="addProperty()">
-                      Add
-                    </app-button>
-                  </div>
-
-                  <ul>
-                    @for (p of candidateProperties; let j = $index; track j) {
+                    <ul>
+                      @for (p of candidateProperties; let j = $index; track j) {
                       <li>
                         {{ p }}
-                        <span class="remove-prop" (click)="removeProperty(j)">✕</span>
+                        <span class="remove-prop" (click)="removeProperty(j)"
+                          >✕</span
+                        >
                       </li>
-                    }
-                  </ul>
+                      }
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
@@ -138,18 +136,42 @@
             </div>
           </div>
         </div>
-      }
+        }
 
-      <div class="row">
-        <label>Start Date:</label>
-        <input type="date" formControlName="startDate" />
-        <label>End Date:</label>
-        <input type="date" formControlName="endDate" />
+        <div class="row">
+          <div class="start-date">
+            <label>Start Date:</label>
+            <input type="date" formControlName="startDate" />
+          </div>
+          <div class="end-date">
+            <label>End Date:</label>
+            <input type="date" formControlName="endDate" />
+          </div>
+        </div>
+
+        <app-button type="submit" appearance="primary">
+          {{ editMode ? "Update Campaign" : "Create Campaign" }}
+        </app-button>
       </div>
-
-      <app-button type="submit" appearance="primary">
-        {{ editMode ? 'Update Campaign' : 'Create Campaign' }}
-      </app-button>
+      <div class="row add-banner">
+        <input
+          type="file"
+          accept="image/*"
+          (change)="onLogoSelected($event)"
+          hidden
+          #logoInput
+        />
+        <button class="image-upload" type="button" (click)="logoInput.click()">
+          @if (logoPreview) {
+          <div class="logo-preview">
+            <img [src]="logoPreview" alt="Campaign Logo" />
+          </div>
+          } @else {
+          <span class="material-symbols-outlined">add_photo_alternate</span>
+          <p>Add banner photo</p>
+          }
+        </button>
+      </div>
     </form>
   </div>
 </div>

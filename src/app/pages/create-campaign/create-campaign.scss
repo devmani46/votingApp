@@ -36,8 +36,13 @@
 
   form {
     display: flex;
+    gap: 2rem;
+  }
+
+  .photo-divide {
+    display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.2rem;
   }
 }
 
@@ -45,6 +50,7 @@
   background-color: #fffcec;
   padding: 1rem;
   border-radius: 6px;
+  min-width: 30rem;
   min-height: 10rem;
 }
 
@@ -297,4 +303,8 @@
 
 .delete-btn:hover {
   background: grey;
+}
+
+.add-banner {
+  align-items: baseline;
 }
