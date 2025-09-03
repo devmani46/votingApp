@@ -1,4 +1,5 @@
 .campaign-card {
+  padding: 10px;
   display: flex;
   flex-direction: column;
   border: 1px solid var(--colorNeutralStroke1, #ccc);
@@ -7,19 +8,24 @@
   background: var(--colorNeutralBackground1, #fff);
   transition: all 0.3s ease;
   position: relative;
-  max-height: 11rem;
-
-
+  min-height: 12rem;
+  max-height: 12rem;
   cursor: default;
 
   .card-clickable {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
     cursor: pointer;
   }
 
   .card-image {
+    flex-grow: 1;
     width: 100%;
     max-height: 8rem;
     overflow: hidden;
+    border-radius: 1rem;
+    transition: max-height 0.4s ease-in-out;
 
     img {
       width: 100%;
@@ -33,6 +39,7 @@
     padding: 12px;
     text-align: center;
     transition: all 0.4s ease-in-out;
+    flex-grow: 2;
 
     h3 {
       margin: 0;
@@ -51,8 +58,11 @@
   }
 
   &:hover {
-    .card-image img {
-      transform: scale(1);
+    .card-image {
+      max-height: 6rem;
+      img {
+        transform: scale(1);
+      }
     }
 
     .card-content {
@@ -98,7 +108,7 @@
     width: 300px;
   }
 
-  &[data-disabled='true'] {
+  &[data-disabled="true"] {
     opacity: 0.6;
     pointer-events: none;
     cursor: not-allowed;
