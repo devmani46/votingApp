@@ -1,11 +1,18 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, FormControl } from '@angular/forms';
 import { FuiInput } from '../../components/fui-input/fui-input';
 import { Button } from '../../components/button/button';
 import { BurgerMenu } from '../../components/burger-menu/burger-menu';
 import { CampaignService } from '../../services/campaign';
 import { Router } from '@angular/router';
+
+interface Candidate {
+  name: string;
+  bio: string;
+  photo: string;
+  properties: string[];
+}
 
 @Component({
   selector: 'app-create-campaign',
@@ -29,6 +36,15 @@ export class CreateCampaign {
 
   logoPreview: string | null = null;
 
+  candidates: Candidate[] = [];
+  showDialog = false;
+
+  candidatePhotoPreview: string | null = null;
+  nameControl = new FormControl('', Validators.required);
+  bioControl = new FormControl('');
+  propertyControl = new FormControl('');
+  candidateProperties: string[] = [];
+
   onLogoSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
@@ -38,21 +54,70 @@ export class CreateCampaign {
     }
   }
 
-    submitForm() {
-      if (this.form.valid) {
-        this.campaignService.addCampaign({
-          title: this.form.value.title,
-          description: this.form.value.description,
-          logo: this.logoPreview,
-          startDate: this.form.value.startDate,
-          endDate: this.form.value.endDate,
-        });
+  openDialog() {
+    this.showDialog = true;
+  }
 
-        console.log('Campaigns after add:', this.campaignService.campaigns());
+  closeDialog() {
+    this.showDialog = false;
+    this.resetCandidateForm();
+  }
 
-        this.router.navigate(['/campaign-status']);
-      } else {
-        this.form.markAllAsTouched();
-      }
+  onCandidatePhotoSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => (this.candidatePhotoPreview = reader.result as string);
+      reader.readAsDataURL(file);
     }
+  }
+
+  addProperty() {
+    const prop = this.propertyControl.value?.trim();
+    if (prop) {
+      this.candidateProperties.push(prop);
+      this.propertyControl.reset();
+    }
+  }
+
+  saveCandidate() {
+    if (this.nameControl.invalid) return;
+
+    const candidate: Candidate = {
+      name: this.nameControl.value!,
+      bio: this.bioControl.value || '',
+      photo: this.candidatePhotoPreview || '/assets/default-user.png',
+      properties: [...this.candidateProperties],
+    };
+
+    this.candidates.push(candidate);
+    this.closeDialog();
+  }
+
+  resetCandidateForm() {
+    this.nameControl.reset();
+    this.bioControl.reset();
+    this.propertyControl.reset();
+    this.candidateProperties = [];
+    this.candidatePhotoPreview = null;
+  }
+
+  submitForm() {
+    if (this.form.valid) {
+      this.campaignService.addCampaign({
+        title: this.form.value.title,
+        description: this.form.value.description,
+        logo: this.logoPreview,
+        startDate: this.form.value.startDate,
+        endDate: this.form.value.endDate,
+        candidates: this.candidates,
+      } as any);
+
+      console.log('Campaigns after add:', this.campaignService.campaigns());
+
+      this.router.navigate(['/campaign-status']);
+    } else {
+      this.form.markAllAsTouched();
+    }
+  }
 }
