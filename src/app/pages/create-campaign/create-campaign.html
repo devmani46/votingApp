@@ -1,51 +1,50 @@
-<app-burger-menu></app-burger-menu>
-<h2>Create Campaigns</h2>
-
 <div class="campaign-container">
   <div class="header">
-    <img class="admin-photo" src="/assets/admin.png" alt="Admin" />
+    <app-burger-menu></app-burger-menu>
     <h2>Create Campaign</h2>
+    <img class="admin-photo" src="/assets/admin.png" alt="Admin" />
   </div>
 
-  <form [formGroup]="form" (ngSubmit)="submitForm()">
-    <app-fui-input
-      formControlName="title"
-      placeholder="Campaign Title"
-    ></app-fui-input>
+  <div class="create-form">
+    <form [formGroup]="form" (ngSubmit)="submitForm()">
+      <app-fui-input
+        size="large"
+        formControlName="title"
+        placeholder="Campaign Title"
+      ></app-fui-input>
 
-    <textarea
-      class="description-box"
-      formControlName="description"
-      placeholder="Campaign Description"
-    ></textarea>
+      <textarea
+        class="description-box"
+        formControlName="description"
+        placeholder="Campaign Description"
+      ></textarea>
 
-    <div class="row">
-      <label>Campaign Logo:</label>
-      <input
-        type="file"
-        accept="image/*"
-        (change)="onLogoSelected($event)"
-        hidden
-        #logoInput
-      />
-      <app-button appearance="primary" (click)="logoInput.click()">
-        Choose File
-      </app-button>
-    </div>
+      <div class="row">
+        <input
+          type="file"
+          accept="image/*"
+          (change)="onLogoSelected($event)"
+          hidden
+          #logoInput
+        />
+        <button class="image-upload" (click)="logoInput.click()">
+          <span class="material-symbols-outlined">add_photo_alternate</span>
+          <p>Add banner photo</p>
+        </button>
+      </div>
 
-    @if (logoPreview) {
+      @if (logoPreview) {
       <div class="logo-preview">
         <img [src]="logoPreview" alt="Campaign Logo" />
       </div>
-    }
+      }
 
-    <div class="row">
-      <label>Candidates</label>
-      <app-button appearance="primary" (click)="openDialog()">Add</app-button>
-    </div>
+      <div class="add-candidates row">
+        <label>Candidates</label>
+      </div>
 
-    <div class="candidates-list">
-      @for (c of candidates; track c.name) {
+      <div class="candidates-list">
+        @for (c of candidates; track c.name) {
         <div class="candidate-card">
           <img [src]="c.photo" alt="Candidate" class="candidate-photo" />
           <div class="candidate-info">
@@ -53,15 +52,16 @@
             <p>{{ c.bio }}</p>
             <ul>
               @for (p of c.properties; track p) {
-                <li>{{ p }}</li>
+              <li>{{ p }}</li>
               }
             </ul>
           </div>
         </div>
-      }
-    </div>
+        }
+        <app-button appearance="primary" (click)="openDialog()">Add</app-button>
+      </div>
 
-    @if (showDialog) {
+      @if (showDialog) {
       <div class="dialog">
         <div class="dialog-content">
           <h3>Add Candidate</h3>
@@ -75,17 +75,23 @@
                 hidden
                 #candidateFile
               />
-              <app-button appearance="secondary" (click)="candidateFile.click()">
+              <app-button
+                appearance="secondary"
+                (click)="candidateFile.click()"
+              >
                 Choose Photo
               </app-button>
 
               @if (candidatePhotoPreview) {
-                <img [src]="candidatePhotoPreview" alt="Candidate Photo" />
+              <img [src]="candidatePhotoPreview" alt="Candidate Photo" />
               }
             </div>
 
             <div class="candidate-details">
-              <app-fui-input [formControl]="nameControl" placeholder="Name"></app-fui-input>
+              <app-fui-input
+                [formControl]="nameControl"
+                placeholder="Name"
+              ></app-fui-input>
 
               <textarea
                 class="bio-box"
@@ -95,13 +101,18 @@
 
               <div class="properties">
                 <div class="row">
-                  <app-fui-input [formControl]="propertyControl" placeholder="Property"></app-fui-input>
-                  <app-button appearance="primary" (click)="addProperty()">Add</app-button>
+                  <app-fui-input
+                    [formControl]="propertyControl"
+                    placeholder="Property"
+                  ></app-fui-input>
+                  <app-button appearance="primary" (click)="addProperty()"
+                    >Add</app-button
+                  >
                 </div>
 
                 <ul>
                   @for (p of candidateProperties; track p) {
-                    <li>{{ p }}</li>
+                  <li>{{ p }}</li>
                   }
                 </ul>
               </div>
@@ -109,20 +120,25 @@
           </div>
 
           <div class="dialog-actions">
-            <app-button appearance="secondary" (click)="closeDialog()">Cancel</app-button>
-            <app-button appearance="primary" (click)="saveCandidate()">Save</app-button>
+            <app-button appearance="secondary" (click)="closeDialog()"
+              >Cancel</app-button
+            >
+            <app-button appearance="primary" (click)="saveCandidate()"
+              >Save</app-button
+            >
           </div>
         </div>
       </div>
-    }
+      }
 
-    <div class="row">
-      <label>Start Date:</label>
-      <input type="date" formControlName="startDate" />
-      <label>End Date:</label>
-      <input type="date" formControlName="endDate" />
-    </div>
+      <div class="row">
+        <label>Start Date:</label>
+        <input type="date" formControlName="startDate" />
+        <label>End Date:</label>
+        <input type="date" formControlName="endDate" />
+      </div>
 
-    <app-button type="submit" appearance="primary">Submit</app-button>
-  </form>
+      <app-button type="submit" appearance="primary">Submit</app-button>
+    </form>
+  </div>
 </div>
