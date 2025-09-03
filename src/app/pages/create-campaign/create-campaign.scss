@@ -2,6 +2,7 @@
   --colorNeutralBackground1: #fffcec;
   --colorNeutralStroke1: #20160b;
   --colorBrand90: #20160b;
+  --colorNeutralStroke1: rgb(0, 0, 0, 0.1);
   font-family: Manrope;
   display: flex;
   flex-direction: column;
@@ -15,7 +16,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 1.6rem 4rem;
+  padding: 1.6rem 6rem;
 
   h2 {
     font-size: 2rem;
@@ -51,28 +52,30 @@
   cursor: pointer;
   position: relative;
   background-color: #20160b;
+  border: 1px solid #20160b;
   color: #faefdf;
-  padding: 4rem 2rem;
+  //padding: 4rem 2rem;
   min-width: 30rem;
+  min-height: 12rem;
   border-radius: 6px;
 
-  &::after {
-    content: ""; /* Essential for creation */
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 1000px;
-    transform: scale(0);
-    background-color: #ad3a1f;
-    transition: all 0.2s ease-in-out; /* For transition-based animations */
-  }
+  // &::after {
+  //   content: ""; /* Essential for creation */
+  //   position: absolute;
+  //   bottom: 0;
+  //   left: 0;
+  //   width: 100%;
+  //   height: 100%;
+  //   border-radius: 1000px;
+  //   transform: scale(0);
+  //   background-color: #ad3a1f;
+  //   transition: all 0.2s ease-in-out; /* For transition-based animations */
+  // }
 
-  &:hover::after {
-    border-radius: 6px;
-    transform: scale(1);
-  }
+  // &:hover::after {
+  //   border-radius: 6px;
+  //   transform: scale(1);
+  // }
 
   span,
   p {
@@ -86,6 +89,15 @@
 
   p {
     font-size: large;
+  }
+}
+
+.logo-preview {
+  img {
+    object-fit: cover;
+    min-width: 30rem;
+    max-width: 30rem;
+    max-height: 12rem;
   }
 }
 
@@ -172,6 +184,7 @@
 
 .dialog {
   position: fixed;
+  z-index: 1001;
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
   display: flex;
@@ -179,8 +192,8 @@
   align-items: center;
 
   .dialog-content {
-    background: white;
-    padding: 20px;
+    background: #faefdf;
+    padding: 2rem;
     border-radius: 12px;
     min-width: 300px;
 
@@ -188,14 +201,48 @@
       display: flex;
       justify-content: flex-end;
       gap: 10px;
-      margin-top: 12px;
+      margin-top: 5rem;
     }
   }
 }
 
+.candidate-form-divided {
+  display: flex;
+  gap: 3rem;
+}
+
+.candidate-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.choose-photo-btn {
+  background-color: #20160b;
+  color: #faefdf;
+  min-height: 15rem;
+  min-width: 13rem;
+  border-radius: 10px;
+  span {
+    font-size: 4rem;
+  }
+}
+
 .candidate-photo {
-  max-width: 20rem;
-  max-height: 10rem;
+  object-fit: cover;
+  border-radius: 10px;
+  min-width: 13rem;
+  min-height: 15rem;
+  max-width: 13rem;
+  max-height: 15rem;
+}
+
+.bio-box {
+  background-color: #fffcec;
+  padding: 0.6rem;
+  border-radius: 6px;
+  height: 10rem;
+  width: 25rem;
 }
 
 .start-date {
