@@ -27,7 +27,7 @@
           hidden
           #logoInput
         />
-        <button class="image-upload" (click)="logoInput.click()">
+        <button class="image-upload" type="button" (click)="logoInput.click()">
           <span class="material-symbols-outlined">add_photo_alternate</span>
           <p>Add banner photo</p>
         </button>
@@ -44,24 +44,24 @@
       </div>
 
       <div class="candidates-list">
-        @for (c of candidates; track c.name) {
-          <app-campaign-card
-            [title]="c.name"
-            [description]="c.bio"
-            [image]="c.photo"
-            size="medium"
-          >
-          </app-campaign-card>
+        @for (c of candidates; let i = $index; track c.name) {
+        <app-campaign-card
+          [title]="c.name"
+          [description]="c.bio"
+          [image]="c.photo"
+          size="medium"
+          (delete)="deleteCandidate(i)"
+          (edit)="openDialog(i)"
+        >
+        </app-campaign-card>
         }
-
-
         <app-button appearance="primary" (click)="openDialog()">Add</app-button>
       </div>
 
       @if (showDialog) {
       <div class="dialog">
         <div class="dialog-content">
-          <h3>Add Candidate</h3>
+          <h3>{{ editIndex !== null ? 'Edit Candidate' : 'Add Candidate' }}</h3>
 
           <div class="candidate-form">
             <div class="candidate-photo-upload">
@@ -72,10 +72,7 @@
                 hidden
                 #candidateFile
               />
-              <app-button
-                appearance="secondary"
-                (click)="candidateFile.click()"
-              >
+              <app-button appearance="secondary" (click)="candidateFile.click()">
                 Choose Photo
               </app-button>
 
@@ -102,14 +99,19 @@
                     [formControl]="propertyControl"
                     placeholder="Property"
                   ></app-fui-input>
-                  <app-button appearance="primary" (click)="addProperty()"
-                    >Add</app-button
-                  >
+                  <app-button appearance="primary" (click)="addProperty()">
+                    Add
+                  </app-button>
                 </div>
 
                 <ul>
-                  @for (p of candidateProperties; track p) {
-                  <li>{{ p }}</li>
+                  @for (p of candidateProperties; let j = $index; track p) {
+                  <li>
+                    {{ p }}
+                    <span class="remove-prop" (click)="removeProperty(j)"
+                      >✕</span
+                    >
+                  </li>
                   }
                 </ul>
               </div>

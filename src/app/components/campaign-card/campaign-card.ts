@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-campaign-card',
@@ -14,4 +14,15 @@ export class CampaignCard {
   @Input() image = '/assets/default.png';
   @Input() size: 'small' | 'medium' | 'large' = 'medium';
   @Input() disabled = false;
+
+  @Output() delete = new EventEmitter<void>();
+  @Output() edit = new EventEmitter<void>();
+
+  onDeleteClick(event: MouseEvent) {
+    this.delete.emit();
+  }
+
+  onCardClick() {
+    this.edit.emit();
+  }
 }

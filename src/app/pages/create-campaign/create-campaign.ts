@@ -1,6 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, FormControl } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  Validators,
+  FormGroup,
+  FormControl,
+} from '@angular/forms';
 import { FuiInput } from '../../components/fui-input/fui-input';
 import { Button } from '../../components/button/button';
 import { BurgerMenu } from '../../components/burger-menu/burger-menu';
@@ -18,7 +24,14 @@ interface Candidate {
 @Component({
   selector: 'app-create-campaign',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FuiInput, Button, BurgerMenu, CampaignCard],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FuiInput,
+    Button,
+    BurgerMenu,
+    CampaignCard,
+  ],
   templateUrl: './create-campaign.html',
   styleUrls: ['./create-campaign.scss'],
 })
@@ -46,6 +59,8 @@ export class CreateCampaign {
   propertyControl = new FormControl('');
   candidateProperties: string[] = [];
 
+  editIndex: number | null = null;
+
   onLogoSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
@@ -55,8 +70,19 @@ export class CreateCampaign {
     }
   }
 
-  openDialog() {
+  openDialog(candidateIndex: number | null = null) {
     this.showDialog = true;
+    if (candidateIndex !== null) {
+      this.editIndex = candidateIndex;
+      const c = this.candidates[candidateIndex];
+      this.nameControl.setValue(c.name);
+      this.bioControl.setValue(c.bio);
+      this.candidatePhotoPreview = c.photo;
+      this.candidateProperties = [...c.properties];
+    } else {
+      this.editIndex = null;
+      this.resetCandidateForm();
+    }
   }
 
   closeDialog() {
@@ -68,7 +94,8 @@ export class CreateCampaign {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = () => (this.candidatePhotoPreview = reader.result as string);
+      reader.onload = () =>
+        (this.candidatePhotoPreview = reader.result as string);
       reader.readAsDataURL(file);
     }
   }
@@ -81,6 +108,10 @@ export class CreateCampaign {
     }
   }
 
+  removeProperty(index: number) {
+    this.candidateProperties.splice(index, 1);
+  }
+
   saveCandidate() {
     if (this.nameControl.invalid) return;
 
@@ -91,8 +122,17 @@ export class CreateCampaign {
       properties: [...this.candidateProperties],
     };
 
-    this.candidates.push(candidate);
+    if (this.editIndex !== null) {
+      this.candidates[this.editIndex] = candidate;
+    } else {
+      this.candidates.push(candidate);
+    }
+
     this.closeDialog();
+  }
+
+  deleteCandidate(index: number) {
+    this.candidates.splice(index, 1);
   }
 
   resetCandidateForm() {
@@ -115,7 +155,6 @@ export class CreateCampaign {
       } as any);
 
       console.log('Campaigns after add:', this.campaignService.campaigns());
-
       this.router.navigate(['/campaign-status']);
     } else {
       this.form.markAllAsTouched();
