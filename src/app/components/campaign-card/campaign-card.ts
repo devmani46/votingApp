@@ -9,20 +9,24 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./campaign-card.scss'],
 })
 export class CampaignCard {
+  @Input() id!: number;
   @Input() title = 'Default Title';
   @Input() description = 'This is a description text.';
   @Input() image = '/assets/default.png';
   @Input() size: 'small' | 'medium' | 'large' = 'medium';
   @Input() disabled = false;
 
-  @Output() delete = new EventEmitter<void>();
-  @Output() edit = new EventEmitter<void>();
+  @Output() deleteCampaignEvent = new EventEmitter<number>();
+  @Output() edit = new EventEmitter<number>();
 
   onDeleteClick(event: MouseEvent) {
-    this.delete.emit();
+    event.stopPropagation();
+    if (confirm(`Delete campaign "${this.title}"?`)) {
+      this.deleteCampaignEvent.emit(this.id);
+    }
   }
 
   onCardClick() {
-    this.edit.emit();
+    this.edit.emit(this.id);
   }
 }

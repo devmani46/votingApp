@@ -23,6 +23,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/create-campaign/create-campaign').then(m => m.CreateCampaign),
   },
   {
+    path: 'create-campaign/:id',
+    loadComponent: () => import('./pages/create-campaign/create-campaign').then(m => m.CreateCampaign),
+  },
+  {
     path: 'notifications',
     loadComponent: () => import('./pages/notifications/notifications').then(m => m.Notifications),
   },

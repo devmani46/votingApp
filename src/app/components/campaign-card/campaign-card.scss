@@ -6,15 +6,21 @@
   overflow: hidden;
   background: var(--colorNeutralBackground1, #fff);
   transition: all 0.3s ease;
-  cursor: pointer;
   position: relative;
   max-height: 11rem;
+
+
+  cursor: default;
+
+  .card-clickable {
+    cursor: pointer;
+  }
 
   .card-image {
     width: 100%;
     max-height: 8rem;
-
     overflow: hidden;
+
     img {
       width: 100%;
       height: auto;
@@ -27,11 +33,13 @@
     padding: 12px;
     text-align: center;
     transition: all 0.4s ease-in-out;
+
     h3 {
       margin: 0;
       font-size: 1rem;
       font-weight: 600;
     }
+
     .description {
       max-height: 0;
       margin: 8px 0 0;
@@ -46,6 +54,7 @@
     .card-image img {
       transform: scale(1);
     }
+
     .card-content {
       h3 {
         transition: transform 0.4s ease-in-out;
@@ -55,48 +64,53 @@
         opacity: 1;
       }
     }
+
+    .delete-btn {
+      opacity: 1;
+    }
   }
 
-  // Sizes
   &.card-small {
     width: 200px;
+
     h3 {
       font-size: 0.85rem;
     }
+
     .description {
       font-size: 0.75rem;
     }
   }
+
   &.card-large {
     width: 400px;
+
     h3 {
       font-size: 1.25rem;
     }
+
     .description {
       font-size: 1rem;
     }
   }
+
   &:not(.card-small):not(.card-large) {
     width: 300px;
   }
 
-  &[data-disabled="true"] {
+  &[data-disabled='true'] {
     opacity: 0.6;
     pointer-events: none;
     cursor: not-allowed;
   }
-}
-
-.campaign-card {
-  position: relative;
-  cursor: pointer;
 
   .delete-btn {
     position: absolute;
     top: 6px;
-    left: 6px;
+    right: 6px;
     background: rgba(0, 0, 0, 0.6);
     color: white;
+    border: none;
     border-radius: 50%;
     width: 22px;
     height: 22px;
@@ -106,9 +120,7 @@
     font-size: 14px;
     opacity: 0;
     transition: opacity 0.2s ease;
-  }
-
-  &:hover .delete-btn {
-    opacity: 1;
+    z-index: 2;
+    cursor: pointer;
   }
 }

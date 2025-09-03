@@ -1,25 +1,19 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
   FormBuilder,
   Validators,
   FormGroup,
-  FormControl,
+  FormArray,
+  FormControl
 } from '@angular/forms';
 import { FuiInput } from '../../components/fui-input/fui-input';
 import { Button } from '../../components/button/button';
 import { BurgerMenu } from '../../components/burger-menu/burger-menu';
 import { CampaignService } from '../../services/campaign';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CampaignCard } from '../../components/campaign-card/campaign-card';
-
-interface Candidate {
-  name: string;
-  bio: string;
-  photo: string;
-  properties: string[];
-}
 
 @Component({
   selector: 'app-create-campaign',
@@ -30,86 +24,133 @@ interface Candidate {
     FuiInput,
     Button,
     BurgerMenu,
-    CampaignCard,
+    CampaignCard
   ],
   templateUrl: './create-campaign.html',
-  styleUrls: ['./create-campaign.scss'],
+  styleUrls: ['./create-campaign.scss']
 })
-export class CreateCampaign {
+export class CreateCampaign implements OnInit {
   private fb = inject(FormBuilder);
   private campaignService = inject(CampaignService);
+  private route = inject(ActivatedRoute);
   private router = inject(Router);
 
-  form: FormGroup = this.fb.group({
-    title: ['', Validators.required],
-    description: ['', Validators.required],
-    logo: [''],
-    startDate: ['', Validators.required],
-    endDate: ['', Validators.required],
-  });
+  form!: FormGroup;
+  editMode = false;
+  campaignId: number | null = null;
 
   logoPreview: string | null = null;
 
-  candidates: Candidate[] = [];
   showDialog = false;
-
+  editIndex: number | null = null;
   candidatePhotoPreview: string | null = null;
+
   nameControl = new FormControl('', Validators.required);
   bioControl = new FormControl('');
   propertyControl = new FormControl('');
   candidateProperties: string[] = [];
 
-  editIndex: number | null = null;
+  ngOnInit() {
+    this.form = this.fb.group({
+      title: ['', Validators.required],
+      description: ['', Validators.required],
+      logo: [''],
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      candidates: this.fb.array([])
+    });
+
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.editMode = true;
+        this.campaignId = +id;
+        const existing = this.campaignService.getCampaignById(+id);
+        if (existing) {
+          this.form.patchValue({
+            title: existing.title,
+            description: existing.description,
+            logo: existing.logo,
+            startDate: existing.startDate,
+            endDate: existing.endDate
+          });
+          this.logoPreview = existing.logo;
+
+          existing.candidates.forEach(c => {
+            this.candidates.push(
+              this.fb.group({
+                name: [c.name, Validators.required],
+                bio: [c.bio],
+                photo: [c.photo],
+                properties: [c.properties]
+              })
+            );
+          });
+        }
+      }
+    });
+  }
+
+  get candidates() {
+    return this.form.get('candidates') as FormArray;
+  }
 
   onLogoSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = () => (this.logoPreview = reader.result as string);
+      reader.onload = () => {
+        this.logoPreview = reader.result as string;
+        this.form.patchValue({ logo: this.logoPreview });
+      };
       reader.readAsDataURL(file);
     }
   }
 
-  openDialog(candidateIndex: number | null = null) {
-  this.showDialog = true;
-  if (candidateIndex !== null) {
-    this.editIndex = candidateIndex;
-    const c = this.candidates[candidateIndex];
-    this.nameControl.setValue(c.name);
-    this.bioControl.setValue(c.bio);
-    this.candidatePhotoPreview = c.photo;
-    this.candidateProperties = [...c.properties];
-  } else {
-    this.editIndex = null;
-    this.resetCandidateForm();
+  openDialog(index: number | null = null) {
+    this.showDialog = true;
+    this.editIndex = index;
+
+    if (index !== null) {
+      const candidate = this.candidates.at(index).value;
+      this.nameControl.setValue(candidate.name);
+      this.bioControl.setValue(candidate.bio);
+      this.candidatePhotoPreview = candidate.photo;
+      this.candidateProperties = [...candidate.properties];
+    } else {
+      this.nameControl.reset('');
+      this.bioControl.reset('');
+      this.propertyControl.reset('');
+      this.candidatePhotoPreview = null;
+      this.candidateProperties = [];
+    }
   }
-}
-
-deleteCandidate(index: number) {
-  this.candidates.splice(index, 1);
-}
-
 
   closeDialog() {
     this.showDialog = false;
-    this.resetCandidateForm();
+    this.editIndex = null;
+    this.nameControl.reset('');
+    this.bioControl.reset('');
+    this.propertyControl.reset('');
+    this.candidatePhotoPreview = null;
+    this.candidateProperties = [];
   }
 
   onCandidatePhotoSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = () =>
-        (this.candidatePhotoPreview = reader.result as string);
+      reader.onload = () => {
+        this.candidatePhotoPreview = reader.result as string;
+      };
       reader.readAsDataURL(file);
     }
   }
 
   addProperty() {
-    const prop = this.propertyControl.value?.trim();
-    if (prop) {
-      this.candidateProperties.push(prop);
-      this.propertyControl.reset();
+    if (this.propertyControl.value?.trim()) {
+      this.candidateProperties.push(this.propertyControl.value.trim());
+      this.propertyControl.reset('');
     }
   }
 
@@ -118,49 +159,35 @@ deleteCandidate(index: number) {
   }
 
   saveCandidate() {
-    if (this.nameControl.invalid) return;
-
-    const candidate: Candidate = {
-      name: this.nameControl.value!,
-      bio: this.bioControl.value || '',
-      photo: this.candidatePhotoPreview || '/assets/default-user.png',
-      properties: [...this.candidateProperties],
+    const candidate = {
+      name: this.nameControl.value ?? '',
+      bio: this.bioControl.value ?? '',
+      photo: this.candidatePhotoPreview ?? '',
+      properties: [...this.candidateProperties]
     };
 
     if (this.editIndex !== null) {
-      this.candidates[this.editIndex] = candidate;
+      this.candidates.at(this.editIndex).patchValue(candidate);
     } else {
-      this.candidates.push(candidate);
+      this.candidates.push(this.fb.group(candidate));
     }
 
     this.closeDialog();
   }
 
-
-  resetCandidateForm() {
-    this.nameControl.reset();
-    this.bioControl.reset();
-    this.propertyControl.reset();
-    this.candidateProperties = [];
-    this.candidatePhotoPreview = null;
+  deleteCandidate(index: number) {
+    this.candidates.removeAt(index);
   }
 
   submitForm() {
-    if (this.form.valid) {
-      this.campaignService.addCampaign({
-        title: this.form.value.title,
-        description: this.form.value.description,
-        logo: this.logoPreview,
-        startDate: this.form.value.startDate,
-        endDate: this.form.value.endDate,
-        candidates: this.candidates,
-      } as any);
+    if (this.form.invalid) return;
 
-      console.log('Campaigns after add:', this.campaignService.campaigns());
-      this.router.navigate(['/campaign-status']);
+    if (this.editMode && this.campaignId !== null) {
+      this.campaignService.updateCampaign(this.campaignId, this.form.value);
     } else {
-      this.form.markAllAsTouched();
+      this.campaignService.addCampaign(this.form.value);
     }
+
+    this.router.navigate(['/campaign-status']);
   }
 }
-// --- IGNORE ---
