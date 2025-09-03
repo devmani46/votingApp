@@ -1,31 +1,19 @@
 <div class="campaign-status-page">
-<app-burger-menu></app-burger-menu>
+  <app-burger-menu></app-burger-menu>
   <h2>Campaigns</h2>
 
   <div class="campaign-list">
-    <app-campaign-card
-      title="Vote for the best dog"
-      description="Choose your favorite dog among the candidates."
-      image="/assets/dog.jpg"
-      size="medium"
-    >
-    </app-campaign-card>
-
-    <app-campaign-card
-      title="Best Cat Contest"
-      description="Choose your favorite cat among the candidates."
-      image="/assets/cat.jpeg"
-      size="medium"
-    >
-    </app-campaign-card>
-
-    <!-- <app-campaign-card
-      title="Puppy Poll"
-      description="Vote for the cutest puppy today."
-      image="/assets/dog.jpeg"
-      size="small"
-      [disabled]="true"
-    >
-    </app-campaign-card> -->
+    @if (campaigns().length === 0) {
+      <p>No campaigns yet.</p>
+    } @else {
+      @for (c of campaigns(); track c.title) {
+        <app-campaign-card
+          [title]="c.title"
+          [description]="c.description"
+          [image]="c.logo || '/assets/default.png'"
+          size="medium">
+        </app-campaign-card>
+      }
+    }
   </div>
 </div>

@@ -6,12 +6,12 @@ import { Component, Input } from '@angular/core';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './campaign-card.html',
-  styleUrl: './campaign-card.scss',
+  styleUrls: ['./campaign-card.scss'],
 })
 export class CampaignCard {
   @Input() title = 'Default Title';
   @Input() description = 'This is a description text.';
-  @Input() image = '';
+  @Input() image = '/assets/default.png';
   @Input() size: 'small' | 'medium' | 'large' = 'medium';
   @Input() disabled = false;
 }

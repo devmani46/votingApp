@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CampaignCard } from '../../components/campaign-card/campaign-card';
 import { BurgerMenu } from '../../components/burger-menu/burger-menu';
+import { CampaignService } from '../../services/campaign';
 
 @Component({
   selector: 'app-campaign-status',
@@ -10,4 +11,7 @@ import { BurgerMenu } from '../../components/burger-menu/burger-menu';
   templateUrl: './campaign-status.html',
   styleUrls: ['./campaign-status.scss']
 })
-export class CampaignStatus {}
+export class CampaignStatus {
+  private campaignService = inject(CampaignService);
+  campaigns = this.campaignService.campaigns;
+}
