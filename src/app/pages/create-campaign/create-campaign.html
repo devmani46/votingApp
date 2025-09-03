@@ -45,19 +45,16 @@
 
       <div class="candidates-list">
         @for (c of candidates; track c.name) {
-        <div class="candidate-card">
-          <img [src]="c.photo" alt="Candidate" class="candidate-photo" />
-          <div class="candidate-info">
-            <h4>{{ c.name }}</h4>
-            <p>{{ c.bio }}</p>
-            <ul>
-              @for (p of c.properties; track p) {
-              <li>{{ p }}</li>
-              }
-            </ul>
-          </div>
-        </div>
+          <app-campaign-card
+            [title]="c.name"
+            [description]="c.bio"
+            [image]="c.photo"
+            size="medium"
+          >
+          </app-campaign-card>
         }
+
+
         <app-button appearance="primary" (click)="openDialog()">Add</app-button>
       </div>
 

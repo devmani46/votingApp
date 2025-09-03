@@ -6,6 +6,7 @@ import { Button } from '../../components/button/button';
 import { BurgerMenu } from '../../components/burger-menu/burger-menu';
 import { CampaignService } from '../../services/campaign';
 import { Router } from '@angular/router';
+import { CampaignCard } from '../../components/campaign-card/campaign-card';
 
 interface Candidate {
   name: string;
@@ -17,7 +18,7 @@ interface Candidate {
 @Component({
   selector: 'app-create-campaign',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FuiInput, Button, BurgerMenu],
+  imports: [CommonModule, ReactiveFormsModule, FuiInput, Button, BurgerMenu, CampaignCard],
   templateUrl: './create-campaign.html',
   styleUrls: ['./create-campaign.scss'],
 })
