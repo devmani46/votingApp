@@ -1,7 +1,7 @@
 <div class="campaign-container">
   <div class="header">
     <app-burger-menu></app-burger-menu>
-    <h2>Create Campaign</h2>
+    <h2>{{ editMode ? 'Edit Campaign' : 'Create Campaign' }}</h2>
     <img class="admin-photo" src="/assets/admin.png" alt="Admin" />
   </div>
 
@@ -34,9 +34,9 @@
       </div>
 
       @if (logoPreview) {
-      <div class="logo-preview">
-        <img [src]="logoPreview" alt="Campaign Logo" />
-      </div>
+        <div class="logo-preview">
+          <img [src]="logoPreview" alt="Campaign Logo" />
+        </div>
       }
 
       <div class="add-candidates row">
@@ -44,102 +44,100 @@
       </div>
 
       <div class="candidates-list">
-        @for (c of candidates; let i = $index; track c.name) {
-        <div
-          class="candidate-card-wrapper"
-          (click)="openDialog(i)"
-        >
-          <button
-            class="delete-btn"
-            type="button"
-            (click)="deleteCandidate(i); $event.stopPropagation();"
-          >
-            ✕
-          </button>
+        @for (c of candidates.controls; let i = $index; track i) {
+          <div class="candidate-card-wrapper" (click)="openDialog(i)">
+            <button
+              class="delete-btn"
+              type="button"
+              (click)="deleteCandidate(i); $event.stopPropagation();"
+            >
+              ✕
+            </button>
 
-          <app-campaign-card
-            [title]="c.name"
-            [description]="c.bio"
-            [image]="c.photo"
-            size="medium"
-          >
-          </app-campaign-card>
-        </div>
+            <app-campaign-card
+              [title]="c.value.name"
+              [description]="c.value.bio"
+              [image]="c.value.photo"
+              size="medium"
+            >
+            </app-campaign-card>
+          </div>
         }
 
         <app-button appearance="primary" (click)="openDialog()">Add</app-button>
       </div>
 
       @if (showDialog) {
-      <div class="dialog">
-        <div class="dialog-content">
-          <h3>{{ editIndex !== null ? 'Edit Candidate' : 'Add Candidate' }}</h3>
+        <div class="dialog">
+          <div class="dialog-content">
+            <h3>{{ editIndex !== null ? 'Edit Candidate' : 'Add Candidate' }}</h3>
 
-          <div class="candidate-form">
-            <div class="candidate-photo-upload">
-              <input
-                type="file"
-                accept="image/*"
-                (change)="onCandidatePhotoSelected($event)"
-                hidden
-                #candidateFile
-              />
-              <app-button appearance="secondary" (click)="candidateFile.click()">
-                Choose Photo
-              </app-button>
+            <div class="candidate-form">
+              <div class="candidate-photo-upload">
+                <input
+                  type="file"
+                  accept="image/*"
+                  (change)="onCandidatePhotoSelected($event)"
+                  hidden
+                  #candidateFile
+                />
+                <app-button
+                  appearance="secondary"
+                  (click)="candidateFile.click()"
+                >
+                  Choose Photo
+                </app-button>
 
-              @if (candidatePhotoPreview) {
-              <img [src]="candidatePhotoPreview" alt="Candidate Photo" />
-              }
-            </div>
+                @if (candidatePhotoPreview) {
+                  <img [src]="candidatePhotoPreview" alt="Candidate Photo" />
+                }
+              </div>
 
-            <div class="candidate-details">
-              <app-fui-input
-                [formControl]="nameControl"
-                placeholder="Name"
-              ></app-fui-input>
+              <div class="candidate-details">
+                <app-fui-input
+                  [formControl]="nameControl"
+                  placeholder="Name"
+                ></app-fui-input>
 
-              <textarea
-                class="bio-box"
-                [formControl]="bioControl"
-                placeholder="Bio"
-              ></textarea>
+                <textarea
+                  class="bio-box"
+                  [formControl]="bioControl"
+                  placeholder="Bio"
+                ></textarea>
 
-              <div class="properties">
-                <div class="row">
-                  <app-fui-input
-                    [formControl]="propertyControl"
-                    placeholder="Property"
-                  ></app-fui-input>
-                  <app-button appearance="primary" (click)="addProperty()">
-                    Add
-                  </app-button>
+                <div class="properties">
+                  <div class="row">
+                    <app-fui-input
+                      [formControl]="propertyControl"
+                      placeholder="Property"
+                    ></app-fui-input>
+                    <app-button appearance="primary" (click)="addProperty()">
+                      Add
+                    </app-button>
+                  </div>
+
+                  <ul>
+                    @for (p of candidateProperties; let j = $index; track j) {
+                      <li>
+                        {{ p }}
+                        <span class="remove-prop" (click)="removeProperty(j)">✕</span>
+                      </li>
+                    }
+                  </ul>
                 </div>
-
-                <ul>
-                  @for (p of candidateProperties; let j = $index; track p) {
-                  <li>
-                    {{ p }}
-                    <span class="remove-prop" (click)="removeProperty(j)"
-                      >✕</span
-                    >
-                  </li>
-                  }
-                </ul>
               </div>
             </div>
-          </div>
 
-          <div class="dialog-actions">
-            <app-button appearance="secondary" (click)="closeDialog()"
-              >Cancel</app-button
-            >
-            <app-button appearance="primary" (click)="saveCandidate()"
-              >Save</app-button
-            >
+            <div class="dialog-actions">
+              <app-button appearance="secondary" (click)="closeDialog()">
+                Cancel
+              </app-button>
+              <app-button appearance="primary" (click)="saveCandidate()">
+                Save
+              </app-button>
+            </div>
           </div>
         </div>
-      </div>
       }
 
       <div class="row">
@@ -149,7 +147,9 @@
         <input type="date" formControlName="endDate" />
       </div>
 
-      <app-button type="submit" appearance="primary">Submit</app-button>
+      <app-button type="submit" appearance="primary">
+        {{ editMode ? 'Update Campaign' : 'Create Campaign' }}
+      </app-button>
     </form>
   </div>
 </div>
