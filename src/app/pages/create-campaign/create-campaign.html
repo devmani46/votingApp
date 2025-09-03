@@ -45,15 +45,14 @@
 
       <div class="candidates-list">
         @for (c of candidates; track c.name) {
-          <app-campaign-card
-            [title]="c.name"
-            [description]="c.bio"
-            [image]="c.photo"
-            size="medium"
-          >
-          </app-campaign-card>
+        <app-campaign-card
+          [title]="c.name"
+          [description]="c.bio"
+          [image]="c.photo"
+          size="medium"
+        >
+        </app-campaign-card>
         }
-
 
         <app-button appearance="primary" (click)="openDialog()">Add</app-button>
       </div>
@@ -80,7 +79,11 @@
               </app-button>
 
               @if (candidatePhotoPreview) {
-              <img [src]="candidatePhotoPreview" alt="Candidate Photo" />
+              <img
+                class="candidate-photo"
+                [src]="candidatePhotoPreview"
+                alt="Candidate Photo"
+              />
               }
             </div>
 
@@ -129,10 +132,14 @@
       }
 
       <div class="row">
-        <label>Start Date:</label>
-        <input type="date" formControlName="startDate" />
-        <label>End Date:</label>
-        <input type="date" formControlName="endDate" />
+        <div class="start-date">
+          <label>Start Date:</label>
+          <input type="date" formControlName="startDate" />
+        </div>
+        <div class="end-date">
+          <label>End Date:</label>
+          <input type="date" formControlName="endDate" />
+        </div>
       </div>
 
       <app-button type="submit" appearance="primary">Submit</app-button>

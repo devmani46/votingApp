@@ -31,7 +31,7 @@
 
 .create-form {
   width: 50%;
-  padding-left: 4rem;
+  padding-left: 8rem;
 
   form {
     display: flex;
@@ -157,6 +157,7 @@
 }
 
 .candidates-list {
+  display: flex;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -189,5 +190,33 @@
       gap: 10px;
       margin-top: 12px;
     }
+  }
+}
+
+.candidate-photo {
+  max-width: 20rem;
+  max-height: 10rem;
+}
+
+.start-date {
+  display: flex;
+  flex-direction: column;
+
+  input {
+    background-color: #fffcec;
+    padding: 0.7rem;
+    border-radius: 5px;
+    font-size: 1.5rem;
+  }
+}
+
+.end-date {
+  display: flex;
+  flex-direction: column;
+  input {
+    background-color: #fffcec;
+    padding: 0.7rem;
+    border-radius: 5px;
+    font-size: 1.5rem;
   }
 }
