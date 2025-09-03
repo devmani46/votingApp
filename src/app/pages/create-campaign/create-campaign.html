@@ -28,16 +28,16 @@
           #logoInput
         />
         <button class="image-upload" type="button" (click)="logoInput.click()">
+          @if (logoPreview) {
+          <div class="logo-preview">
+            <img [src]="logoPreview" alt="Campaign Logo" />
+          </div>
+          } @else {
           <span class="material-symbols-outlined">add_photo_alternate</span>
           <p>Add banner photo</p>
+          }
         </button>
       </div>
-
-      @if (logoPreview) {
-      <div class="logo-preview">
-        <img [src]="logoPreview" alt="Campaign Logo" />
-      </div>
-      }
 
       <div class="add-candidates row">
         <label>Candidates</label>
@@ -45,14 +45,11 @@
 
       <div class="candidates-list">
         @for (c of candidates; let i = $index; track c.name) {
-        <div
-          class="candidate-card-wrapper"
-          (click)="openDialog(i)"
-        >
+        <div class="candidate-card-wrapper" (click)="openDialog(i)">
           <button
             class="delete-btn"
             type="button"
-            (click)="deleteCandidate(i); $event.stopPropagation();"
+            (click)="deleteCandidate(i); $event.stopPropagation()"
           >
             ✕
           </button>
@@ -73,59 +70,71 @@
       @if (showDialog) {
       <div class="dialog">
         <div class="dialog-content">
-          <h3>{{ editIndex !== null ? 'Edit Candidate' : 'Add Candidate' }}</h3>
+          <h3>{{ editIndex !== null ? "Edit Candidate" : "Add Candidate" }}</h3>
 
           <div class="candidate-form">
-            <div class="candidate-photo-upload">
-              <input
-                type="file"
-                accept="image/*"
-                (change)="onCandidatePhotoSelected($event)"
-                hidden
-                #candidateFile
-              />
-              <app-button appearance="secondary" (click)="candidateFile.click()">
-                Choose Photo
-              </app-button>
-
-              @if (candidatePhotoPreview) {
-              <img [src]="candidatePhotoPreview" alt="Candidate Photo" />
-              }
-            </div>
-
-            <div class="candidate-details">
-              <app-fui-input
-                [formControl]="nameControl"
-                placeholder="Name"
-              ></app-fui-input>
-
-              <textarea
-                class="bio-box"
-                [formControl]="bioControl"
-                placeholder="Bio"
-              ></textarea>
-
-              <div class="properties">
-                <div class="row">
-                  <app-fui-input
-                    [formControl]="propertyControl"
-                    placeholder="Property"
-                  ></app-fui-input>
-                  <app-button appearance="primary" (click)="addProperty()">
-                    Add
-                  </app-button>
-                </div>
-
-                <ul>
-                  @for (p of candidateProperties; let j = $index; track p) {
-                  <li>
-                    {{ p }}
-                    <span class="remove-prop" (click)="removeProperty(j)"
-                      >✕</span
-                    >
-                  </li>
+            <div class="candidate-form-divided">
+              <div class="candidate-photo-upload">
+                <input
+                  type="file"
+                  accept="image/*"
+                  (change)="onCandidatePhotoSelected($event)"
+                  hidden
+                  #candidateFile
+                />
+                <button
+                  class="choose-photo-btn"
+                  (click)="candidateFile.click()"
+                >
+                  @if (candidatePhotoPreview) {
+                  <img
+                    class="candidate-photo"
+                    [src]="candidatePhotoPreview"
+                    alt="Candidate Photo"
+                  />
+                  } @else {
+                  <span class="material-symbols-outlined"
+                    >add_photo_alternate</span
+                  >
                   }
-                </ul>
+                </button>
+              </div>
+
+              <div class="candidate-details">
+                <app-fui-input
+                  size="large"
+                  [formControl]="nameControl"
+                  placeholder="Name"
+                ></app-fui-input>
+
+                <textarea
+                  class="bio-box"
+                  [formControl]="bioControl"
+                  placeholder="Bio"
+                ></textarea>
+
+                <div class="properties">
+                  <div class="row">
+                    <app-fui-input
+                      [formControl]="propertyControl"
+                      placeholder="Property"
+                    ></app-fui-input>
+                    <app-button appearance="primary" (click)="addProperty()">
+                      Add
+                    </app-button>
+                  </div>
+
+                  <ul>
+                    @for (p of candidateProperties; let j = $index; track p) {
+                    <li>
+                      {{ p }}
+                      <span class="remove-prop" (click)="removeProperty(j)"
+                        >✕</span
+                      >
+                    </li>
+                    }
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
@@ -143,13 +152,23 @@
       }
 
       <div class="row">
-        <label>Start Date:</label>
-        <input type="date" formControlName="startDate" />
-        <label>End Date:</label>
-        <input type="date" formControlName="endDate" />
+        <div class="start-date">
+          <label>Start Date:</label>
+          <input type="date" formControlName="startDate" />
+        </div>
+        <div class="end-date">
+          <label>End Date:</label>
+          <input type="date" formControlName="endDate" />
+        </div>
       </div>
 
-      <app-button type="submit" appearance="primary">Submit</app-button>
+      <app-button
+        style="margin-top: 1rem"
+        size="large"
+        type="submit"
+        appearance="primary"
+        >Submit</app-button
+      >
     </form>
   </div>
 </div>
