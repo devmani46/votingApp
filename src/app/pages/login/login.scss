@@ -6,6 +6,7 @@
   align-items: center;
   //overriding component-specific styles through variables
   font-family: Manrope;
+
   --colorNeutralBackground1: #faefdf;
   --colorNeutralStroke1: #20160b;
   --colorBrand90: #20160b;
@@ -15,7 +16,7 @@
   background-color: #faefdf;
   max-width: 500px;
   max-height: 900px;
-  padding: 1.4rem 3rem;
+  padding: 2.5rem 3rem;
   border-radius: 10px;
 
   h2 {
@@ -23,7 +24,7 @@
     font-weight: 800;
     letter-spacing: -2.5px;
     margin-bottom: 3rem;
-    margin-top: 3rem;
+    margin-top: 1rem;
     text-align: center;
   }
 }
