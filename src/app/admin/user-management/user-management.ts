@@ -4,11 +4,12 @@ import {
   ReactiveFormsModule,
   FormBuilder,
   Validators,
-  FormControl
+  FormControl,
 } from '@angular/forms';
 
 import { BurgerMenu } from '../../components/burger-menu/burger-menu';
-import { Button } from "../../components/button/button";
+import { Button } from '../../components/button/button';
+import { FuiInput } from '../../components/fui-input/fui-input';
 
 type SortField = 'name' | 'email';
 type SortDirection = 'asc' | 'desc';
@@ -16,9 +17,9 @@ type SortDirection = 'asc' | 'desc';
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, BurgerMenu, Button],
+  imports: [CommonModule, ReactiveFormsModule, BurgerMenu, Button, FuiInput],
   templateUrl: './user-management.html',
-  styleUrls: ['./user-management.scss']
+  styleUrls: ['./user-management.scss'],
 })
 export class UserManagement implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
@@ -60,7 +61,7 @@ export class UserManagement implements OnInit, OnDestroy {
     const search = (this.searchControl.value || '').toLowerCase();
     this.filteredUsers = this.users.filter(
       (u) =>
-        u.name.toLowerCase().includes(search) ||
+        u.username.toLowerCase().includes(search) ||
         u.email.toLowerCase().includes(search)
     );
 
