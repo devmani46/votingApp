@@ -82,7 +82,7 @@ export class CreateCampaign implements OnInit, OnDestroy {
                 name: [c.name, Validators.required],
                 bio: [c.bio],
                 photo: [c.photo],
-                properties: [Array.isArray(c.properties) ? c.properties : []] // ✅ fix
+                properties: [Array.isArray(c.properties) ? c.properties : []]
               })
             );
           });
