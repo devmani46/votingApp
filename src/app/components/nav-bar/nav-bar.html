@@ -1,0 +1,24 @@
+<nav class="navbar">
+  <div class="navbar-left">
+    <h2 class="logo">Voting System</h2>
+  </div>
+
+  <div class="navbar-right">
+    <span class="user-name">{{ user.name }}</span>
+    <div class="user-menu">
+      <img
+        [src]="user.image"
+        alt="User"
+        class="user-img"
+        (click)="toggleDropdown()"
+      />
+
+      @if (dropdownOpen) {
+        <div class="dropdown">
+          <button type="button" (click)="goToProfile()">Profile</button>
+          <button type="button" (click)="logout()">Logout</button>
+        </div>
+      }
+    </div>
+  </div>
+</nav>

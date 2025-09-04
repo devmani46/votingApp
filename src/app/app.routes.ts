@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth-guard';
 import { adminGuard } from './guards/admin-guard';
+import { userGuard } from './guards/user-guard-guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
+
   {
     path: 'login',
     loadComponent: () => import('./pages/login/login').then(m => m.Login),
@@ -12,6 +14,7 @@ export const routes: Routes = [
     path: 'register',
     loadComponent: () => import('./pages/register/register').then(m => m.Register),
   },
+
   {
     path: 'menu',
     loadComponent: () => import('./pages/menu/menu').then(m => m.Menu),
@@ -42,5 +45,17 @@ export const routes: Routes = [
     loadComponent: () => import('./admin/user-management/user-management').then(m => m.UserManagement),
     canActivate: [adminGuard],
   },
+
+  {
+    path: 'user-page',
+    loadComponent: () => import('./user/user-page/user-page').then(m => m.UserPage),
+    canActivate: [userGuard],
+  },
+  {
+    path: 'user-profile',
+    loadComponent: () => import('./user/user-profile/user-profile').then(m => m.UserProfile),
+    canActivate: [userGuard],
+  },
+
   { path: '**', redirectTo: 'login' },
 ];

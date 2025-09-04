@@ -64,6 +64,16 @@ export class Login implements OnInit {
         return;
       }
 
+      if (email === 'user@gmail.com' && password === 'User@123') {
+        localStorage.setItem('role', 'user');
+        localStorage.setItem(
+          'userData',
+            JSON.stringify({ name: 'User1', email: 'user@gmail.com', image: 'https://i.pravatar.cc/100' })
+      );
+        this.router.navigate(['/user-page']);
+        return;
+      }
+
       alert('Invalid email or password');
     } else {
       this.form.markAllAsTouched();
