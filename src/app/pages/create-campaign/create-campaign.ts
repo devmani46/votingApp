@@ -66,6 +66,7 @@ export class CreateCampaign implements OnInit, OnDestroy {
         this.editMode = true;
         this.campaignId = +id;
         const existing = this.campaignService.getCampaignById(+id);
+
         if (existing) {
           this.form.patchValue({
             title: existing.title,
@@ -87,6 +88,9 @@ export class CreateCampaign implements OnInit, OnDestroy {
             );
           });
         }
+      } else {
+        this.editMode = false;
+        this.campaignId = null;
       }
     });
 
@@ -196,7 +200,9 @@ export class CreateCampaign implements OnInit, OnDestroy {
   }
 
   deleteCandidate(index: number) {
-    this.candidates.removeAt(index);
+    if (index !== null && index >= 0 && index < this.candidates.length) {
+      this.candidates.removeAt(index);
+    }
   }
 
   submitForm() {

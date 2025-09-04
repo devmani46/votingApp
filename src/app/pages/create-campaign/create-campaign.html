@@ -30,25 +30,19 @@
 
         <div class="candidates-list">
           @for (c of candidates.controls; let i = $index; track i) {
-          <div class="candidate-card-wrapper" (click)="openDialog(i)">
-            <button
-              class="delete-btn"
-              type="button"
-              (click)="deleteCandidate(i); $event.stopPropagation()"
-            >
-              ✕
-            </button>
-
             <app-campaign-card
+              [id]="i"
               [title]="c.value.name"
               [description]="c.value.bio"
               [image]="c.value.photo"
               size="medium"
-            >
+              (deleteCampaignEvent)="deleteCandidate($event)"
+              (edit)="openDialog($event)">
             </app-campaign-card>
-          </div>
           }
         </div>
+
+
 
         @if (showDialog) {
         <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">

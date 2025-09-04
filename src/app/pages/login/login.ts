@@ -21,7 +21,7 @@ type LoginForm = {
   standalone: true,
   imports: [ReactiveFormsModule, RouterModule, FuiField, FuiInput, Button],
   templateUrl: './login.html',
-  styleUrl: './login.scss',
+  styleUrls: ['./login.scss'],
 })
 export class Login implements OnInit {
   form!: FormGroup<LoginForm>;
@@ -47,29 +47,48 @@ export class Login implements OnInit {
     if (this.form.valid) {
       const { email, password } = this.form.getRawValue();
 
+      // Admin login
       if (email === this.adminEmail && password === this.adminPassword) {
         localStorage.setItem('role', 'admin');
         this.router.navigate(['/menu']);
         return;
       }
 
+      // Moderator login
       const moderators = JSON.parse(localStorage.getItem('moderators') || '[]');
-      const found = moderators.find(
+      const foundModerator = moderators.find(
         (m: any) => m.email === email && m.password === password
       );
-
-      if (found) {
+      if (foundModerator) {
         localStorage.setItem('role', 'moderator');
+        localStorage.setItem('currentUser', JSON.stringify(foundModerator));
         this.router.navigate(['/menu']);
         return;
       }
 
+      // User login (from register page)
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const foundUser = users.find(
+        (u: any) => u.email === email && u.password === password
+      );
+      if (foundUser) {
+        localStorage.setItem('role', 'user');
+        localStorage.setItem('currentUser', JSON.stringify(foundUser));
+        this.router.navigate(['/user-page']);
+        return;
+      }
+
+      // Hardcoded test user (fallback)
       if (email === 'user@gmail.com' && password === 'User@123') {
         localStorage.setItem('role', 'user');
         localStorage.setItem(
-          'userData',
-            JSON.stringify({ name: 'User1', email: 'user@gmail.com', image: 'https://i.pravatar.cc/100' })
-      );
+          'currentUser',
+          JSON.stringify({
+            name: 'User1',
+            email: 'user@gmail.com',
+            image: 'https://i.pravatar.cc/100',
+          })
+        );
         this.router.navigate(['/user-page']);
         return;
       }

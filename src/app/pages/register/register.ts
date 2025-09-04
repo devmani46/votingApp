@@ -9,7 +9,7 @@ import {
   ValidatorFn,
   ValidationErrors,
 } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FuiField } from '../../components/fui-field/fui-field';
 import { FuiInput } from '../../components/fui-input/fui-input';
 import { Button } from '../../components/button/button';
@@ -69,7 +69,7 @@ export class Register implements OnInit {
   form!: FormGroup<RegisterForm>;
   submitted = false;
 
-  constructor(private fb: NonNullableFormBuilder) {}
+  constructor(private fb: NonNullableFormBuilder, private router: Router) {}
 
   ngOnInit(): void {
     this.form = this.fb.group<RegisterForm>(
@@ -91,7 +91,16 @@ export class Register implements OnInit {
     this.submitted = true;
 
     if (this.form.valid) {
-      console.log('Register data:', this.form.getRawValue());
+      const newUser = this.form.getRawValue();
+      console.log('Register data:', newUser);
+
+      const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
+      existingUsers.push(newUser);
+      localStorage.setItem('users', JSON.stringify(existingUsers));
+
+      localStorage.setItem('currentUser', JSON.stringify(newUser));
+
+      this.router.navigate(['/login']);
     } else {
       this.form.markAllAsTouched();
     }

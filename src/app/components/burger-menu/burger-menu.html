@@ -42,21 +42,29 @@
 
       <!-- Admin only -->
       @if (role === 'admin') {
-      <li
-        routerLink="/user-management"
-        routerLinkActive="active"
-        (click)="closeMenu()"
-      >
-        User Management
-      </li>
-      } @if (role) {
-      <li>
-        <button class="logout-btn" (click)="logout()">Logout</button>
-      </li>
+        <li
+          routerLink="/user-management"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >
+          User Management
+        </li>
+        <li
+          routerLink="/moderator-management"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >
+          Moderator Management
+        </li>
       }
-    </ul>
-  </nav>
-</div>
+      @if (role) {
+            <li>
+              <button class="logout-btn" (click)="logout()">Logout</button>
+            </li>
+            }
+          </ul>
+        </nav>
+      </div>
 
 @if (isOpen) {
 <div class="overlay" (click)="closeMenu()"></div>

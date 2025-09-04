@@ -22,38 +22,72 @@ export const routes: Routes = [
   },
   {
     path: 'campaign-status',
-    loadComponent: () => import('./pages/campaign-status/campaign-status').then(m => m.CampaignStatus),
+    loadComponent: () =>
+      import('./pages/campaign-status/campaign-status').then(
+        m => m.CampaignStatus
+      ),
     canActivate: [authGuard],
   },
   {
     path: 'create-campaign',
-    loadComponent: () => import('./pages/create-campaign/create-campaign').then(m => m.CreateCampaign),
+    loadComponent: () =>
+      import('./pages/create-campaign/create-campaign').then(
+        m => m.CreateCampaign
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'create-campaign/:id',
+    loadComponent: () =>
+      import('./pages/create-campaign/create-campaign').then(
+        m => m.CreateCampaign
+      ),
     canActivate: [authGuard],
   },
   {
     path: 'notifications',
-    loadComponent: () => import('./pages/notifications/notifications').then(m => m.Notifications),
+    loadComponent: () =>
+      import('./pages/notifications/notifications').then(
+        m => m.Notifications
+      ),
     canActivate: [authGuard],
   },
   {
     path: 'reports',
-    loadComponent: () => import('./pages/reports/reports').then(m => m.Reports),
+    loadComponent: () =>
+      import('./pages/reports/reports').then(m => m.Reports),
     canActivate: [authGuard],
   },
+
+  // --- ADMIN ONLY ---
   {
     path: 'user-management',
-    loadComponent: () => import('./admin/user-management/user-management').then(m => m.UserManagement),
+    loadComponent: () =>
+      import('./admin/user-management/user-management').then(
+        m => m.UserManagement
+      ),
+    canActivate: [adminGuard],
+  },
+  {
+    path: 'moderator-management',
+    loadComponent: () =>
+      import('./admin/moderator-management/moderator-management').then(
+        m => m.ModeratorManagement
+      ),
     canActivate: [adminGuard],
   },
 
+  // --- USER ONLY ---
   {
     path: 'user-page',
-    loadComponent: () => import('./user/user-page/user-page').then(m => m.UserPage),
+    loadComponent: () =>
+      import('./user/user-page/user-page').then(m => m.UserPage),
     canActivate: [userGuard],
   },
   {
     path: 'user-profile',
-    loadComponent: () => import('./user/user-profile/user-profile').then(m => m.UserProfile),
+    loadComponent: () =>
+      import('./user/user-profile/user-profile').then(m => m.UserProfile),
     canActivate: [userGuard],
   },
 

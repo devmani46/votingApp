@@ -4,40 +4,40 @@ import {
   ReactiveFormsModule,
   FormBuilder,
   Validators,
-  FormGroup,
   FormControl
 } from '@angular/forms';
-import { FuiInput } from '../../components/fui-input/fui-input';
-import { Button } from '../../components/button/button';
+
 import { BurgerMenu } from '../../components/burger-menu/burger-menu';
+import { Button } from "../../components/button/button";
+
+type SortField = 'name' | 'email';
+type SortDirection = 'asc' | 'desc';
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FuiInput, Button, BurgerMenu],
+  imports: [CommonModule, ReactiveFormsModule, BurgerMenu, Button],
   templateUrl: './user-management.html',
   styleUrls: ['./user-management.scss']
 })
 export class UserManagement implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
 
-  moderators: any[] = [];
   users: any[] = [];
+  filteredUsers: any[] = [];
 
-  showDialog = false;
-  editIndex: number | null = null;
-
-  nameControl = new FormControl('', Validators.required);
-  emailControl = new FormControl('', [Validators.required, Validators.email]);
-  passwordControl = new FormControl('', Validators.required);
+  searchControl = new FormControl('');
+  sortField: SortField = 'name';
+  sortDirection: SortDirection = 'asc';
 
   ngOnInit() {
-    const savedMods = localStorage.getItem('moderators');
-    this.moderators = savedMods ? JSON.parse(savedMods) : [];
-
-    // load users (later from backend)
     const savedUsers = localStorage.getItem('users');
     this.users = savedUsers ? JSON.parse(savedUsers) : [];
+    this.applyFilters();
+
+    this.searchControl.valueChanges.subscribe(() => {
+      this.applyFilters();
+    });
 
     document.addEventListener('keydown', this.handleEsc);
   }
@@ -46,67 +46,41 @@ export class UserManagement implements OnInit, OnDestroy {
     document.removeEventListener('keydown', this.handleEsc);
   }
 
-  openDialog(index: number | null = null) {
-    this.showDialog = true;
-    this.editIndex = index;
-
-    if (index !== null) {
-      const mod = this.moderators[index];
-      this.nameControl.setValue(mod.name);
-      this.emailControl.setValue(mod.email);
-      this.passwordControl.setValue(mod.password);
-    } else {
-      this.nameControl.reset('');
-      this.emailControl.reset('');
-      this.passwordControl.reset('');
-    }
-  }
-
-  closeDialog() {
-    this.showDialog = false;
-    this.editIndex = null;
-    this.nameControl.reset('');
-    this.emailControl.reset('');
-    this.passwordControl.reset('');
-  }
-
   handleEsc = (event: KeyboardEvent) => {
-    if (event.key === 'Escape' && this.showDialog) {
-      this.closeDialog();
+    if (event.key === 'Escape') {
     }
   };
 
-  closeDialogOnBackdrop(event: MouseEvent) {
-    if (event.target === event.currentTarget) {
-      this.closeDialog();
-    }
-  }
-
-  saveModerator() {
-    const moderator = {
-      name: this.nameControl.value ?? '',
-      email: this.emailControl.value ?? '',
-      password: this.passwordControl.value ?? ''
-    };
-
-    if (!moderator.name || !moderator.email || !moderator.password) return;
-
-    if (this.editIndex !== null) {
-      this.moderators[this.editIndex] = moderator;
-    } else {
-      this.moderators.push(moderator);
-    }
-
-    this.save();
-    this.closeDialog();
-  }
-
-  deleteModerator(index: number) {
-    this.moderators.splice(index, 1);
-    this.save();
-  }
-
   private save() {
-    localStorage.setItem('moderators', JSON.stringify(this.moderators));
+    localStorage.setItem('users', JSON.stringify(this.users));
+    this.applyFilters();
+  }
+
+  applyFilters() {
+    const search = (this.searchControl.value || '').toLowerCase();
+    this.filteredUsers = this.users.filter(
+      (u) =>
+        u.name.toLowerCase().includes(search) ||
+        u.email.toLowerCase().includes(search)
+    );
+
+    this.filteredUsers.sort((a, b) => {
+      const valA = a[this.sortField].toLowerCase();
+      const valB = b[this.sortField].toLowerCase();
+
+      if (valA < valB) return this.sortDirection === 'asc' ? -1 : 1;
+      if (valA > valB) return this.sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+
+  changeSort(field: SortField) {
+    if (this.sortField === field) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortField = field;
+      this.sortDirection = 'asc';
+    }
+    this.applyFilters();
   }
 }
