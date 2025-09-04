@@ -15,6 +15,10 @@
   --colorBrand140: #a6bae2;
   --colorBrand150: #bac9e9;
   --colorBrand160: #cdd8ef;
+
+  --card-size: 12rem;
+  --max-image-height: 8rem;
+  --max-image-height-hover: 4rem;
 }
 
 html {

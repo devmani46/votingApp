@@ -8,8 +8,8 @@
   background: var(--colorNeutralBackground1, #fff);
   transition: all 0.3s ease;
   position: relative;
-  min-height: 12rem;
-  max-height: 12rem;
+  min-height: var(--card-size);
+  max-height: var(--card-size);
   cursor: default;
 
   .card-clickable {
@@ -22,23 +22,23 @@
   .card-image {
     flex-grow: 1;
     width: 100%;
-    max-height: 8rem;
+    max-height: var(--max-image-height);
     overflow: hidden;
     border-radius: 1rem;
-    transition: max-height 0.4s ease-in-out;
+    transition: max-height 200ms ease-in-out;
 
     img {
       width: 100%;
       height: auto;
       object-fit: cover;
-      transition: transform 0.4s ease-in-out;
+      transition: transform 200ms ease-in-out;
     }
   }
 
   .card-content {
     padding: 12px;
     text-align: center;
-    transition: all 0.4s ease-in-out;
+    transition: all 200ms ease-in-out;
     flex-grow: 2;
 
     h3 {
@@ -53,13 +53,13 @@
       font-size: 0.9rem;
       color: #666;
       opacity: 0;
-      transition: all 0.4s ease-in-out;
+      transition: all 200ms ease-in-out;
     }
   }
 
   &:hover {
     .card-image {
-      max-height: 6rem;
+      max-height: var(--max-image-height-hover);
       img {
         transform: scale(1);
       }
@@ -67,7 +67,7 @@
 
     .card-content {
       h3 {
-        transition: transform 0.4s ease-in-out;
+        transition: transform 200ms ease-in-out;
       }
       .description {
         max-height: 200px;
