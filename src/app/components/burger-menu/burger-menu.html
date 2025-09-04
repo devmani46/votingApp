@@ -12,50 +12,42 @@
 
   <nav>
     <ul>
-      <li>
-        <a routerLink="/menu" routerLinkActive="active" (click)="closeMenu()"
-          >Menu</a
-        >
+      <li routerLink="/menu" routerLinkActive="active" (click)="closeMenu()">
+        Menu
       </li>
-      <li>
-        <a
-          routerLink="/campaign-status"
-          routerLinkActive="active"
-          (click)="closeMenu()"
-          >Campaign Status</a
-        >
+      <li
+        routerLink="/campaign-status"
+        routerLinkActive="active"
+        (click)="closeMenu()"
+      >
+        Campaign Status
       </li>
-      <li>
-        <a
-          routerLink="/create-campaign"
-          routerLinkActive="active"
-          (click)="closeMenu()"
-          >Create Campaign</a
-        >
+      <li
+        routerLink="/create-campaign"
+        routerLinkActive="active"
+        (click)="closeMenu()"
+      >
+        Create Campaign
       </li>
-      <li>
-        <a
-          routerLink="/notifications"
-          routerLinkActive="active"
-          (click)="closeMenu()"
-          >Notifications</a
-        >
+      <li
+        routerLink="/notifications"
+        routerLinkActive="active"
+        (click)="closeMenu()"
+      >
+        Notifications
       </li>
-      <li>
-        <a routerLink="/reports" routerLinkActive="active" (click)="closeMenu()"
-          >Reports</a
-        >
+      <li routerLink="/reports" routerLinkActive="active" (click)="closeMenu()">
+        Reports
       </li>
 
       <!-- Admin only -->
       @if (role === 'admin') {
-      <li>
-        <a
-          routerLink="/user-management"
-          routerLinkActive="active"
-          (click)="closeMenu()"
-          >User Management</a
-        >
+      <li
+        routerLink="/user-management"
+        routerLinkActive="active"
+        (click)="closeMenu()"
+      >
+        User Management
       </li>
       } @if (role) {
       <li>

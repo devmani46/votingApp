@@ -57,11 +57,18 @@
     }
 
     .close-btn {
+      color: #fffcec;
       align-self: flex-end;
       background: none;
       border: none;
       font-size: 24px;
       cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+
+      &:hover {
+        border-radius: 100px;
+        transform: scale(1.2);
+      }
     }
 
     .logo {
@@ -96,8 +103,9 @@
         }
 
         &.active {
-          background: #007bff;
-          color: #fff;
+          background: #fffcec;
+          padding-left: 1.5rem;
+          color: #20160b;
           font-weight: bold;
         }
       }
