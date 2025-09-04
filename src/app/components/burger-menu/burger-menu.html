@@ -7,43 +7,65 @@
 <div class="sidebar" [class.open]="isOpen">
   <div class="sidebar-header">
     <button class="close-btn" (click)="closeMenu()">&#10005;</button>
-    <img src="assets/logo.svg" alt="Logo" class="logo" />
+    <div class="masked-svg"></div>
   </div>
 
   <nav>
     <ul>
       <li>
-        <a routerLink="/menu" routerLinkActive="active" (click)="closeMenu()">Menu</a>
+        <a routerLink="/menu" routerLinkActive="active" (click)="closeMenu()"
+          >Menu</a
+        >
       </li>
       <li>
-        <a routerLink="/campaign-status" routerLinkActive="active" (click)="closeMenu()">Campaign Status</a>
+        <a
+          routerLink="/campaign-status"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+          >Campaign Status</a
+        >
       </li>
       <li>
-        <a routerLink="/create-campaign" routerLinkActive="active" (click)="closeMenu()">Create Campaign</a>
+        <a
+          routerLink="/create-campaign"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+          >Create Campaign</a
+        >
       </li>
       <li>
-        <a routerLink="/notifications" routerLinkActive="active" (click)="closeMenu()">Notifications</a>
+        <a
+          routerLink="/notifications"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+          >Notifications</a
+        >
       </li>
       <li>
-        <a routerLink="/reports" routerLinkActive="active" (click)="closeMenu()">Reports</a>
+        <a routerLink="/reports" routerLinkActive="active" (click)="closeMenu()"
+          >Reports</a
+        >
       </li>
 
       <!-- Admin only -->
       @if (role === 'admin') {
-        <li>
-          <a routerLink="/user-management" routerLinkActive="active" (click)="closeMenu()">User Management</a>
-        </li>
-      }
-
-      @if (role) {
-        <li>
-          <button class="logout-btn" (click)="logout()">Logout</button>
-        </li>
+      <li>
+        <a
+          routerLink="/user-management"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+          >User Management</a
+        >
+      </li>
+      } @if (role) {
+      <li>
+        <button class="logout-btn" (click)="logout()">Logout</button>
+      </li>
       }
     </ul>
   </nav>
 </div>
 
 @if (isOpen) {
-  <div class="overlay" (click)="closeMenu()"></div>
+<div class="overlay" (click)="closeMenu()"></div>
 }
