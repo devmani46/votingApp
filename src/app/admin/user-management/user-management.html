@@ -5,7 +5,6 @@
     <img class="admin-photo" src="/assets/admin.png" alt="Admin" />
   </div>
 
-  <!-- Moderators Section -->
   <div class="section">
     <div class="section-header">
       <h3>Moderators</h3>
@@ -28,7 +27,6 @@
     </div>
   </div>
 
-  <!-- Users Section -->
   <div class="section">
     <div class="section-header">
       <h3>Users (Voters)</h3>
@@ -47,7 +45,6 @@
     </div>
   </div>
 
-  <!-- Dialog for Add/Edit Moderator -->
   @if (showDialog) {
   <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">
     <div class="dialog-content" (click)="$event.stopPropagation()">
