@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth-guard';
+import { adminGuard } from './guards/admin-guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -14,7 +15,7 @@ export const routes: Routes = [
   {
     path: 'menu',
     loadComponent: () => import('./pages/menu/menu').then(m => m.Menu),
-    canActivate: [authGuard], // <-- protect menu
+    canActivate: [authGuard],
   },
   {
     path: 'campaign-status',
@@ -27,11 +28,6 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'create-campaign/:id',
-    loadComponent: () => import('./pages/create-campaign/create-campaign').then(m => m.CreateCampaign),
-    canActivate: [authGuard],
-  },
-  {
     path: 'notifications',
     loadComponent: () => import('./pages/notifications/notifications').then(m => m.Notifications),
     canActivate: [authGuard],
@@ -40,6 +36,11 @@ export const routes: Routes = [
     path: 'reports',
     loadComponent: () => import('./pages/reports/reports').then(m => m.Reports),
     canActivate: [authGuard],
+  },
+  {
+    path: 'user-management',
+    loadComponent: () => import('./admin/user-management/user-management').then(m => m.UserManagement),
+    canActivate: [adminGuard],
   },
   { path: '**', redirectTo: 'login' },
 ];

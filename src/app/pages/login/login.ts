@@ -50,10 +50,21 @@ export class Login implements OnInit {
       if (email === this.adminEmail && password === this.adminPassword) {
         localStorage.setItem('role', 'admin');
         this.router.navigate(['/menu']);
-      } else {
+        return;
+      }
+
+      const moderators = JSON.parse(localStorage.getItem('moderators') || '[]');
+      const found = moderators.find(
+        (m: any) => m.email === email && m.password === password
+      );
+
+      if (found) {
         localStorage.setItem('role', 'moderator');
         this.router.navigate(['/menu']);
+        return;
       }
+
+      alert('Invalid email or password');
     } else {
       this.form.markAllAsTouched();
     }
