@@ -12,25 +12,38 @@
 
   <nav>
     <ul>
-      @for (link of [ { path: '/menu', label: 'Menu' }, { path:
-      '/campaign-status', label: 'Campaign Status' }, { path:
-      '/create-campaign', label: 'Create Campaign' }, { path: '/notifications',
-      label: 'Notifications' }, { path: '/reports', label: 'Reports' } ]; track
-      link.path) {
       <li>
-        <a
-          [routerLink]="link.path"
-          routerLinkActive="active"
-          (click)="closeMenu()"
-        >
-          {{ link.label }}
-        </a>
+        <a routerLink="/menu" routerLinkActive="active" (click)="closeMenu()">Menu</a>
       </li>
+      <li>
+        <a routerLink="/campaign-status" routerLinkActive="active" (click)="closeMenu()">Campaign Status</a>
+      </li>
+      <li>
+        <a routerLink="/create-campaign" routerLinkActive="active" (click)="closeMenu()">Create Campaign</a>
+      </li>
+      <li>
+        <a routerLink="/notifications" routerLinkActive="active" (click)="closeMenu()">Notifications</a>
+      </li>
+      <li>
+        <a routerLink="/reports" routerLinkActive="active" (click)="closeMenu()">Reports</a>
+      </li>
+
+      <!-- Admin only -->
+      @if (role === 'admin') {
+        <li>
+          <a routerLink="/user-management" routerLinkActive="active" (click)="closeMenu()">User Management</a>
+        </li>
+      }
+
+      @if (role) {
+        <li>
+          <button class="logout-btn" (click)="logout()">Logout</button>
+        </li>
       }
     </ul>
   </nav>
 </div>
 
 @if (isOpen) {
-<div class="overlay" (click)="closeMenu()"></div>
+  <div class="overlay" (click)="closeMenu()"></div>
 }

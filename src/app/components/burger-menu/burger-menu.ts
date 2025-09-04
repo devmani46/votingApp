@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-burger-menu',
@@ -10,6 +10,11 @@ import { RouterModule } from '@angular/router';
 })
 export class BurgerMenu {
   isOpen = false;
+  role: string | null = null;
+
+  constructor(private router: Router) {
+    this.role = localStorage.getItem('role');
+  }
 
   toggleMenu() {
     this.isOpen = !this.isOpen;
@@ -17,5 +22,11 @@ export class BurgerMenu {
 
   closeMenu() {
     this.isOpen = false;
+  }
+
+  logout() {
+    localStorage.removeItem('role');
+    this.closeMenu();
+    this.router.navigate(['/login']);
   }
 }

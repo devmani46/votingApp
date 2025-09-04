@@ -87,3 +87,20 @@
   background: rgba(0, 0, 0, 0.3);
   z-index: 1000;
 }
+
+
+.logout-btn {
+  width: 100%;
+  padding: 10px 15px;
+  background: transparent;
+  border: none;
+  color: #d9534f;
+  text-align: left;
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #c9302c;
+  }
+}

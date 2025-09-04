@@ -6,7 +6,7 @@ import {
   FormGroup,
   FormControl,
 } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FuiField } from '../../components/fui-field/fui-field';
 import { FuiInput } from '../../components/fui-input/fui-input';
 import { Button } from '../../components/button/button';
@@ -27,7 +27,10 @@ export class Login implements OnInit {
   form!: FormGroup<LoginForm>;
   submitted = false;
 
-  constructor(private fb: NonNullableFormBuilder) {}
+  private adminEmail = 'admin@gmail.com';
+  private adminPassword = 'Admin@123';
+
+  constructor(private fb: NonNullableFormBuilder, private router: Router) {}
 
   ngOnInit(): void {
     this.form = this.fb.group<LoginForm>({
@@ -42,7 +45,15 @@ export class Login implements OnInit {
     this.submitted = true;
 
     if (this.form.valid) {
-      console.log('Login data:', this.form.getRawValue());
+      const { email, password } = this.form.getRawValue();
+
+      if (email === this.adminEmail && password === this.adminPassword) {
+        localStorage.setItem('role', 'admin');
+        this.router.navigate(['/menu']);
+      } else {
+        localStorage.setItem('role', 'moderator');
+        this.router.navigate(['/menu']);
+      }
     } else {
       this.form.markAllAsTouched();
     }
