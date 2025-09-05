@@ -6,7 +6,7 @@ import { Router, RouterModule } from '@angular/router';
   standalone: true,
   imports: [RouterModule],
   templateUrl: './burger-menu.html',
-  styleUrls: ['./burger-menu.scss']
+  styleUrls: ['./burger-menu.scss'],
 })
 export class BurgerMenu {
   isOpen = false;

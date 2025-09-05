@@ -1,7 +1,10 @@
 .user-management {
+  --colorNeutralBackground1: #fffcec;
+  --colorNeutralStroke1: rgba(0, 0, 0, 0.1);
+  --colorBrand90: #20160b;
   padding: 1.5rem;
-  font-family: Arial, sans-serif;
-  background: #f5f7fb;
+  font-family: Manrope, sans-serif;
+  background: #faefdf;
   min-height: 100vh;
 
   .header {
@@ -28,10 +31,8 @@
   }
 
   .section {
-    background: #fff;
     border-radius: 12px;
-    padding: 1.25rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 3rem;
 
     .section-header {
       display: flex;
@@ -179,4 +180,57 @@
       transform: scale(1);
     }
   }
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  display: table; /* make the cdk-table act like a table */
+
+  cdk-row:nth-child(even) {
+    background-color: #f2e5d5; // white
+  }
+
+  cdk-header-row,
+  cdk-row {
+    display: table-row;
+  }
+
+  cdk-header-cell,
+  cdk-cell {
+    display: table-cell;
+    padding: 8px 12px;
+    vertical-align: middle; /* keeps buttons aligned */
+  }
+
+  cdk-header-cell {
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap; /* prevent wrapping in headers */
+  }
+
+  /* Prevent the action column from stretching full width */
+  cdk-cell.actions,
+  cdk-header-cell.actions {
+    width: 1%;
+    white-space: nowrap; /* prevent wrapping to next line */
+  }
+
+  cdk-cell.actions {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+  }
+
+  cdk-cell.actions app-button {
+    display: inline-flex;
+    flex: 0 0 auto;
+  }
+}
+
+.action-buttons {
+  display: flex;
 }

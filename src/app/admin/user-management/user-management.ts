@@ -4,11 +4,13 @@ import {
   ReactiveFormsModule,
   FormBuilder,
   Validators,
-  FormControl
+  FormControl,
 } from '@angular/forms';
 import { FuiInput } from '../../components/fui-input/fui-input';
 import { Button } from '../../components/button/button';
 import { BurgerMenu } from '../../components/burger-menu/burger-menu';
+import { CdkTableModule } from '@angular/cdk/table';
+import { NgModule } from '@angular/core';
 
 type SortField = 'firstName' | 'email' | 'username';
 type SortDirection = 'asc' | 'desc';
@@ -16,9 +18,16 @@ type SortDirection = 'asc' | 'desc';
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FuiInput, Button, BurgerMenu],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FuiInput,
+    Button,
+    BurgerMenu,
+    CdkTableModule,
+  ],
   templateUrl: './user-management.html',
-  styleUrls: ['./user-management.scss']
+  styleUrls: ['./user-management.scss'],
 })
 export class UserManagement implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
@@ -37,6 +46,13 @@ export class UserManagement implements OnInit, OnDestroy {
   searchControl = new FormControl('');
   sortField: SortField = 'firstName';
   sortDirection: SortDirection = 'asc';
+  displayedColumns: string[] = [
+    'username',
+    'email',
+    'joinDate',
+    'session',
+    'actions',
+  ];
 
   ngOnInit() {
     const savedUsers = localStorage.getItem('users');
@@ -102,10 +118,17 @@ export class UserManagement implements OnInit, OnDestroy {
       lastName: this.lastNameControl.value ?? '',
       username: this.usernameControl.value ?? '',
       email: this.emailControl.value ?? '',
-      password: this.passwordControl.value ?? ''
+      password: this.passwordControl.value ?? '',
     };
 
-    if (!user.firstName || !user.lastName || !user.username || !user.email || !user.password) return;
+    if (
+      !user.firstName ||
+      !user.lastName ||
+      !user.username ||
+      !user.email ||
+      !user.password
+    )
+      return;
 
     if (this.editIndex !== null) {
       this.users[this.editIndex] = user;
