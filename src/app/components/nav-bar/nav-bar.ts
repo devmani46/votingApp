@@ -26,7 +26,6 @@ export class NavBar {
   }
 
   logout() {
-    localStorage.clear();
     this.router.navigate(['/login']);
   }
 

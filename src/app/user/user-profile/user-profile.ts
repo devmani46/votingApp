@@ -52,7 +52,6 @@ export class UserProfile {
   }
 
   logout() {
-    localStorage.clear();
     this.router.navigate(['/login']);
   }
 
