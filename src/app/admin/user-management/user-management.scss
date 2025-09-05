@@ -31,8 +31,9 @@
   }
 
   .section {
+    margin: auto;
+    width: 70vw;
     border-radius: 12px;
-    padding: 3rem;
 
     .section-header {
       display: flex;
