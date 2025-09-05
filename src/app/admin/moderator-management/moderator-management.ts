@@ -4,11 +4,13 @@ import {
   ReactiveFormsModule,
   FormBuilder,
   Validators,
-  FormControl
+  FormControl,
 } from '@angular/forms';
 import { FuiInput } from '../../components/fui-input/fui-input';
 import { Button } from '../../components/button/button';
 import { BurgerMenu } from '../../components/burger-menu/burger-menu';
+import { CdkTableModule } from '@angular/cdk/table';
+import { NgModule } from '@angular/core';
 
 type SortField = 'name' | 'email';
 type SortDirection = 'asc' | 'desc';
@@ -16,9 +18,16 @@ type SortDirection = 'asc' | 'desc';
 @Component({
   selector: 'app-moderator-management',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FuiInput, Button, BurgerMenu],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FuiInput,
+    Button,
+    BurgerMenu,
+    CdkTableModule,
+  ],
   templateUrl: './moderator-management.html',
-  styleUrls: ['./moderator-management.scss']
+  styleUrls: ['./moderator-management.scss'],
 })
 export class ModeratorManagement implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
@@ -35,6 +44,14 @@ export class ModeratorManagement implements OnInit, OnDestroy {
   searchControl = new FormControl('');
   sortField: SortField = 'name';
   sortDirection: SortDirection = 'asc';
+
+  displayedColumns: string[] = [
+    'username',
+    'email',
+    'joinDate',
+    'session',
+    'actions',
+  ];
 
   ngOnInit() {
     const savedMods = localStorage.getItem('moderators');
@@ -92,7 +109,7 @@ export class ModeratorManagement implements OnInit, OnDestroy {
     const moderator = {
       name: this.nameControl.value ?? '',
       email: this.emailControl.value ?? '',
-      password: this.passwordControl.value ?? ''
+      password: this.passwordControl.value ?? '',
     };
 
     if (!moderator.name || !moderator.email || !moderator.password) return;
