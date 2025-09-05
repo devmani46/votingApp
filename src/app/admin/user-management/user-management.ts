@@ -4,37 +4,44 @@ import {
   ReactiveFormsModule,
   FormBuilder,
   Validators,
-  FormControl,
+  FormControl
 } from '@angular/forms';
-
-import { BurgerMenu } from '../../components/burger-menu/burger-menu';
-import { Button } from '../../components/button/button';
 import { FuiInput } from '../../components/fui-input/fui-input';
+import { Button } from '../../components/button/button';
+import { BurgerMenu } from '../../components/burger-menu/burger-menu';
 
-type SortField = 'name' | 'email';
+type SortField = 'firstName' | 'email' | 'username';
 type SortDirection = 'asc' | 'desc';
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, BurgerMenu, Button, FuiInput],
+  imports: [CommonModule, ReactiveFormsModule, FuiInput, Button, BurgerMenu],
   templateUrl: './user-management.html',
-  styleUrls: ['./user-management.scss'],
+  styleUrls: ['./user-management.scss']
 })
 export class UserManagement implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
 
   users: any[] = [];
   filteredUsers: any[] = [];
+  showDialog = false;
+  editIndex: number | null = null;
+
+  firstNameControl = new FormControl('', Validators.required);
+  lastNameControl = new FormControl('', Validators.required);
+  usernameControl = new FormControl('', Validators.required);
+  emailControl = new FormControl('', [Validators.required, Validators.email]);
+  passwordControl = new FormControl('', Validators.required);
 
   searchControl = new FormControl('');
-  sortField: SortField = 'name';
+  sortField: SortField = 'firstName';
   sortDirection: SortDirection = 'asc';
 
   ngOnInit() {
     const savedUsers = localStorage.getItem('users');
     this.users = savedUsers ? JSON.parse(savedUsers) : [];
-    this.applyFilters();
+    this.applyFilters(); // ✅ ensures list shows immediately
 
     this.searchControl.valueChanges.subscribe(() => {
       this.applyFilters();
@@ -47,10 +54,73 @@ export class UserManagement implements OnInit, OnDestroy {
     document.removeEventListener('keydown', this.handleEsc);
   }
 
+  openDialog(index: number | null = null) {
+    this.showDialog = true;
+    this.editIndex = index;
+
+    if (index !== null) {
+      const user = this.users[index];
+      this.firstNameControl.setValue(user.firstName);
+      this.lastNameControl.setValue(user.lastName);
+      this.usernameControl.setValue(user.username);
+      this.emailControl.setValue(user.email);
+      this.passwordControl.setValue(user.password);
+    } else {
+      this.firstNameControl.reset('');
+      this.lastNameControl.reset('');
+      this.usernameControl.reset('');
+      this.emailControl.reset('');
+      this.passwordControl.reset('');
+    }
+  }
+
+  closeDialog() {
+    this.showDialog = false;
+    this.editIndex = null;
+    this.firstNameControl.reset('');
+    this.lastNameControl.reset('');
+    this.usernameControl.reset('');
+    this.emailControl.reset('');
+    this.passwordControl.reset('');
+  }
+
   handleEsc = (event: KeyboardEvent) => {
-    if (event.key === 'Escape') {
+    if (event.key === 'Escape' && this.showDialog) {
+      this.closeDialog();
     }
   };
+
+  closeDialogOnBackdrop(event: MouseEvent) {
+    if (event.target === event.currentTarget) {
+      this.closeDialog();
+    }
+  }
+
+  saveUser() {
+    const user = {
+      firstName: this.firstNameControl.value ?? '',
+      lastName: this.lastNameControl.value ?? '',
+      username: this.usernameControl.value ?? '',
+      email: this.emailControl.value ?? '',
+      password: this.passwordControl.value ?? ''
+    };
+
+    if (!user.firstName || !user.lastName || !user.username || !user.email || !user.password) return;
+
+    if (this.editIndex !== null) {
+      this.users[this.editIndex] = user;
+    } else {
+      this.users.push(user);
+    }
+
+    this.save();
+    this.closeDialog();
+  }
+
+  deleteUser(index: number) {
+    this.users.splice(index, 1);
+    this.save();
+  }
 
   private save() {
     localStorage.setItem('users', JSON.stringify(this.users));
@@ -61,6 +131,8 @@ export class UserManagement implements OnInit, OnDestroy {
     const search = (this.searchControl.value || '').toLowerCase();
     this.filteredUsers = this.users.filter(
       (u) =>
+        u.firstName.toLowerCase().includes(search) ||
+        u.lastName.toLowerCase().includes(search) ||
         u.username.toLowerCase().includes(search) ||
         u.email.toLowerCase().includes(search)
     );

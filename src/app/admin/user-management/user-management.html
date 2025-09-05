@@ -6,48 +6,72 @@
   </div>
 
   <div class="section">
-    <div
-      class="section-header"
-      style="display: flex; justify-content: space-between; align-items: center"
-    >
-      <h3>Users (Voters)</h3>
-      <app-fui-input
-        placeholder="Search by name/email"
-        [formControl]="searchControl"
-      ></app-fui-input>
+    <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+      <h3>Users</h3>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <app-fui-input
+          placeholder="Search by name/email/username"
+          [formControl]="searchControl"
+        ></app-fui-input>
+      </div>
     </div>
 
-    <div class="sort-controls" style="margin: 0.5rem 0">
+    <div class="sort-controls" style="margin: 0.5rem 0;">
       <span>Sort by: </span>
-      <app-button
-        size="small"
-        [appearance]="sortField === 'name' ? 'primary' : 'outline'"
-        (click)="changeSort('name')"
-      >
-        Name
-        {{ sortField === "name" ? (sortDirection === "asc" ? "↑" : "↓") : "" }}
+      <app-button size="small" appearance="outline" (click)="changeSort('email')">
+        Email {{ sortField === 'email' ? (sortDirection === 'asc' ? '↑' : '↓') : '' }}
       </app-button>
-
-      <app-button
-        size="small"
-        [appearance]="sortField === 'email' ? 'primary' : 'outline'"
-        (click)="changeSort('email')"
-      >
-        Email
-        {{ sortField === "email" ? (sortDirection === "asc" ? "↑" : "↓") : "" }}
+      <app-button size="small" appearance="outline" (click)="changeSort('username')">
+        Username {{ sortField === 'username' ? (sortDirection === 'asc' ? '↑' : '↓') : '' }}
       </app-button>
     </div>
 
     <div class="user-list">
       @if (filteredUsers.length === 0) {
-      <p>No users yet.</p>
-      } @else { @for (u of filteredUsers; let i = $index; track i) {
-      <div class="user-card">
-        <p>
-          <strong>{{ u.name }}</strong> ({{ u.email }})
-        </p>
-      </div>
-      } }
+        <p>No users found.</p>
+      } @else {
+        @for (user of filteredUsers; let i = $index; track i) {
+        <div class="user-card">
+          <div class="info">
+            <p>{{ user.username }} | {{ user.email }}</p>
+          </div>
+          <div class="actions">
+            <app-button size="small" appearance="secondary" (click)="openDialog(i)">Edit</app-button>
+            <app-button size="small" appearance="primary" (click)="deleteUser(i)">Delete</app-button>
+          </div>
+        </div>
+        }
+      }
     </div>
   </div>
+
+  @if (showDialog) {
+  <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">
+    <div class="dialog-content" (click)="$event.stopPropagation()">
+      <h3>{{ editIndex !== null ? "Edit User" : "Add User" }}</h3>
+
+      <div class="user-form">
+        <label>First Name</label>
+        <app-fui-input [formControl]="firstNameControl" placeholder="First Name"></app-fui-input>
+
+        <label>Last Name</label>
+        <app-fui-input [formControl]="lastNameControl" placeholder="Last Name"></app-fui-input>
+
+        <label>Username</label>
+        <app-fui-input [formControl]="usernameControl" placeholder="Username"></app-fui-input>
+
+        <label>Email</label>
+        <app-fui-input [formControl]="emailControl" placeholder="Email"></app-fui-input>
+
+        <label>Password</label>
+        <app-fui-input [formControl]="passwordControl" type="password" placeholder="Password"></app-fui-input>
+      </div>
+
+      <div class="dialog-actions">
+        <app-button appearance="secondary" (click)="closeDialog()">Cancel</app-button>
+        <app-button appearance="primary" (click)="saveUser()">Save</app-button>
+      </div>
+    </div>
+  </div>
+  }
 </div>
