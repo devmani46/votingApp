@@ -1,8 +1,20 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { map, Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+type CountryResponse = {
+  name: { common: string };
+};
+
+@Injectable({ providedIn: 'root' })
 export class Country {
-  
+  private baseAll = 'https://restcountries.com/v3.1/all?fields=name';
+  constructor(private http: HttpClient) {}
+
+  getAllCountryNames(): Observable<string[]> {
+    return this.http.get<CountryResponse[]>(this.baseAll).pipe(
+      map(arr => arr.map(c => c.name.common).sort())
+    );
+  }
+
 }
