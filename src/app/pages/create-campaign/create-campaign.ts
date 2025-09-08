@@ -166,10 +166,17 @@ export class CreateCampaign implements OnInit, OnDestroy {
       const reader = new FileReader();
       reader.onload = () => {
         this.candidatePhotoPreview = reader.result as string;
+
+        if (this.editIndex !== null) {
+          this.candidates.at(this.editIndex).patchValue({
+            photo: this.candidatePhotoPreview
+          });
+        }
       };
       reader.readAsDataURL(file);
     }
   }
+
 
   addProperty() {
     if (this.propertyControl.value?.trim()) {
@@ -198,6 +205,7 @@ export class CreateCampaign implements OnInit, OnDestroy {
 
     this.closeDialog();
   }
+
 
   deleteCandidate(index: number) {
     if (index !== null && index >= 0 && index < this.candidates.length) {

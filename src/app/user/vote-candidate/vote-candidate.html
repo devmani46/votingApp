@@ -1,0 +1,42 @@
+<app-nav-bar></app-nav-bar>
+
+<div class="vote-candidate-page">
+  @if (campaign) {
+    <h2>{{ campaign.title }}</h2>
+    <p class="description">{{ campaign.description }}</p>
+
+    <div class="candidate-list">
+      @for (candidate of campaign.candidates; let i = $index; track i) {
+        <div class="candidate-wrapper">
+          <app-campaign-card
+            [id]="i"
+            [title]="candidate.name"
+            [description]="candidate.bio"
+            [image]="candidate.photo || '/assets/default-user.png'"
+            size="medium">
+          </app-campaign-card>
+
+          <app-button
+            appearance="primary"
+            [disabled]="hasVoted(campaign.id)"
+            (click)="vote(i)">
+            Vote ({{ candidate.votes ?? 0 }})
+          </app-button>
+        </div>
+      }
+    </div>
+  } @else {
+    <p class="not-found">Campaign not found.</p>
+  }
+</div>
+
+@if (showPopup) {
+  <div class="popup-backdrop" (click)="closePopup()">
+    <div class="popup" (click)="$event.stopPropagation()">
+      <p>You have already voted. Only 1 vote per user per campaign.</p>
+      <app-button appearance="primary" (click)="closePopup()">OK</app-button>
+    </div>
+  </div>
+}
+
+<app-footer></app-footer>

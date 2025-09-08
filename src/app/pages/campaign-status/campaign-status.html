@@ -1,22 +1,22 @@
-<div class="campaign-status-page">
-  <app-burger-menu></app-burger-menu>
-  <h2>Campaigns</h2>
+  <div class="campaign-status-page">
+    <app-burger-menu></app-burger-menu>
+    <h2>Campaigns</h2>
 
-  <div class="campaign-list">
-    @if (campaigns().length === 0) {
-      <p>No campaigns yet.</p>
-    } @else {
-      @for (c of campaigns(); track c.id) {
-        <app-campaign-card
-          [id]="c.id"
-          [title]="c.title"
-          [description]="c.description"
-          [image]="c.logo || '/assets/default.png'"
-          size="medium"
-          (deleteCampaignEvent)="deleteCampaign($event)"
-          (edit)="editCampaign($event)">
-        </app-campaign-card>
+    <div class="campaign-list">
+      @if (campaigns().length === 0) {
+        <p>No campaigns yet.</p>
+      } @else {
+        @for (c of campaigns(); track c.id) {
+          <app-campaign-card
+            [id]="c.id"
+            [title]="c.title"
+            [description]="c.description"
+            [image]="c.logo || '/assets/default.png'"
+            size="medium"
+            (deleteCampaignEvent)="deleteCampaign($event)"
+            (edit)="editCampaign($event)">
+          </app-campaign-card>
+        }
       }
-    }
+    </div>
   </div>
-</div>

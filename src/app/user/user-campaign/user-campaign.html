@@ -1,0 +1,25 @@
+<app-nav-bar></app-nav-bar>
+
+<div class="user-campaign-page">
+  <h2>Available Campaigns</h2>
+
+  <div class="campaign-list">
+    @if (campaigns().length === 0) {
+      <p>No campaigns available.</p>
+    } @else {
+      @for (c of campaigns(); track c.id) {
+        <app-campaign-card
+          [id]="c.id"
+          [title]="c.title"
+          [description]="c.description"
+          [image]="c.logo || '/assets/default.png'"
+          size="medium"
+          (click)="openCampaign(c.id)"
+        >
+        </app-campaign-card>
+      }
+    }
+  </div>
+</div>
+
+<app-footer></app-footer>

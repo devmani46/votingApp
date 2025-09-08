@@ -1,0 +1,65 @@
+.vote-candidate-page {
+  padding: 1rem;
+
+  h2 {
+    margin-bottom: 0.25rem;
+  }
+
+  .description {
+    margin: 0 0 1rem 0;
+    opacity: 0.85;
+  }
+
+  .candidate-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+
+    .candidate-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: stretch;
+
+      app-campaign-card {
+        width: 100%;
+      }
+
+      app-button {
+        align-self: center;
+        min-width: 160px;
+
+        &:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+
+  .not-found {
+    margin-top: 1rem;
+    color: #a00;
+  }
+}
+
+.popup-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: grid;
+  place-items: center;
+
+  .popup {
+    background: #fff;
+    padding: 1.25rem 1.5rem;
+    border-radius: 12px;
+    width: min(92vw, 360px);
+    text-align: center;
+
+    p {
+      margin: 0 0 0.75rem 0;
+      line-height: 1.35;
+    }
+  }
+}
