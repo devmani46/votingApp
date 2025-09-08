@@ -1,9 +1,10 @@
 import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-nav-bar',
   standalone: true,
+  imports: [RouterModule],
   templateUrl: './nav-bar.html',
   styleUrls: ['./nav-bar.scss']
 })

@@ -4,10 +4,15 @@
   </div>
 
   <div class="navbar-right">
-    <ul class="nav-list">
-      <li>Home</li>
-      <li>Campaigns</li>
-    </ul>
+      <ul class="nav-list">
+        <li>
+          <a routerLink="/user-page" routerLinkActive="active">Home</a>
+        </li>
+        <li>
+          <a routerLink="/user-campaign" routerLinkActive="active">Campaigns</a>
+        </li>
+      </ul>
+
 
     <div class="user-menu">
       <img
@@ -18,13 +23,17 @@
       />
 
       @if (dropdownOpen) {
-      <div class="dropdown">
-        <div class="dropdown-header">
-          <img [src]="user.photo || '/assets/admin.png'" alt="User" class="dropdown-photo" />
-          <span class="username">{{ user.username || 'Guest' }}</span>
+        <div class="dropdown">
+          <div class="dropdown-header">
+            <img
+              [src]="user.photo || '/assets/admin.png'"
+              alt="User"
+              class="dropdown-photo"
+            />
+            <span class="username">{{ user.username || 'Guest' }}</span>
+          </div>
+          <button type="button" (click)="logout()">Logout</button>
         </div>
-        <button type="button" (click)="logout()">Logout</button>
-      </div>
       }
     </div>
   </div>
