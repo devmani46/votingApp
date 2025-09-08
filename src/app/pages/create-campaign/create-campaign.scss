@@ -15,14 +15,15 @@
   min-height: 100vh;
   min-width: 100vw;
   padding-bottom: 2rem;
+  padding-top: 2rem;
 }
 
 /* ---------- HEADER ---------- */
 .header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 1.6rem 6rem;
+  gap: 2.5rem;
+  padding: 1.6rem 4rem;
 
   h2 {
     font-size: 2rem;

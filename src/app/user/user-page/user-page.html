@@ -1,18 +1,35 @@
 <app-nav-bar></app-nav-bar>
 
 <div class="user-page-container">
-  <div class="welcome-section">
-    <img
-      class="profile-photo"
-      [src]="user.photo || '/assets/admin.png'"
-      alt="User Photo"
-    />
-    <div class="welcome-text">
-      <h2>Welcome, {{ user.firstName }} {{ user.lastName }}</h2>
-      <p><strong>Age:</strong> {{ user.age }}</p>
-      <p><strong>Bio:</strong> {{ user.bio || 'No bio added yet.' }}</p>
+  <div class="welcome-section-container">
+    <div class="welcome-section">
+      <img
+        class="profile-photo"
+        [src]="user.photo || '/assets/admin.png'"
+        alt="User Photo"
+      />
+      <div class="welcome-text">
+        <h3>Welcome,</h3>
+        <h2>{{ user.firstName }} {{ user.lastName }}</h2>
+      </div>
+      <app-button
+        class="edit-profile-btn"
+        appearance="primary"
+        (click)="openDialog()"
+        >Edit Profile</app-button
+      >
     </div>
-    <app-button appearance="primary" (click)="openDialog()">Edit Profile</app-button>
+  </div>
+
+  <div class="main-section">
+    <div class="about">
+      <h2>About me</h2>
+      <p><strong>Age:</strong> {{ user.age }}</p>
+      <p><strong>Bio:</strong> {{ user.bio || "No bio added yet." }}</p>
+    </div>
+    <div class="past-campaigns">
+      <h2>Past campaigns</h2>
+    </div>
   </div>
 
   @if (showDialog) {
@@ -23,12 +40,30 @@
 
       <form [formGroup]="form" class="dialog-form">
         <div class="photo-upload">
-          <input type="file" accept="image/*" (change)="onPhotoSelected($event)" hidden #fileInput />
-          <button type="button" class="choose-photo-btn" (click)="fileInput.click()">
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onPhotoSelected($event)"
+            hidden
+            #fileInput
+          />
+          <button
+            type="button"
+            class="choose-photo-btn"
+            (click)="fileInput.click()"
+          >
             @if (photoPreview) {
-            <img class="profile-photo-preview" [src]="photoPreview" alt="Profile Photo" />
+            <img
+              class="profile-photo-preview"
+              [src]="photoPreview"
+              alt="Profile Photo"
+            />
             } @else {
-            <img class="profile-photo-preview" src="/assets/admin.png" alt="Default Photo" />
+            <img
+              class="profile-photo-preview"
+              src="/assets/admin.png"
+              alt="Default Photo"
+            />
             }
           </button>
         </div>
@@ -36,17 +71,26 @@
         <div class="form-grid">
           <div>
             <label>First Name</label>
-            <app-fui-input formControlName="firstName" placeholder="First Name"></app-fui-input>
+            <app-fui-input
+              formControlName="firstName"
+              placeholder="First Name"
+            ></app-fui-input>
           </div>
 
           <div>
             <label>Last Name</label>
-            <app-fui-input formControlName="lastName" placeholder="Last Name"></app-fui-input>
+            <app-fui-input
+              formControlName="lastName"
+              placeholder="Last Name"
+            ></app-fui-input>
           </div>
 
           <div>
             <label>Username</label>
-            <app-fui-input formControlName="username" placeholder="Username"></app-fui-input>
+            <app-fui-input
+              formControlName="username"
+              placeholder="Username"
+            ></app-fui-input>
           </div>
 
           <div>
@@ -56,33 +100,50 @@
 
           <div>
             <label>Email</label>
-            <app-fui-input formControlName="email" type="text" placeholder="Email"></app-fui-input>
+            <app-fui-input
+              formControlName="email"
+              type="text"
+              placeholder="Email"
+            ></app-fui-input>
           </div>
 
           <div>
             <label>Bio</label>
-            <textarea formControlName="bio" placeholder="Write something about yourself..."></textarea>
+            <textarea
+              formControlName="bio"
+              placeholder="Write something about yourself..."
+            ></textarea>
           </div>
 
           <div>
             <label>Password (leave blank to keep current)</label>
-            <app-fui-input formControlName="password" type="password" placeholder="Password"></app-fui-input>
+            <app-fui-input
+              formControlName="password"
+              type="password"
+              placeholder="Password"
+            ></app-fui-input>
           </div>
 
           <div>
             <label>Confirm Password</label>
-            <app-fui-input formControlName="confirmPassword" type="password" placeholder="Confirm Password"></app-fui-input>
+            <app-fui-input
+              formControlName="confirmPassword"
+              type="password"
+              placeholder="Confirm Password"
+            ></app-fui-input>
           </div>
         </div>
 
         <div class="dialog-actions">
-          <app-button appearance="secondary" (click)="closeDialog()">Cancel</app-button>
-          <app-button appearance="primary" (click)="saveProfile()">Save Changes</app-button>
+          <app-button appearance="secondary" (click)="closeDialog()"
+            >Cancel</app-button
+          >
+          <app-button appearance="primary" (click)="saveProfile()"
+            >Save Changes</app-button
+          >
         </div>
       </form>
     </div>
   </div>
   }
 </div>
-
-<app-footer></app-footer>
