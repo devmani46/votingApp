@@ -5,12 +5,11 @@ import { NavBar } from '../../components/nav-bar/nav-bar';
 import { Footer } from '../../components/footer/footer';
 import { Button } from '../../components/button/button';
 import { FuiInput } from '../../components/fui-input/fui-input';
-import { Combobox } from '../../components/combobox/combobox';
 
 @Component({
   selector: 'app-user-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NavBar, Footer, Button, FuiInput, Combobox],
+  imports: [CommonModule, ReactiveFormsModule, NavBar, Footer, Button, FuiInput],
   templateUrl: './user-page.html',
   styleUrls: ['./user-page.scss']
 })
@@ -24,15 +23,13 @@ export class UserPage implements OnInit {
     username: '',
     age: '',
     dob: '',
-    country: '',
-    email: ''
+    email: '',
+    bio: ''
   };
 
   form!: FormGroup;
   showDialog = false;
   photoPreview: string | null = null;
-
-  countries = ['Nepal', 'India', 'USA', 'UK', 'Australia', 'Canada'];
 
   ngOnInit() {
     const savedUser = localStorage.getItem('currentUser');
@@ -49,8 +46,8 @@ export class UserPage implements OnInit {
       lastName: [this.user.lastName || '', Validators.required],
       username: [this.user.username || '', Validators.required],
       dob: [this.user.dob || '', Validators.required],
-      country: [this.user.country || '', Validators.required],
       email: [this.user.email || '', [Validators.required, Validators.email]],
+      bio: [this.user.bio || ''],
       password: [''],
       confirmPassword: [''],
     });
@@ -81,11 +78,6 @@ export class UserPage implements OnInit {
       };
       reader.readAsDataURL(file);
     }
-  }
-
-  onCountryChange(value: string | string[]) {
-    const country = Array.isArray(value) ? value[0] : value;
-    this.form.patchValue({ country });
   }
 
   updateAge() {
@@ -138,8 +130,8 @@ export class UserPage implements OnInit {
       lastName: this.user.lastName,
       username: this.user.username,
       dob: this.user.dob,
-      country: this.user.country,
       email: this.user.email,
+      bio: this.user.bio,
       password: '',
       confirmPassword: ''
     });

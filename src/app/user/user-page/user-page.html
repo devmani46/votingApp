@@ -10,7 +10,7 @@
     <div class="welcome-text">
       <h2>Welcome, {{ user.firstName }} {{ user.lastName }}</h2>
       <p><strong>Age:</strong> {{ user.age }}</p>
-      <p><strong>Country:</strong> {{ user.country }}</p>
+      <p><strong>Bio:</strong> {{ user.bio || 'No bio added yet.' }}</p>
     </div>
     <app-button appearance="primary" (click)="openDialog()">Edit Profile</app-button>
   </div>
@@ -55,18 +55,13 @@
           </div>
 
           <div>
-            <label>Country</label>
-            <app-combobox
-              [options]="countries"
-              [multiple]="false"
-              placeholder="Select Country"
-              (valueChange)="onCountryChange($event)">
-            </app-combobox>
+            <label>Email</label>
+            <app-fui-input formControlName="email" type="text" placeholder="Email"></app-fui-input>
           </div>
 
           <div>
-            <label>Email</label>
-            <app-fui-input formControlName="email" type="text" placeholder="Email"></app-fui-input>
+            <label>Bio</label>
+            <textarea formControlName="bio" placeholder="Write something about yourself..."></textarea>
           </div>
 
           <div>

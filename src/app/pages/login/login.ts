@@ -58,6 +58,7 @@ export class Login implements OnInit {
       const foundModerator = moderators.find(
         (m: any) => m.email === email && m.password === password
       );
+
       if (foundModerator) {
         localStorage.setItem('role', 'moderator');
 
@@ -74,6 +75,7 @@ export class Login implements OnInit {
       const foundUser = users.find(
         (u: any) => u.email === email && u.password === password
       );
+
       if (foundUser) {
         localStorage.setItem('role', 'user');
 
