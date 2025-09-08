@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NG_ASYNC_VALIDATORS } from '@angular/forms';
 
 @Component({
   selector: 'app-user-profile',

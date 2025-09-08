@@ -99,12 +99,14 @@ export class Register implements OnInit {
       localStorage.setItem('users', JSON.stringify(existingUsers));
 
       localStorage.setItem('currentUser', JSON.stringify(newUser));
+      localStorage.setItem('role', 'user');
 
-      this.router.navigate(['/login']);
+      this.router.navigate(['/user-page']);
     } else {
       this.form.markAllAsTouched();
     }
   }
+
 
   get firstName() {
     return this.form.controls.firstName;

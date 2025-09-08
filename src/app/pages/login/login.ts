@@ -41,63 +41,62 @@ export class Login implements OnInit {
     });
   }
 
-  onSubmit() {
-    this.submitted = true;
+onSubmit() {
+  this.submitted = true;
 
-    if (this.form.valid) {
-      const { email, password } = this.form.getRawValue();
+  if (this.form.valid) {
+    const { email, password } = this.form.getRawValue();
 
-      // Admin login
-      if (email === this.adminEmail && password === this.adminPassword) {
-        localStorage.setItem('role', 'admin');
-        this.router.navigate(['/menu']);
-        return;
-      }
-
-      // Moderator login
-      const moderators = JSON.parse(localStorage.getItem('moderators') || '[]');
-      const foundModerator = moderators.find(
-        (m: any) => m.email === email && m.password === password
-      );
-      if (foundModerator) {
-        localStorage.setItem('role', 'moderator');
-        localStorage.setItem('currentUser', JSON.stringify(foundModerator));
-        this.router.navigate(['/menu']);
-        return;
-      }
-
-      // User login (from register page)
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const foundUser = users.find(
-        (u: any) => u.email === email && u.password === password
-      );
-      if (foundUser) {
-        localStorage.setItem('role', 'user');
-        localStorage.setItem('currentUser', JSON.stringify(foundUser));
-        this.router.navigate(['/user-page']);
-        return;
-      }
-
-      // Hardcoded test user (fallback)
-      if (email === 'user@gmail.com' && password === 'User@123') {
-        localStorage.setItem('role', 'user');
-        localStorage.setItem(
-          'currentUser',
-          JSON.stringify({
-            name: 'User1',
-            email: 'user@gmail.com',
-            image: 'https://i.pravatar.cc/100',
-          })
-        );
-        this.router.navigate(['/user-page']);
-        return;
-      }
-
-      alert('Invalid email or password');
-    } else {
-      this.form.markAllAsTouched();
+    if (email === this.adminEmail && password === this.adminPassword) {
+      localStorage.setItem('role', 'admin');
+      localStorage.removeItem('currentUser');
+      this.router.navigate(['/menu']);
+      return;
     }
+
+
+    const moderators = JSON.parse(localStorage.getItem('moderators') || '[]');
+    const foundModerator = moderators.find(
+      (m: any) => m.email === email && m.password === password
+    );
+    if (foundModerator) {
+      localStorage.setItem('role', 'moderator');
+      localStorage.setItem('currentUser', JSON.stringify(foundModerator));
+      this.router.navigate(['/menu']);
+      return;
+    }
+
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const foundUser = users.find(
+      (u: any) => u.email === email && u.password === password
+    );
+    if (foundUser) {
+      localStorage.setItem('role', 'user');
+      localStorage.setItem('currentUser', JSON.stringify(foundUser));
+      this.router.navigate(['/user-page']);
+      return;
+    }
+
+    if (email === 'user@gmail.com' && password === 'User@123') {
+      localStorage.setItem('role', 'user');
+      localStorage.setItem(
+        'currentUser',
+        JSON.stringify({
+          name: 'User1',
+          email: 'user@gmail.com',
+          image: 'https://i.pravatar.cc/100',
+        })
+      );
+      this.router.navigate(['/user-page']);
+      return;
+    }
+
+    alert('Invalid email or password');
+  } else {
+    this.form.markAllAsTouched();
   }
+}
+
 
   get email() {
     return this.form.controls.email;
