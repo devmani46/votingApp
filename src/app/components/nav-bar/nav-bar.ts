@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -7,11 +7,29 @@ import { Router } from '@angular/router';
   templateUrl: './nav-bar.html',
   styleUrls: ['./nav-bar.scss']
 })
-export class NavBar {
+export class NavBar implements OnInit, OnDestroy {
   user: any = {};
   dropdownOpen = false;
 
-  constructor(private router: Router) {
+  constructor(private router: Router) {}
+
+  ngOnInit() {
+    this.loadUser();
+
+    window.addEventListener('storage', this.syncUser);
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('storage', this.syncUser);
+  }
+
+  private syncUser = (event: StorageEvent) => {
+    if (event.key === 'currentUser') {
+      this.loadUser();
+    }
+  };
+
+  private loadUser() {
     const stored = localStorage.getItem('currentUser');
     this.user = stored
       ? JSON.parse(stored)
@@ -25,6 +43,7 @@ export class NavBar {
   logout() {
     localStorage.removeItem('currentUser');
     this.router.navigate(['/login']);
+    this.loadUser();
   }
 
   @HostListener('document:click', ['$event'])
