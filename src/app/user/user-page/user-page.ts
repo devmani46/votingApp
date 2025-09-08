@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavBar } from '../../components/nav-bar/nav-bar';
@@ -21,6 +21,7 @@ export class UserPage implements OnInit {
     photo: '',
     firstName: '',
     lastName: '',
+    username: '',
     age: '',
     dob: '',
     country: '',
@@ -39,9 +40,14 @@ export class UserPage implements OnInit {
       this.user = JSON.parse(savedUser);
     }
 
+    if (!this.user.photo) {
+      this.user.photo = '/assets/admin.png';
+    }
+
     this.form = this.fb.group({
       firstName: [this.user.firstName || '', Validators.required],
       lastName: [this.user.lastName || '', Validators.required],
+      username: [this.user.username || '', Validators.required],
       dob: [this.user.dob || '', Validators.required],
       country: [this.user.country || '', Validators.required],
       email: [this.user.email || '', [Validators.required, Validators.email]],
@@ -125,9 +131,12 @@ export class UserPage implements OnInit {
       localStorage.setItem('users', JSON.stringify(users));
     }
 
+    window.dispatchEvent(new StorageEvent('storage', { key: 'currentUser' }));
+
     this.form.patchValue({
       firstName: this.user.firstName,
       lastName: this.user.lastName,
+      username: this.user.username,
       dob: this.user.dob,
       country: this.user.country,
       email: this.user.email,
@@ -136,5 +145,19 @@ export class UserPage implements OnInit {
     });
 
     this.closeDialog();
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (!this.showDialog) return;
+
+    if (event.key === 'Escape') {
+      this.closeDialog();
+    }
+
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.saveProfile();
+    }
   }
 }

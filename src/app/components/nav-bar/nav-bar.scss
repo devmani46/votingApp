@@ -10,8 +10,7 @@
 
 .logo {
   mask: url(../../../../public/assets/logo.svg) no-repeat center;
-
-  mask-size: contain; /* or cover */
+  mask-size: contain;
   mask-position: center;
   mask-repeat: no-repeat;
   background-color: #faefdf;
@@ -33,9 +32,6 @@
   gap: 3rem;
 }
 
-.user-name {
-}
-
 .user-img {
   width: 40px;
   height: 40px;
@@ -55,12 +51,33 @@
   right: 0;
   background: white;
   color: black;
-  border-radius: 8px;
+  border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
-  min-width: 140px;
+  min-width: 180px;
   z-index: 1000;
+  padding: 10px 0;
+}
+
+.dropdown-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  border-bottom: 1px solid #e5e7eb;
+  gap: 10px;
+}
+
+.dropdown-header .dropdown-photo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.dropdown-header .username {
+  font-weight: 600;
+  font-size: 14px;
+  color: #111827;
 }
 
 .dropdown button {
@@ -70,6 +87,7 @@
   cursor: pointer;
   text-align: left;
   font-size: 14px;
+  color: #374151;
 }
 
 .dropdown button:hover {

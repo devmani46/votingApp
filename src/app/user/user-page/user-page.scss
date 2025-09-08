@@ -20,6 +20,7 @@
   border-radius: 50%;
   object-fit: cover;
 }
+
 .dialog,
 .dialog-backdrop {
   position: fixed;
@@ -33,21 +34,52 @@
 
 .dialog-content {
   background: #fff;
-  padding: 24px;
-  border-radius: 12px;
+  padding: 32px;
+  border-radius: 16px;
   width: 720px;
   max-width: calc(100% - 48px);
   min-width: 420px;
   max-height: 85vh;
   overflow-y: auto;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.dialog-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.dialog-subtitle {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
 }
 
 .dialog-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 12px;
   margin-top: 1.25rem;
+}
+
+.photo-upload {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
 }
 
 .choose-photo-btn {
@@ -55,7 +87,12 @@
   color: #faefdf;
   min-height: 12rem;
   min-width: 12rem;
-  border-radius: 10px;
+  border-radius: 12px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 
   span {
     font-size: 3rem;
@@ -64,23 +101,18 @@
 
 .profile-photo-preview {
   object-fit: cover;
-  border-radius: 10px;
-  min-width: 12rem;
-  min-height: 12rem;
-  max-width: 12rem;
-  max-height: 12rem;
-}
-
-
-.photo-upload {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 15px;
-}
-
-.profile-photo-preview {
-  width: 80px;
-  height: 80px;
   border-radius: 50%;
-  object-fit: cover;
+  width: 120px;
+  height: 120px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

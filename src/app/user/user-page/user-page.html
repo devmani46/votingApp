@@ -4,7 +4,7 @@
   <div class="welcome-section">
     <img
       class="profile-photo"
-      [src]="user.photo || '/assets/default-user.png'"
+      [src]="user.photo || '/assets/admin.png'"
       alt="User Photo"
     />
     <div class="welcome-text">
@@ -18,50 +18,71 @@
   @if (showDialog) {
   <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">
     <div class="dialog-content" (click)="$event.stopPropagation()">
-      <h3>Edit Profile</h3>
+      <h2 class="dialog-title">Edit Your Profile</h2>
+      <p class="dialog-subtitle">Update your personal details and photo</p>
 
-      <form [formGroup]="form">
+      <form [formGroup]="form" class="dialog-form">
         <div class="photo-upload">
           <input type="file" accept="image/*" (change)="onPhotoSelected($event)" hidden #fileInput />
           <button type="button" class="choose-photo-btn" (click)="fileInput.click()">
             @if (photoPreview) {
             <img class="profile-photo-preview" [src]="photoPreview" alt="Profile Photo" />
             } @else {
-            <span class="material-symbols-outlined">add_photo_alternate</span>
-            <p>Add Photo</p>
+            <img class="profile-photo-preview" src="/assets/admin.png" alt="Default Photo" />
             }
           </button>
         </div>
 
-        <label>First Name</label>
-        <app-fui-input formControlName="firstName" placeholder="First Name"></app-fui-input>
+        <div class="form-grid">
+          <div>
+            <label>First Name</label>
+            <app-fui-input formControlName="firstName" placeholder="First Name"></app-fui-input>
+          </div>
 
-        <label>Last Name</label>
-        <app-fui-input formControlName="lastName" placeholder="Last Name"></app-fui-input>
+          <div>
+            <label>Last Name</label>
+            <app-fui-input formControlName="lastName" placeholder="Last Name"></app-fui-input>
+          </div>
 
-        <label>Date of Birth</label>
-        <input type="date" formControlName="dob" (change)="updateAge()" />
+          <div>
+            <label>Username</label>
+            <app-fui-input formControlName="username" placeholder="Username"></app-fui-input>
+          </div>
 
-        <label>Country</label>
-        <app-combobox
-          [options]="countries"
-          [multiple]="false"
-          placeholder="Select Country"
-          (valueChange)="onCountryChange($event)">
-        </app-combobox>
+          <div>
+            <label>Date of Birth</label>
+            <input type="date" formControlName="dob" (change)="updateAge()" />
+          </div>
 
-        <label>Email</label>
-        <app-fui-input formControlName="email" type="text" placeholder="Email"></app-fui-input>
+          <div>
+            <label>Country</label>
+            <app-combobox
+              [options]="countries"
+              [multiple]="false"
+              placeholder="Select Country"
+              (valueChange)="onCountryChange($event)">
+            </app-combobox>
+          </div>
 
-        <label>Password (leave blank to keep current)</label>
-        <app-fui-input formControlName="password" type="password" placeholder="Password"></app-fui-input>
+          <div>
+            <label>Email</label>
+            <app-fui-input formControlName="email" type="text" placeholder="Email"></app-fui-input>
+          </div>
 
-        <label>Confirm Password</label>
-        <app-fui-input formControlName="confirmPassword" type="password" placeholder="Confirm Password"></app-fui-input>
+          <div>
+            <label>Password (leave blank to keep current)</label>
+            <app-fui-input formControlName="password" type="password" placeholder="Password"></app-fui-input>
+          </div>
+
+          <div>
+            <label>Confirm Password</label>
+            <app-fui-input formControlName="confirmPassword" type="password" placeholder="Confirm Password"></app-fui-input>
+          </div>
+        </div>
 
         <div class="dialog-actions">
           <app-button appearance="secondary" (click)="closeDialog()">Cancel</app-button>
-          <app-button appearance="primary" (click)="saveProfile()">Confirm</app-button>
+          <app-button appearance="primary" (click)="saveProfile()">Save Changes</app-button>
         </div>
       </form>
     </div>

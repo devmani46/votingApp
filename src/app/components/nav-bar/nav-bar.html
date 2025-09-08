@@ -8,10 +8,10 @@
       <li>Home</li>
       <li>Campaigns</li>
     </ul>
-    <span class="user-name">{{ user.name }}</span>
+
     <div class="user-menu">
       <img
-        [src]="user.image"
+        [src]="user.photo || '/assets/admin.png'"
         alt="User"
         class="user-img"
         (click)="toggleDropdown()"
@@ -19,7 +19,10 @@
 
       @if (dropdownOpen) {
       <div class="dropdown">
-        <button type="button" (click)="goToProfile()">Profile</button>
+        <div class="dropdown-header">
+          <img [src]="user.photo || '/assets/admin.png'" alt="User" class="dropdown-photo" />
+          <span class="username">{{ user.username || 'Guest' }}</span>
+        </div>
         <button type="button" (click)="logout()">Logout</button>
       </div>
       }

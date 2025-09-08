@@ -12,20 +12,18 @@ export class NavBar {
   dropdownOpen = false;
 
   constructor(private router: Router) {
-    const stored = localStorage.getItem('userData');
-    this.user = stored ? JSON.parse(stored) : { name: 'Guest', image: 'https://i.pravatar.cc/40' };
+    const stored = localStorage.getItem('currentUser');
+    this.user = stored
+      ? JSON.parse(stored)
+      : { username: 'Guest', photo: '/assets/admin.png' };
   }
 
   toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;
   }
 
-  goToProfile() {
-    this.router.navigate(['/user-profile']);
-    this.dropdownOpen = false;
-  }
-
   logout() {
+    localStorage.removeItem('currentUser');
     this.router.navigate(['/login']);
   }
 

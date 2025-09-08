@@ -84,12 +84,5 @@ export const routes: Routes = [
       import('./user/user-page/user-page').then(m => m.UserPage),
     canActivate: [userGuard],
   },
-  {
-    path: 'user-profile',
-    loadComponent: () =>
-      import('./user/user-profile/user-profile').then(m => m.UserProfile),
-    canActivate: [userGuard],
-  },
-
   { path: '**', redirectTo: 'login' },
 ];
