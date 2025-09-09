@@ -19,6 +19,17 @@
   --card-size: 12rem;
   --max-image-height: 8rem;
   --max-image-height-hover: 4rem;
+
+  --primary-100: #8b5d33;
+  --primary-200: #be8a5e;
+  --primary-300: #ffedbc;
+  --accent-100: #bfbfbf;
+  --accent-200: #616161;
+  --text-100: #333333;
+  --text-200: #5c5c5c;
+  --bg-100: #e5e5e5;
+  --bg-200: #dbdbdb;
+  --bg-300: #b3b3b3;
 }
 
 html {

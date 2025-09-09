@@ -1,8 +1,7 @@
 <div class="register-page">
   <div class="auth-container">
-    <h2>Create an account</h2>
-
     <form class="register-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <h2>Create an account</h2>
       <div class="names" style="display: flex; gap: 1rem">
         <app-fui-field
           label="First Name"
@@ -13,6 +12,7 @@
           "
         >
           <app-fui-input
+            size="large"
             placeholder="Enter first name"
             type="text"
             [required]="true"
@@ -29,6 +29,7 @@
           "
         >
           <app-fui-input
+            size="large"
             placeholder="Enter last name"
             type="text"
             [required]="true"
@@ -46,6 +47,7 @@
         "
       >
         <app-fui-input
+          size="large"
           placeholder="Choose a username"
           type="text"
           [required]="true"
@@ -64,6 +66,7 @@
         "
       >
         <app-fui-input
+          size="large"
           placeholder="Enter your email"
           type="text"
           [required]="true"
@@ -80,6 +83,7 @@
         "
       >
         <app-fui-input
+          size="large"
           placeholder="Enter password"
           type="password"
           [required]="true"
@@ -98,6 +102,7 @@
         "
       >
         <app-fui-input
+          size="large"
           placeholder="Confirm password"
           type="password"
           [required]="true"
@@ -114,7 +119,12 @@
         >
           Register
         </app-button>
-        <app-button appearance="outline" size="medium" routerLink="/login">
+        <app-button
+          size="large"
+          appearance="outline"
+          size="medium"
+          routerLink="/login"
+        >
           Cancel
         </app-button>
       </div>
@@ -123,5 +133,10 @@
     <p class="auth-link" style="text-align: center">
       Already have an account? <a routerLink="/login">Login</a>
     </p>
+  </div>
+  <div class="aesthetic-container">
+    <div class="aesthetic">
+      <h2>This is another aesthetic</h2>
+    </div>
   </div>
 </div>

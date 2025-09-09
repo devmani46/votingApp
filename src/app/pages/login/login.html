@@ -1,8 +1,7 @@
 <div class="login-page">
   <div class="auth-container">
-    <h2>Sign in</h2>
-
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <h2>Sign in</h2>
       <app-fui-field
         label="Email"
         [errorMessage]="
@@ -14,6 +13,7 @@
         "
       >
         <app-fui-input
+          size="large"
           placeholder="Enter your email"
           formControlName="email"
           [required]="true"
@@ -29,6 +29,7 @@
         "
       >
         <app-fui-input
+          size="large"
           placeholder="Enter password"
           type="password"
           [required]="true"
@@ -41,7 +42,7 @@
         Forget Password? <a routerLink="/forgetPassword">Reset here</a>
       </p>
 
-      <app-button appearance="primary" size="medium" type="submit">
+      <app-button size="large" appearance="primary" size="medium" type="submit">
         Login
       </app-button>
     </form>
@@ -49,5 +50,11 @@
     <p class="auth-link" style="text-align: center">
       Don’t have an account? <a routerLink="/register">Sign up</a>
     </p>
+  </div>
+
+  <div class="aesthetic-container">
+    <div class="aesthetic">
+      <h2>This is the aesthetic</h2>
+    </div>
   </div>
 </div>
