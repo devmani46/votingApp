@@ -5,13 +5,21 @@
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
-  z-index: 1001;
-
+  z-index: 1003;
   span {
     height: 4px;
     background: #333;
     border-radius: 2px;
     transition: 0.3s;
+  }
+  &.open span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  &.open span:nth-child(2) {
+    opacity: 0;
+  }
+  &.open span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
   }
 }
 
@@ -34,28 +42,23 @@
   padding: 20px;
   padding-left: 3rem;
   transition: left 0.3s ease-in-out;
-
   &.open {
     left: 0;
   }
-
   .sidebar-header {
     display: flex;
     flex-direction: column;
     align-items: center;
-
     .masked-svg {
       -webkit-mask: url(../../../../public/assets/logo.svg) no-repeat center;
       mask: url(../../../../public/assets/logo.svg) no-repeat center;
-
-      mask-size: contain; /* or cover */
+      mask-size: contain;
       mask-position: center;
       mask-repeat: no-repeat;
-      background-color: #fffcec; /* The desired color */
+      background-color: #fffcec;
       width: 4rem;
-      height: 4rem; /* Adjust as needed */
+      height: 4rem;
     }
-
     .close-btn {
       color: #fffcec;
       align-self: flex-end;
@@ -64,29 +67,24 @@
       font-size: 24px;
       cursor: pointer;
       transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
-
       &:hover {
         border-radius: 100px;
         transform: scale(1.2);
       }
     }
-
     .logo {
       margin-top: 10px;
       max-width: 120px;
     }
   }
-
   nav {
     margin-top: 30px;
-
     ul {
       display: flex;
       flex-direction: column;
       gap: 10px;
       list-style: none;
       padding: 0;
-
       li {
         font-weight: 600;
         font-size: 1.1rem;
@@ -95,13 +93,11 @@
         cursor: pointer;
         border-radius: 6px;
         transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
-
         &:hover {
           background: #fffcec;
           color: #20160b;
           padding-left: 1.5rem;
         }
-
         &.active {
           background: #fffcec;
           padding-left: 1.5rem;
@@ -121,8 +117,17 @@
   text-align: left;
   cursor: pointer;
   transition: color 0.2s ease;
-
   &:hover {
     color: #c9302c;
   }
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
 }

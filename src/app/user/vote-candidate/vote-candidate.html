@@ -2,24 +2,31 @@
 
 <div class="vote-candidate-page">
   @if (campaign) {
-    <h2>{{ campaign.title }}</h2>
+    <h2 class="campaign-title">{{ campaign.title }}</h2>
     <p class="description">{{ campaign.description }}</p>
 
     <div class="candidate-list">
       @for (candidate of campaign.candidates; let i = $index; track i) {
-        <div class="candidate-wrapper">
+        <div
+          class="candidate-wrapper"
+          (click)="openCandidatePopup(i)"
+          tabindex="0"
+          (keydown.enter)="openCandidatePopup(i)"
+        >
           <app-campaign-card
             [id]="i"
             [title]="candidate.name"
             [description]="candidate.bio"
             [image]="candidate.photo || '/assets/default-user.png'"
-            size="medium">
+            size="medium"
+          >
           </app-campaign-card>
 
           <app-button
             appearance="primary"
-            [disabled]="hasVoted(campaign.id)"
-            (click)="vote(i)">
+            [disabled]="hasVoted(campaign.id!)"
+            (click)="vote(i); $event.stopPropagation()"
+          >
             Vote ({{ candidate.votes ?? 0 }})
           </app-button>
         </div>
@@ -35,6 +42,76 @@
     <div class="popup" (click)="$event.stopPropagation()">
       <p>You have already voted. Only 1 vote per user per campaign.</p>
       <app-button appearance="primary" (click)="closePopup()">OK</app-button>
+    </div>
+  </div>
+}
+
+@if (candidatePopupOpen) {
+  <div class="detail-backdrop" (click)="closeCandidatePopup()" aria-modal="true" role="dialog">
+    <div class="detail-popup" (click)="$event.stopPropagation()" tabindex="0" aria-label="Candidate details">
+      <button class="close-btn" (click)="closeCandidatePopup()" aria-label="Close details">✕</button>
+
+      <div class="detail-top">
+        <div class="photo-wrap">
+          <img [src]="activeCandidate?.photo || '/assets/default-user.png'" [alt]="activeCandidate?.name" />
+        </div>
+
+        <div class="detail-meta">
+          <h3 class="candidate-name">{{ activeCandidate?.name }}</h3>
+          <p class="candidate-bio">{{ activeCandidate?.bio }}</p>
+
+          <div class="stat-row">
+            <div class="votes">
+              <div class="votes-count">{{ activeCandidate?.votes ?? 0 }}</div>
+              <div class="votes-label">votes</div>
+            </div>
+
+            <div
+              class="vote-bar"
+              [attr.aria-valuenow]="activeCandidate?.votes ?? 0"
+              aria-valuemin="0"
+              [attr.aria-valuemax]="totalVotes"
+            >
+              <div class="vote-fill" [style.width.%]="votePercent"></div>
+            </div>
+          </div>
+
+          <div class="popup-actions">
+            <app-button
+              appearance="primary"
+              (click)="vote(activeIndex!); $event.stopPropagation()"
+              [disabled]="hasVoted(campaign?.id!)"
+            >
+              Vote
+            </app-button>
+            <app-button appearance="secondary" (click)="closeCandidatePopup()">Close</app-button>
+          </div>
+        </div>
+      </div>
+
+      <div class="properties-section">
+        <h4>Properties</h4>
+
+        <div
+          class="props-grid"
+          *ngIf="activeCandidate?.properties && activeCandidate.properties.length > 0; else noProps"
+        >
+          @for (p of activeCandidate?.properties ?? []; let j = $index; track j) {
+            <div class="prop-chip">
+              <span class="prop-icon">🔹</span>
+              <span class="prop-text">{{ p }}</span>
+            </div>
+          }
+        </div>
+
+        <ng-template #noProps>
+          <p class="no-props">No properties were added for this candidate.</p>
+        </ng-template>
+      </div>
+
+      <div class="keyboard-hint">
+        <small>Esc to close · ← / → to switch candidate · Enter to vote</small>
+      </div>
     </div>
   </div>
 }

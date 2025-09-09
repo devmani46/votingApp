@@ -1,4 +1,4 @@
-<div class="burger-icon" (click)="toggleMenu()">
+<div class="burger-icon" [class.open]="isOpen" (click)="toggleMenu()">
   <span></span>
   <span></span>
   <span></span>
@@ -40,7 +40,6 @@
         Reports
       </li>
 
-      <!-- Admin only -->
       @if (role === 'admin') {
       <li
         routerLink="/user-management"
