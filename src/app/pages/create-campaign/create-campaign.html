@@ -1,11 +1,11 @@
 <div class="campaign-container">
-  <div class="header">
-    <app-burger-menu></app-burger-menu>
-    <h2>{{ editMode ? "Edit Campaign" : "Create Campaign" }}</h2>
-    <img class="admin-photo" src="/assets/admin.png" alt="Admin" />
-  </div>
+  <app-burger-menu></app-burger-menu>
 
   <div class="create-form">
+    <div class="header">
+      <h2>{{ editMode ? "Edit Campaign" : "Create Campaign" }}</h2>
+      <img class="admin-photo" src="/assets/admin.png" alt="Admin" />
+    </div>
     <form [formGroup]="form" (ngSubmit)="submitForm()">
       <div class="photo-divide">
         <app-fui-input
@@ -24,30 +24,33 @@
         </div>
 
         <div class="add-candidates row">
-          <label>Candidates</label>
-          <app-button appearance="primary" (click)="openDialog()">Add</app-button>
+          <h2>Candidates</h2>
+          <app-button appearance="primary" (click)="openDialog()"
+            >Add</app-button
+          >
         </div>
 
         <div class="candidates-list">
           @for (c of candidates.controls; let i = $index; track i) {
-            <app-campaign-card
-              [id]="i"
-              [title]="c.value.name"
-              [description]="c.value.bio"
-              [image]="c.value.photo"
-              size="medium"
-              (deleteCampaignEvent)="deleteCandidate($event)"
-              (edit)="openDialog($event)">
-            </app-campaign-card>
+          <app-campaign-card
+            [id]="i"
+            [title]="c.value.name"
+            [description]="c.value.bio"
+            [image]="c.value.photo"
+            size="small"
+            (deleteCampaignEvent)="deleteCandidate($event)"
+            (edit)="openDialog($event)"
+          >
+          </app-campaign-card>
           }
         </div>
-
-
 
         @if (showDialog) {
         <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">
           <div class="dialog-content" (click)="$event.stopPropagation()">
-            <h3>{{ editIndex !== null ? "Edit Candidate" : "Add Candidate" }}</h3>
+            <h3>
+              {{ editIndex !== null ? "Edit Candidate" : "Add Candidate" }}
+            </h3>
 
             <div class="candidate-form">
               <div class="candidate-form-divided">
@@ -59,7 +62,11 @@
                     hidden
                     #candidateFile
                   />
-                  <button type="button" class="choose-photo-btn" (click)="candidateFile.click()">
+                  <button
+                    type="button"
+                    class="choose-photo-btn"
+                    (click)="candidateFile.click()"
+                  >
                     @if (candidatePhotoPreview) {
                     <img
                       class="candidate-photo"
@@ -67,7 +74,9 @@
                       alt="Candidate Photo"
                     />
                     } @else {
-                    <span class="material-symbols-outlined">add_photo_alternate</span>
+                    <span class="material-symbols-outlined"
+                      >add_photo_alternate</span
+                    >
                     <h2>Add Photo</h2>
                     }
                   </button>
@@ -102,7 +111,9 @@
                       @for (p of candidateProperties; let j = $index; track j) {
                       <li>
                         <span class="prop-text">{{ p }}</span>
-                        <span class="remove-prop" (click)="removeProperty(j)">✕</span>
+                        <span class="remove-prop" (click)="removeProperty(j)"
+                          >✕</span
+                        >
                       </li>
                       }
                     </ul>
@@ -112,14 +123,18 @@
             </div>
 
             <div class="dialog-actions">
-              <app-button appearance="secondary" (click)="closeDialog()">Cancel</app-button>
-              <app-button appearance="primary" (click)="saveCandidate()">Save</app-button>
+              <app-button appearance="secondary" (click)="closeDialog()"
+                >Cancel</app-button
+              >
+              <app-button appearance="primary" (click)="saveCandidate()"
+                >Save</app-button
+              >
             </div>
           </div>
         </div>
         }
 
-        <div class="row">
+        <div class="row dates">
           <div class="start-date">
             <label>Start Date:</label>
             <input type="date" formControlName="startDate" />

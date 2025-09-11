@@ -1,9 +1,10 @@
-<div class="burger-icon" [class.open]="isOpen" (click)="toggleMenu()">
+@if (!isOpen) {
+<div class="burger-icon" (click)="toggleMenu()">
   <span></span>
   <span></span>
   <span></span>
 </div>
-
+} @if (isOpen) {
 <div class="sidebar" [class.open]="isOpen">
   <div class="sidebar-header">
     <button class="close-btn" (click)="closeMenu()">&#10005;</button>
@@ -13,13 +14,14 @@
   <nav>
     <ul>
       <li routerLink="/menu" routerLinkActive="active" (click)="closeMenu()">
-        Menu
+        <span class="material-symbols-outlined">menu</span> Menu
       </li>
       <li
         routerLink="/campaign-status"
         routerLinkActive="active"
         (click)="closeMenu()"
       >
+        <span class="material-symbols-outlined">apps</span>
         Campaign Status
       </li>
       <li
@@ -27,6 +29,7 @@
         routerLinkActive="active"
         (click)="closeMenu()"
       >
+        <span class="material-symbols-outlined">add_circle</span>
         Create Campaign
       </li>
       <li
@@ -34,10 +37,11 @@
         routerLinkActive="active"
         (click)="closeMenu()"
       >
+        <span class="material-symbols-outlined">notifications</span>
         Notifications
       </li>
       <li routerLink="/reports" routerLinkActive="active" (click)="closeMenu()">
-        Reports
+        <span class="material-symbols-outlined">report</span> Reports
       </li>
 
       @if (role === 'admin') {
@@ -46,6 +50,7 @@
         routerLinkActive="active"
         (click)="closeMenu()"
       >
+        <span class="material-symbols-outlined">manage_accounts</span>
         User Management
       </li>
       <li
@@ -53,17 +58,18 @@
         routerLinkActive="active"
         (click)="closeMenu()"
       >
+        <span class="material-symbols-outlined">account_box</span>
         Moderator Management
       </li>
       } @if (role) {
       <li>
-        <button class="logout-btn" (click)="logout()">Logout</button>
+        <button class="logout-btn" (click)="logout()">
+          <span class="material-symbols-outlined">logout</span>Logout
+        </button>
       </li>
       }
     </ul>
   </nav>
 </div>
 
-@if (isOpen) {
-<div class="overlay" (click)="closeMenu()"></div>
 }

@@ -11,7 +11,7 @@
   transition: background 150ms ease, border 150ms ease, color 150ms ease;
 
   /* Base (secondary) appearance */
-  background-color: #fff;
+  background-color: var(--colorNeutralBackground2);
   color: #333;
   border-color: #ccc;
 

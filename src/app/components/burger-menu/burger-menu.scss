@@ -1,4 +1,5 @@
 .burger-icon {
+  margin: 2rem;
   width: 30px;
   height: 24px;
   display: flex;
@@ -25,25 +26,20 @@
 
 .sidebar {
   font-family: Manrope;
-  position: fixed;
-  top: 0;
-  left: -30%;
-  width: 30%;
   height: 100%;
-  background: rgba(32, 22, 11, 10.08);
-  background: linear-gradient(
-    160deg,
-    rgba(32, 22, 11, 0.88) 0%,
-    rgba(250, 239, 223, 0) 100%
-  );
+  width: 0;
+  min-width: 0;
+  background: var(--bg-100);
   backdrop-filter: blur(20px);
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
-  z-index: 1002;
-  padding: 20px;
-  padding-left: 3rem;
-  transition: left 0.3s ease-in-out;
+  z-index: 2;
+  padding: 0;
+  overflow: hidden;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   &.open {
-    left: 0;
+    width: 320px;
+    min-width: 320px;
+    padding: 20px 3rem;
   }
   .sidebar-header {
     display: flex;
@@ -55,7 +51,12 @@
       mask-size: contain;
       mask-position: center;
       mask-repeat: no-repeat;
-      background-color: #fffcec;
+      background: #8b5d33;
+      background: linear-gradient(
+        129deg,
+        rgba(139, 93, 51, 1) 35%,
+        rgba(190, 138, 94, 1) 100%
+      );
       width: 4rem;
       height: 4rem;
     }
@@ -82,26 +83,39 @@
     ul {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 1rem;
       list-style: none;
       padding: 0;
       li {
-        font-weight: 600;
-        font-size: 1.1rem;
-        color: #fffcec;
+        display: flex;
+        gap: 0.8rem;
+        align-items: center;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--text-200);
         padding: 10px;
         cursor: pointer;
-        border-radius: 6px;
-        transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+        border-radius: 10px;
+        transition: all 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
         &:hover {
-          background: #fffcec;
-          color: #20160b;
+          background: linear-gradient(
+            129deg,
+            rgba(139, 93, 51, 1) 35%,
+            rgba(190, 138, 94, 1) 100%
+          );
+          color: var(--bg-100);
           padding-left: 1.5rem;
         }
         &.active {
-          background: #fffcec;
+          background: #8b5d33;
+          background: linear-gradient(
+            129deg,
+            rgba(139, 93, 51, 1) 35%,
+            rgba(190, 138, 94, 1) 100%
+          );
           padding-left: 1.5rem;
-          color: #20160b;
+          color: var(--bg-100);
+
           font-weight: bold;
         }
       }

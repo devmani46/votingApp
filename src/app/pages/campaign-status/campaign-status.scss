@@ -1,11 +1,12 @@
 .campaign-status-page {
-  --colorNeutralBackground1: #fffcec;
+  --colorNeutralBackground1: var(--bg-100);
   --colorNeutralStroke1: rgba(0, 0, 0, 0.1);
   --colorBrand90: #20160b;
   font-family: Manrope;
-  background-color: #faefdf;
+  background-color: var(--bg-200);
+  color: var(--text-200);
   min-height: 100vh;
-  padding-top: 2rem;
+  display: flex;
 
   .campaign-list {
     padding-top: 2rem;

@@ -9,7 +9,7 @@ import { Router, RouterModule } from '@angular/router';
   styleUrls: ['./burger-menu.scss'],
 })
 export class BurgerMenu {
-  isOpen = false;
+  isOpen = true;
   role: string | null = null;
 
   constructor(private router: Router) {

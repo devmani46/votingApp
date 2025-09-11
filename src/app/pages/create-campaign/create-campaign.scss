@@ -1,32 +1,33 @@
 .campaign-container {
-  --colorNeutralBackground1: #fffcec;
+  --colorNeutralBackground1: var(--bg-100);
   --colorNeutralStroke1: rgba(0, 0, 0, 0.1);
-  --colorBrand90: #20160b;
+  --colorNeutralStrokeAccessible: rgba(0, 0, 0, 0.1);
+  --colorBrand90: var(--primary-100);
 
-  --card-size: 20rem;
-  --max-image-height: 16rem;
-  --max-image-height-hover: 12rem;
+  --card-size: 15rem;
+  --max-image-height: 12rem;
+  --min-image-height: 12rem;
+  --max-image-height-hover: 10rem;
 
   font-family: Manrope;
   display: flex;
-  flex-direction: column;
   gap: 16px;
-  background-color: #faefdf;
+  background-color: var(--bg-200);
   min-height: 100vh;
   min-width: 100vw;
-  padding-bottom: 2rem;
-  padding-top: 2rem;
+  color: var(--text-100);
 }
 
 .header {
   display: flex;
   align-items: center;
   gap: 2.5rem;
-  padding: 1.6rem 4rem;
+  padding: 3rem 0rem;
 
   h2 {
     font-size: 2rem;
     font-weight: 800;
+    letter-spacing: -1.5px;
   }
 
   .admin-photo {
@@ -37,23 +38,46 @@
 }
 
 .create-form {
-  width: 50%;
+  width: 60%;
   padding-left: 8rem;
+  padding-bottom: 4rem;
 
   form {
     display: flex;
+    flex-direction: column;
     gap: 2rem;
+
+    .add-banner {
+      order: -1;
+    }
+
+    .add-candidates {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+
+      h2 {
+        font-size: 1.3rem;
+        font-weight: 600;
+      }
+    }
   }
 
   .photo-divide {
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
+    gap: 3rem;
+
+    .dates {
+      display: flex;
+      gap: 2rem;
+    }
   }
 }
 
 .description-box {
-  background-color: #fffcec;
+  border: solid 1px var(--colorNeutralStrokeAccessible);
+  background-color: var(--bg-100);
   padding: 1rem;
   border-radius: 6px;
   min-width: 30rem;
@@ -63,10 +87,10 @@
 .image-upload {
   cursor: pointer;
   position: relative;
-  background-color: #20160b;
-  border: 1px solid #20160b;
-  color: #faefdf;
-  min-width: 30rem;
+  background-color: var(--bg-100);
+  border: 1px solid var(--bg-100);
+  color: var(--text-200);
+  min-width: 100%;
   min-height: 12rem;
   border-radius: 6px;
 
@@ -88,8 +112,7 @@
 .logo-preview {
   img {
     object-fit: cover;
-    min-width: 30rem;
-    max-width: 30rem;
+    min-width: 100%;
     max-height: 12rem;
   }
 }
@@ -145,7 +168,7 @@
 }
 
 .dialog-content {
-  background: linear-gradient(145deg, #ffffff, #f9f4ee);
+  background: var(--bg-200);
   padding: 32px;
   border-radius: 20px;
   width: 720px;
@@ -239,7 +262,7 @@
 }
 
 .bio-box {
-  background-color: #fffcec;
+  background-color: var(--bg-100);
   padding: 0.8rem;
   border-radius: 8px;
   height: 10rem;
@@ -258,7 +281,7 @@
   }
 
   input {
-    background-color: #fffcec;
+    background-color: var(--bg-100);
     padding: 0.7rem;
     border-radius: 5px;
     font-size: 1.1rem;
