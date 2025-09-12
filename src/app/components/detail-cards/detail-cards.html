@@ -1,23 +1,8 @@
-<div class="detail-card" [ngClass]="size" [style.--accent-color]="color">
-  <ng-container *ngIf="size === 'large'">
-    <div class="left">
-      <span class="material-icons icon">{{ icon }}</span>
-    </div>
-
-    <div class="right">
-      <div class="title">{{ title }}</div>
-      <div class="desc">{{ description }}</div>
-    </div>
-  </ng-container>
-
-  <ng-container *ngIf="size === 'small'">
-    <div class="small-top">
-      <div class="small-title">{{ title }}</div>
-      <div class="small-number">{{ number ?? '—' }}</div>
-    </div>
-    <div class="small-bottom">
-      <span class="material-icons small-icon">{{ icon }}</span>
-      <div class="small-desc">{{ description }}</div>
-    </div>
-  </ng-container>
+<div class="detail-card">
+  <h3 class="title">{{ title }}</h3>
+  <p class="number" *ngIf="number !== undefined">{{ number }}</p>
+  <div class="description-row">
+    <span class="description">{{ description }}</span>
+    <span class="material-icons icon">{{ icon }}</span>
+  </div>
 </div>

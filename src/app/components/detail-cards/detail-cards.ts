@@ -9,15 +9,8 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./detail-cards.scss']
 })
 export class DetailCards {
-  @Input() title: string = '';
-
-  @Input() number?: number | string;
-
-  @Input() description: string = '';
-
-  @Input() icon: string = '';
-
-  @Input() size: 'small' | 'large' = 'small';
-
-  @Input() color: string = '#2196F3';
+  @Input() title!: string;
+  @Input() description!: string;
+  @Input() icon!: string;
+  @Input() number?: number;
 }
