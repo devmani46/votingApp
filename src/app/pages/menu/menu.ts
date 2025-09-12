@@ -2,15 +2,26 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { Router } from '@angular/router';
+
 import { CampaignService, Campaign } from '../../services/campaign';
 import { CampaignCard } from '../../components/campaign-card/campaign-card';
 import { Button } from '../../components/button/button';
 import { BurgerMenu } from '../../components/burger-menu/burger-menu';
+import { DetailCards } from '../../components/detail-cards/detail-cards';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, CampaignCard, Button, BurgerMenu, NgxEchartsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    CampaignCard,
+    Button,
+    BurgerMenu,
+    NgxEchartsModule,
+    DetailCards
+  ],
   templateUrl: './menu.html',
   styleUrls: ['./menu.scss']
 })
@@ -20,7 +31,7 @@ export class Menu {
   selectedCampaign: Campaign | null = null;
   campaigns: Campaign[] = [];
 
-  constructor(private campaignService: CampaignService) {
+  constructor(private campaignService: CampaignService, private router: Router) {
     this.loadCampaigns();
   }
 
@@ -45,6 +56,59 @@ export class Menu {
       }
     }
   }
+  get totalUsers(): number {
+    const stored = localStorage.getItem('users');
+    try {
+      const arr = stored ? JSON.parse(stored) : [];
+      return Array.isArray(arr) ? arr.length : 0;
+    } catch {
+      return 0;
+    }
+  }
+
+  get totalEmployees(): number {
+    const stored = localStorage.getItem('employees');
+    try {
+      const arr = stored ? JSON.parse(stored) : [];
+      return Array.isArray(arr) ? arr.length : 0;
+    } catch {
+      return 0;
+    }
+  }
+
+  get totalEvents(): number {
+    const stored = localStorage.getItem('events');
+    try {
+      const arr = stored ? JSON.parse(stored) : [];
+      return Array.isArray(arr) ? arr.length : 0;
+    } catch {
+      return 0;
+    }
+  }
+
+  get totalCampaigns(): number {
+    return Array.isArray(this.campaigns) ? this.campaigns.length : 0;
+  }
+
+  get totalCandidates(): number {
+    let cnt = 0;
+    for (const c of (this.campaigns || [])) {
+      if (Array.isArray(c.candidates)) cnt += c.candidates.length;
+    }
+    return cnt;
+  }
+
+  get totalVotes(): number {
+    let v = 0;
+    for (const c of (this.campaigns || [])) {
+      if (Array.isArray(c.candidates)) {
+        for (const cand of c.candidates) {
+          v += (cand.votes ?? 0);
+        }
+      }
+    }
+    return v;
+  }
 
   filteredCampaigns(): Campaign[] {
     const term = this.searchTerm?.trim().toLowerCase() ?? '';
@@ -66,11 +130,10 @@ export class Menu {
     return arr[0];
   }
 
-getImage(entity: any): string {
-  if (!entity) return '/assets/default-user.png';
-  return entity.logo ?? entity.photo ?? '/assets/default-user.png';
-}
-
+  getImage(entity: any): string {
+    if (!entity) return '/assets/default-user.png';
+    return entity.logo ?? entity.photo ?? '/assets/default-user.png';
+  }
 
   candidateCount(campaign: Campaign | null): number {
     if (!campaign) return 0;
@@ -147,5 +210,9 @@ getImage(entity: any): string {
         }
       ]
     };
+  }
+
+  navigate(path: string) {
+    this.router.navigate([path]);
   }
 }

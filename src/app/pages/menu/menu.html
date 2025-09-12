@@ -21,6 +21,80 @@
       />
     </div>
 
+    <div class="details-row" style="display:flex; flex-wrap:wrap; gap:16px; margin:18px 0;">
+      <app-detail-cards
+        size="large"
+        title="Create Campaign"
+        description="Start a new campaign"
+        icon="add_circle"
+        color="#00BFA6"
+        (click)="navigate('/create-campaign')">
+      </app-detail-cards>
+
+      <app-detail-cards
+        size="large"
+        title="All Campaigns"
+        description="View and manage campaigns"
+        icon="campaign"
+        color="#1976D2"
+        (click)="navigate('/campaign-status')">
+      </app-detail-cards>
+
+      <app-detail-cards
+        size="large"
+        title="Notifications"
+        description="Check system notifications"
+        icon="notifications"
+        color="#FFB300"
+        (click)="navigate('/notifications')">
+      </app-detail-cards>
+
+      <app-detail-cards
+        size="large"
+        title="Reports"
+        description="View campaign reports"
+        icon="insights"
+        color="#7C4DFF"
+        (click)="navigate('/reports')">
+      </app-detail-cards>
+
+      <app-detail-cards
+        size="small"
+        title="Total Users"
+        [number]="totalUsers"
+        description="Registered users in the system"
+        icon="group"
+        color="#22C55E">
+      </app-detail-cards>
+
+      <app-detail-cards
+        size="small"
+        title="Total Votes"
+        [number]="totalVotes"
+        description="Total votes cast"
+        icon="how_to_vote"
+        color="#F59E0B">
+      </app-detail-cards>
+
+      <app-detail-cards
+        size="small"
+        title="Total Campaigns"
+        [number]="totalCampaigns"
+        description="Active campaigns"
+        icon="campaign"
+        color="#3B82F6">
+      </app-detail-cards>
+
+      <app-detail-cards
+        size="small"
+        title="Total Candidates"
+        [number]="totalCandidates"
+        description="All candidates across campaigns"
+        icon="person"
+        color="#A78BFA">
+      </app-detail-cards>
+    </div>
+
     <div class="dashboard-content">
       @if (viewMode === 'cards') {
       <div class="campaign-cards">
