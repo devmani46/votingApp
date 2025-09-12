@@ -13,4 +13,5 @@ export class DetailCards {
   @Input() description!: string;
   @Input() icon!: string;
   @Input() number?: number;
+  @Input() size: 'small' | 'medium' | 'large' = 'medium';
 }

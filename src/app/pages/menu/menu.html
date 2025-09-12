@@ -9,9 +9,9 @@
         Switch to {{ viewMode === "cards" ? "Charts" : "Cards" }} View
       </app-button>
 
-      <app-button shape="circular" appearance="outline" (click)="exportCSV()"
-        >Export CSV</app-button
-      >
+      <app-button shape="circular" appearance="outline" (click)="exportCSV()">
+        Export CSV
+      </app-button>
 
       <input
         type="text"
@@ -21,78 +21,74 @@
       />
     </div>
 
-    <div class="details-row" style="display:flex; flex-wrap:wrap; gap:16px; margin:18px 0;">
-      <app-detail-cards
-        size="large"
-        title="Create Campaign"
-        description="Start a new campaign"
-        icon="add_circle"
-        color="#00BFA6"
-        (click)="navigate('/create-campaign')">
-      </app-detail-cards>
+    <div class="details-section">
+      <div class="details-row large-cards">
+        <app-detail-cards
+          size="large"
+          title="Create Campaign"
+          description="Start a new campaign"
+          icon="add_circle"
+          (click)="navigate('/create-campaign')">
+        </app-detail-cards>
 
-      <app-detail-cards
-        size="large"
-        title="All Campaigns"
-        description="View and manage campaigns"
-        icon="campaign"
-        color="#1976D2"
-        (click)="navigate('/campaign-status')">
-      </app-detail-cards>
+        <app-detail-cards
+          size="large"
+          title="All Campaigns"
+          description="View and manage campaigns"
+          icon="campaign"
+          (click)="navigate('/campaign-status')">
+        </app-detail-cards>
 
-      <app-detail-cards
-        size="large"
-        title="Notifications"
-        description="Check system notifications"
-        icon="notifications"
-        color="#FFB300"
-        (click)="navigate('/notifications')">
-      </app-detail-cards>
+        <app-detail-cards
+          size="large"
+          title="Notifications"
+          description="Check system notifications"
+          icon="notifications"
+          (click)="navigate('/notifications')">
+        </app-detail-cards>
 
-      <app-detail-cards
-        size="large"
-        title="Reports"
-        description="View campaign reports"
-        icon="insights"
-        color="#7C4DFF"
-        (click)="navigate('/reports')">
-      </app-detail-cards>
+        <app-detail-cards
+          size="large"
+          title="Reports"
+          description="View campaign reports"
+          icon="insights"
+          (click)="navigate('/reports')">
+        </app-detail-cards>
+      </div>
 
-      <app-detail-cards
-        size="small"
-        title="Total Users"
-        [number]="totalUsers"
-        description="Registered users in the system"
-        icon="group"
-        color="#22C55E">
-      </app-detail-cards>
+      <div class="details-row small-cards">
+        <app-detail-cards
+          size="small"
+          title="Total Users"
+          [number]="totalUsers"
+          description="Registered users in the system"
+          icon="group">
+        </app-detail-cards>
 
-      <app-detail-cards
-        size="small"
-        title="Total Votes"
-        [number]="totalVotes"
-        description="Total votes cast"
-        icon="how_to_vote"
-        color="#F59E0B">
-      </app-detail-cards>
+        <app-detail-cards
+          size="small"
+          title="Total Votes"
+          [number]="totalVotes"
+          description="Total votes cast"
+          icon="how_to_vote">
+        </app-detail-cards>
 
-      <app-detail-cards
-        size="small"
-        title="Total Campaigns"
-        [number]="totalCampaigns"
-        description="Active campaigns"
-        icon="campaign"
-        color="#3B82F6">
-      </app-detail-cards>
+        <app-detail-cards
+          size="small"
+          title="Total Campaigns"
+          [number]="totalCampaigns"
+          description="Active campaigns"
+          icon="campaign">
+        </app-detail-cards>
 
-      <app-detail-cards
-        size="small"
-        title="Total Candidates"
-        [number]="totalCandidates"
-        description="All candidates across campaigns"
-        icon="person"
-        color="#A78BFA">
-      </app-detail-cards>
+        <app-detail-cards
+          size="small"
+          title="Total Candidates"
+          [number]="totalCandidates"
+          description="All candidates across campaigns"
+          icon="person">
+        </app-detail-cards>
+      </div>
     </div>
 
     <div class="dashboard-content">
@@ -104,8 +100,7 @@
           [description]="'Votes: ' + getTotalVotes(campaign)"
           [image]="getImage(campaign)"
           size="medium"
-          (click)="openCampaignDetails(campaign)"
-        >
+          (click)="openCampaignDetails(campaign)">
           <div class="card-meta">
             <div class="meta-row">
               <div class="meta-item">
@@ -133,51 +128,37 @@
         <div class="drawer-inner">
           <div class="drawer-header">
             <h3>{{ selectedCampaign.title }}</h3>
-            <app-button appearance="secondary" (click)="closeCampaignDetails()"
-              >Close</app-button
-            >
+            <app-button appearance="secondary" (click)="closeCampaignDetails()">Close</app-button>
           </div>
 
           <div class="drawer-stats">
             <div class="stat">
-              <div class="stat-value">
-                {{ getTotalVotes(selectedCampaign) }}
-              </div>
+              <div class="stat-value">{{ getTotalVotes(selectedCampaign) }}</div>
               <div class="stat-label">Total Votes</div>
             </div>
             <div class="stat">
-              <div class="stat-value">
-                {{ getTopCandidate(selectedCampaign)?.name ?? "—" }}
-              </div>
+              <div class="stat-value">{{ getTopCandidate(selectedCampaign)?.name ?? "—" }}</div>
               <div class="stat-label">Top Candidate</div>
             </div>
             <div class="stat">
-              <div class="stat-value">
-                {{ candidateCount(selectedCampaign) }}
-              </div>
+              <div class="stat-value">{{ candidateCount(selectedCampaign) }}</div>
               <div class="stat-label">Candidates</div>
             </div>
           </div>
 
           @if (candidateCount(selectedCampaign) > 0) {
           <div class="drawer-chart">
-            <div
-              echarts
-              [options]="getChartOptions(selectedCampaign)"
-              class="echart"
-            ></div>
+            <div echarts [options]="getChartOptions(selectedCampaign)" class="echart"></div>
           </div>
           }
 
           <div class="candidate-grid">
-            @for (candidate of selectedCampaign.candidates; track
-            candidate.name) {
+            @for (candidate of selectedCampaign.candidates; track candidate.name) {
             <app-campaign-card
               [title]="candidate.name"
               [description]="candidate.bio"
               [image]="getImage(candidate)"
-              size="small"
-            >
+              size="small">
               <div class="candidate-meta">
                 <div class="candidate-votes">
                   {{ candidate.votes ?? 0 }} votes
@@ -194,11 +175,7 @@
         @for (campaign of filteredCampaigns(); track campaign.id) {
         <div class="chart-card">
           <h3>{{ campaign.title }}</h3>
-          <div
-            echarts
-            [options]="getChartOptions(campaign)"
-            class="echart"
-          ></div>
+          <div echarts [options]="getChartOptions(campaign)" class="echart"></div>
         </div>
         }
       </div>

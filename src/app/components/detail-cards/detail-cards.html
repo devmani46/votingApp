@@ -1,4 +1,4 @@
-<div class="detail-card">
+<div class="detail-card" [ngClass]="size">
   <h3 class="title">{{ title }}</h3>
   <p class="number" *ngIf="number !== undefined">{{ number }}</p>
   <div class="description-row">
