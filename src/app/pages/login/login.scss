@@ -10,6 +10,7 @@
   --colorNeutralStroke1: rgb(0, 0, 0, 0.15);
   --colorBrand90: var(--text-100);
   --colorNeutralStrokeAccessible: rgb(0, 0, 0, 0.15);
+  --colorBrandBackgroundHover: var(--primary-100);
 }
 
 .auth-container {
@@ -51,6 +52,11 @@
 
 .auth-link {
   margin-top: 0.5rem;
+  transition: color 0.2s ease-in-out;
+
+  &:hover {
+    color: var(--primary-100);
+  }
 }
 
 .aesthetic-container {

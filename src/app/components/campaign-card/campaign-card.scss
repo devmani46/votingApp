@@ -1,11 +1,16 @@
 .campaign-card {
+  font-family: Manrope;
   padding: 5px;
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--colorNeutralStroke1, #ccc);
-  border-radius: 12px;
+  border-radius: 18px;
   overflow: hidden;
-  background: var(--colorNeutralBackground1, #fff);
+  background: linear-gradient(
+    126deg,
+    var(--secondary-800) 35%,
+    var(--secondary-900) 100%
+  );
+  color: var(--bg-100);
   transition: all 0.3s ease;
   position: relative;
   min-height: var(--card-size);
@@ -47,14 +52,12 @@
       margin: 0;
       font-size: 1.2rem;
       font-weight: 700;
-      color: var(--colorNeutralForeground1);
     }
 
     .description {
       max-height: 0;
       margin: 8px 0 0;
       font-size: 0.9rem;
-      color: var(--colorNeutralForeground1);
       opacity: 0;
       transition: all 200ms ease-in-out;
     }

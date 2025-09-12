@@ -1,25 +1,30 @@
-<app-burger-menu></app-burger-menu>
-<h2 class="dashboard-title">Admin Dashboard</h2>
+<div class="menu-page">
+  <app-burger-menu></app-burger-menu>
 
-<div class="dashboard-controls">
-  <app-button appearance="secondary" (click)="toggleView()">
-    Switch to {{ viewMode === 'cards' ? 'Charts' : 'Cards' }} View
-  </app-button>
+  <div class="campaign-list">
+    <h2 class="dashboard-title">Admin Dashboard</h2>
 
-  <app-button appearance="secondary" (click)="exportCSV()">Export CSV</app-button>
+    <div class="dashboard-controls">
+      <app-button shape="circular" appearance="outline" (click)="toggleView()">
+        Switch to {{ viewMode === "cards" ? "Charts" : "Cards" }} View
+      </app-button>
 
-  <input
-    type="text"
-    class="search-input"
-    placeholder="Search campaigns..."
-    [(ngModel)]="searchTerm"
-  />
-</div>
+      <app-button shape="circular" appearance="outline" (click)="exportCSV()"
+        >Export CSV</app-button
+      >
 
-<div class="dashboard-content">
-  @if (viewMode === 'cards') {
-    <div class="campaign-cards">
-      @for (campaign of filteredCampaigns(); track campaign.id) {
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search campaigns..."
+        [(ngModel)]="searchTerm"
+      />
+    </div>
+
+    <div class="dashboard-content">
+      @if (viewMode === 'cards') {
+      <div class="campaign-cards">
+        @for (campaign of filteredCampaigns(); track campaign.id) {
         <app-campaign-card
           [title]="campaign.title"
           [description]="'Votes: ' + getTotalVotes(campaign)"
@@ -34,7 +39,9 @@
                 <div class="meta-label">Total votes</div>
               </div>
               <div class="meta-item">
-                <div class="meta-value">{{ getTopCandidate(campaign)?.name ?? '—' }}</div>
+                <div class="meta-value">
+                  {{ getTopCandidate(campaign)?.name ?? "—" }}
+                </div>
                 <div class="meta-label">Top candidate</div>
               </div>
               <div class="meta-item">
@@ -44,66 +51,84 @@
             </div>
           </div>
         </app-campaign-card>
-      }
-    </div>
+        }
+      </div>
 
-    <div class="side-drawer" [class.open]="selectedCampaign">
-      @if (selectedCampaign) {
+      <div class="side-drawer" [class.open]="selectedCampaign">
+        @if (selectedCampaign) {
         <div class="drawer-inner">
           <div class="drawer-header">
             <h3>{{ selectedCampaign.title }}</h3>
-            <app-button appearance="secondary" (click)="closeCampaignDetails()">Close</app-button>
+            <app-button appearance="secondary" (click)="closeCampaignDetails()"
+              >Close</app-button
+            >
           </div>
 
           <div class="drawer-stats">
             <div class="stat">
-              <div class="stat-value">{{ getTotalVotes(selectedCampaign) }}</div>
+              <div class="stat-value">
+                {{ getTotalVotes(selectedCampaign) }}
+              </div>
               <div class="stat-label">Total Votes</div>
             </div>
             <div class="stat">
-              <div class="stat-value">{{ getTopCandidate(selectedCampaign)?.name ?? '—' }}</div>
+              <div class="stat-value">
+                {{ getTopCandidate(selectedCampaign)?.name ?? "—" }}
+              </div>
               <div class="stat-label">Top Candidate</div>
             </div>
             <div class="stat">
-              <div class="stat-value">{{ candidateCount(selectedCampaign) }}</div>
+              <div class="stat-value">
+                {{ candidateCount(selectedCampaign) }}
+              </div>
               <div class="stat-label">Candidates</div>
             </div>
           </div>
 
           @if (candidateCount(selectedCampaign) > 0) {
-            <div class="drawer-chart">
-              <div echarts [options]="getChartOptions(selectedCampaign)" class="echart"></div>
-            </div>
+          <div class="drawer-chart">
+            <div
+              echarts
+              [options]="getChartOptions(selectedCampaign)"
+              class="echart"
+            ></div>
+          </div>
           }
 
-                <div class="candidate-grid">
-                  @for (candidate of selectedCampaign.candidates; track candidate.name) {
-                    <app-campaign-card
-                      [title]="candidate.name"
-                      [description]="candidate.bio"
-                      [image]="getImage(candidate)"
-                      size="small"
-                    >
-                      <div class="candidate-meta">
-                        <div class="candidate-votes">{{ candidate.votes ?? 0 }} votes</div>
-                      </div>
-                    </app-campaign-card>
-                  }
+          <div class="candidate-grid">
+            @for (candidate of selectedCampaign.candidates; track
+            candidate.name) {
+            <app-campaign-card
+              [title]="candidate.name"
+              [description]="candidate.bio"
+              [image]="getImage(candidate)"
+              size="small"
+            >
+              <div class="candidate-meta">
+                <div class="candidate-votes">
+                  {{ candidate.votes ?? 0 }} votes
                 </div>
-
+              </div>
+            </app-campaign-card>
+            }
+          </div>
         </div>
-      }
-    </div>
-  }
-
-  @if (viewMode === 'charts') {
-    <div class="chart-view">
-      @for (campaign of filteredCampaigns(); track campaign.id) {
+        }
+      </div>
+      } @if (viewMode === 'charts') {
+      <div class="chart-view">
+        @for (campaign of filteredCampaigns(); track campaign.id) {
         <div class="chart-card">
           <h3>{{ campaign.title }}</h3>
-          <div echarts [options]="getChartOptions(campaign)" class="echart"></div>
+          <div
+            echarts
+            [options]="getChartOptions(campaign)"
+            class="echart"
+          ></div>
         </div>
+        }
+      </div>
       }
     </div>
-  }
+  </div>
 </div>

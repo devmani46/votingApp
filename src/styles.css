@@ -6,3 +6,7 @@
 @theme {
   --color-*: initial;
 }
+
+:root {
+  --colorBrandBackgroundHover: var(--primary-100);
+}

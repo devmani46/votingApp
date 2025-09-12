@@ -3,21 +3,22 @@
 <div class="user-page-container">
   <div class="welcome-section-container">
     <div class="welcome-section">
+      <div class="welcome-text">
+        <h3>Welcome,</h3>
+        <h2>{{ user.firstName }} {{ user.lastName }}</h2>
+        <app-button
+          class="edit-profile-btn"
+          appearance="primary"
+          (click)="openDialog()"
+          >Edit Profile</app-button
+        >
+      </div>
+
       <img
         class="profile-photo"
         [src]="user.photo || '/assets/admin.png'"
         alt="User Photo"
       />
-      <div class="welcome-text">
-        <h3>Welcome,</h3>
-        <h2>{{ user.firstName }} {{ user.lastName }}</h2>
-      </div>
-      <app-button
-        class="edit-profile-btn"
-        appearance="primary"
-        (click)="openDialog()"
-        >Edit Profile</app-button
-      >
     </div>
   </div>
 

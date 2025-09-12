@@ -25,7 +25,7 @@
 }
 
 .sidebar {
-  font-family: Manrope;
+  font-family: Onest;
   height: 100%;
   width: 0;
   min-width: 0;
@@ -54,10 +54,10 @@
       background: #8b5d33;
       background: linear-gradient(
         129deg,
-        rgba(139, 93, 51, 1) 35%,
-        rgba(190, 138, 94, 1) 100%
+        var(--primary-100) 35%,
+        var(--primary-200) 100%
       );
-      width: 4rem;
+      width: 6rem;
       height: 4rem;
     }
     .close-btn {
@@ -86,37 +86,52 @@
       gap: 1rem;
       list-style: none;
       padding: 0;
+
       li {
         display: flex;
         gap: 0.8rem;
         align-items: center;
-        font-weight: 700;
+        font-weight: 500;
         font-size: 0.95rem;
         color: var(--text-200);
         padding: 10px;
         cursor: pointer;
         border-radius: 10px;
         transition: all 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+
+        span {
+          color: var(--primary-100);
+        }
+
+        &:nth-child(7) {
+          min-width: 16rem;
+        }
         &:hover {
           background: linear-gradient(
             129deg,
-            rgba(139, 93, 51, 1) 35%,
-            rgba(190, 138, 94, 1) 100%
+            var(--primary-100) 35%,
+            var(--primary-200) 100%
           );
-          color: var(--bg-100);
+          color: var(--primary-300);
           padding-left: 1.5rem;
+
+          span {
+            color: inherit;
+          }
         }
         &.active {
           background: #8b5d33;
           background: linear-gradient(
-            129deg,
-            rgba(139, 93, 51, 1) 35%,
-            rgba(190, 138, 94, 1) 100%
+            160deg,
+            var(--primary-100) 35%,
+            var(--primary-200) 100%
           );
           padding-left: 1.5rem;
-          color: var(--bg-100);
+          color: var(--primary-300);
 
-          font-weight: bold;
+          span {
+            color: inherit;
+          }
         }
       }
     }
@@ -124,6 +139,7 @@
 }
 
 .logout-btn {
+  margin-top: 3rem;
   width: 100%;
   background: transparent;
   border: none;

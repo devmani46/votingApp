@@ -51,3 +51,9 @@
     background-color: var(--primary-100);
   }
 }
+
+.auth-link {
+  &:hover {
+    color: var(--colorBrandBackgroundHover);
+  }
+}

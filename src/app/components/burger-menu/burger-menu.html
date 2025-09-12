@@ -14,7 +14,8 @@
   <nav>
     <ul>
       <li routerLink="/menu" routerLinkActive="active" (click)="closeMenu()">
-        <span class="material-symbols-outlined">menu</span> Menu
+        <span class="material-symbols-outlined">grouped_bar_chart</span>
+        Statistics
       </li>
       <li
         routerLink="/campaign-status"
@@ -22,7 +23,7 @@
         (click)="closeMenu()"
       >
         <span class="material-symbols-outlined">apps</span>
-        Campaign Status
+        Campaigns
       </li>
       <li
         routerLink="/create-campaign"
@@ -62,10 +63,8 @@
         Moderator Management
       </li>
       } @if (role) {
-      <li>
-        <button class="logout-btn" (click)="logout()">
-          <span class="material-symbols-outlined">logout</span>Logout
-        </button>
+      <li class="logout-btn" (click)="logout()">
+        <span class="material-symbols-outlined">logout</span>Logout
       </li>
       }
     </ul>
