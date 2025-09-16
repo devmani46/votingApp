@@ -25,7 +25,11 @@
 
         <div class="add-candidates row">
           <h2>Candidates</h2>
-          <app-button appearance="primary" (click)="openDialog()"
+          <app-button
+            size="large"
+            shape="circular"
+            appearance="primary"
+            (click)="openDialog()"
             >Add</app-button
           >
         </div>
@@ -145,7 +149,7 @@
           </div>
         </div>
 
-        <app-button type="submit" appearance="primary">
+        <app-button size="large" type="submit" appearance="primary">
           {{ editMode ? "Update Campaign" : "Create Campaign" }}
         </app-button>
       </div>

@@ -1,3 +1,26 @@
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 0%, 100% 0%, 0% 50%, 100% 50%, 0% 100%, 100% 100%,
+      50% 0%;
+  }
+  25% {
+    background-position: 30% 70%, 80% 20%, 10% 40%, 90% 50%, 20% 90%, 70% 10%,
+      60% 30%;
+  }
+  50% {
+    background-position: 70% 30%, 40% 80%, 50% 10%, 10% 50%, 90% 20%, 30% 70%,
+      20% 60%;
+  }
+  75% {
+    background-position: 50% 90%, 60% 40%, 80% 20%, 30% 70%, 10% 50%, 50% 20%,
+      80% 10%;
+  }
+  100% {
+    background-position: 0% 0%, 100% 0%, 0% 50%, 100% 50%, 0% 100%, 100% 100%,
+      50% 0%;
+  }
+}
+
 .campaign-container {
   --colorNeutralBackground1: var(--bg-100);
   --colorNeutralStroke1: rgba(0, 0, 0, 0.1);
@@ -45,10 +68,31 @@
   form {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 3rem;
 
     .add-banner {
+      border-radius: 10px;
+      padding: 0rem;
+      background-color: #ffbe99;
+      background-image: radial-gradient(
+          at 62% 72%,
+          hsla(255, 86%, 69%, 1) 0px,
+          transparent 50%
+        ),
+        radial-gradient(at 66% 19%, hsla(20, 78%, 65%, 1) 0px, transparent 50%),
+        radial-gradient(at 88% 33%, hsla(20, 78%, 65%, 1) 0px, transparent 50%),
+        radial-gradient(at 96% 8%, hsla(331, 73%, 62%, 1) 0px, transparent 50%),
+        radial-gradient(at 71% 22%, hsla(342, 95%, 70%, 1) 0px, transparent 50%),
+        radial-gradient(at 86% 96%, hsla(346, 63%, 73%, 1) 0px, transparent 50%),
+        radial-gradient(at 51% 0%, hsla(250, 90%, 68%, 1) 0px, transparent 50%);
+      background-size: 200% 200%;
       order: -1;
+      transition: all 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+
+      &:hover {
+        padding: 0.3rem;
+        animation: gradientMove 3s linear infinite;
+      }
     }
 
     .add-candidates {
@@ -76,11 +120,12 @@
 }
 
 .description-box {
+  font-size: 1rem;
   border: solid 1px var(--colorNeutralStrokeAccessible);
   background-color: var(--bg-100);
-  padding: 1rem;
+  padding: 0.8rem;
   border-radius: 6px;
-  min-width: 30rem;
+  min-width: 100%;
   min-height: 10rem;
 }
 
@@ -105,7 +150,7 @@
   }
 
   p {
-    font-size: large;
+    font-size: 1rem;
   }
 }
 

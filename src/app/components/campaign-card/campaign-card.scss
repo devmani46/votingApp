@@ -1,3 +1,41 @@
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 0%, 100% 0%, 0% 50%, 100% 50%, 0% 100%, 100% 100%,
+      50% 0%;
+  }
+  25% {
+    background-position: 30% 70%, 80% 20%, 10% 40%, 90% 50%, 20% 90%, 70% 10%,
+      60% 30%;
+  }
+  50% {
+    background-position: 70% 30%, 40% 80%, 50% 10%, 10% 50%, 90% 20%, 30% 70%,
+      20% 60%;
+  }
+  75% {
+    background-position: 50% 90%, 60% 40%, 80% 20%, 30% 70%, 10% 50%, 50% 20%,
+      80% 10%;
+  }
+  100% {
+    background-position: 0% 0%, 100% 0%, 0% 50%, 100% 50%, 0% 100%, 100% 100%,
+      50% 0%;
+  }
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 10px 20px rgba(255, 190, 153, 0.4),
+      0 0 30px rgba(255, 110, 220, 0.3), 0 0 40px rgba(20, 200, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 15px 25px rgba(255, 190, 153, 0.5),
+      0 0 50px rgba(255, 110, 220, 0.4), 0 0 60px rgba(20, 200, 255, 0.3);
+  }
+  100% {
+    box-shadow: 0 10px 20px rgba(255, 190, 153, 0.4),
+      0 0 30px rgba(255, 110, 220, 0.3), 0 0 40px rgba(20, 200, 255, 0.2);
+  }
+}
+
 .campaign-card {
   font-family: Manrope;
   padding: 5px;
@@ -5,17 +43,38 @@
   flex-direction: column;
   border-radius: 18px;
   overflow: hidden;
-  background: linear-gradient(
-    126deg,
-    var(--secondary-800) 35%,
-    var(--secondary-900) 100%
-  );
+  // background: linear-gradient(
+  //   126deg,
+  //   var(--secondary-800) 35%,
+  //   var(--secondary-900) 100%
+  // );
+  background-color: #ffbe99;
+  background-image: radial-gradient(
+      at 62% 72%,
+      hsla(255, 86%, 69%, 1) 0px,
+      transparent 50%
+    ),
+    radial-gradient(at 66% 19%, hsla(20, 78%, 65%, 1) 0px, transparent 50%),
+    radial-gradient(at 88% 33%, hsla(20, 78%, 65%, 1) 0px, transparent 50%),
+    radial-gradient(at 96% 8%, hsla(331, 73%, 62%, 1) 0px, transparent 50%),
+    radial-gradient(at 71% 22%, hsla(342, 95%, 70%, 1) 0px, transparent 50%),
+    radial-gradient(at 86% 96%, hsla(346, 63%, 73%, 1) 0px, transparent 50%),
+    radial-gradient(at 51% 0%, hsla(250, 90%, 68%, 1) 0px, transparent 50%);
+
   color: var(--bg-100);
-  transition: all 0.3s ease;
+  box-shadow: 0 0 0 rgb(0, 0, 0, 0);
+  background-size: 200% 200%;
+  transition: all 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   position: relative;
   min-height: var(--card-size);
   max-height: var(--card-size);
   cursor: default;
+
+  &:hover {
+    box-shadow: 0 15px 25px rgba(255, 190, 153, 0.5),
+      0 0 50px rgba(255, 110, 220, 0.4), 0 0 60px rgba(20, 200, 255, 0.3);
+    animation: gradientMove 4s linear infinite;
+  }
 
   .card-clickable {
     display: flex;
@@ -50,7 +109,7 @@
 
     h3 {
       margin: 0;
-      font-size: 1.2rem;
+      font-size: 1rem;
       font-weight: 700;
     }
 
@@ -64,6 +123,7 @@
   }
 
   &:hover {
+    transform: translateY(-10px);
     .card-image {
       max-height: var(--max-image-height-hover);
       img {

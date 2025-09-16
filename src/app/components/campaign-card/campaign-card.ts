@@ -4,7 +4,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   selector: 'app-campaign-card',
   standalone: true,
   templateUrl: './campaign-card.html',
-  styleUrls: ['./campaign-card.scss']
+  styleUrls: ['./campaign-card.scss'],
 })
 export class CampaignCard {
   @Input() id!: number;

@@ -1,7 +1,6 @@
 .detail-card {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   border: 1px solid var(--colorNeutralStroke1);
   border-radius: 10px;
   padding: 16px 20px;
@@ -9,6 +8,7 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
   transition: all 0.25s ease;
   cursor: pointer;
+  justify-content: space-between;
 
   &:hover {
     transform: translateY(-3px);
@@ -17,7 +17,6 @@
 
   .title {
     font-weight: 600;
-    margin: 0 0 8px;
     color: var(--text-100);
   }
 
@@ -29,9 +28,8 @@
 
   .description-row {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-top: auto;
+    justify-content: space-between;
 
     .description {
       color: var(--text-200);
@@ -46,31 +44,53 @@
   &.small {
     width: 160px;
     height: 160px;
-    .title { font-size: 0.9rem; }
-    .number { font-size: 1.4rem; }
-    .description { font-size: 0.8rem; }
-    .icon { font-size: 20px; }
+    .title {
+      font-size: 0.9rem;
+    }
+    .number {
+      font-size: 1.4rem;
+    }
+    .description {
+      font-size: 0.8rem;
+    }
+    .icon {
+      font-size: 20px;
+    }
   }
 
   &.medium {
     width: 220px;
-    height: 180px;
-    .title { font-size: 1rem; }
-    .number { font-size: 1.6rem; }
-    .description { font-size: 0.85rem; }
-    .icon { font-size: 22px; }
+    height: 100px;
+    .title {
+      font-size: 1rem;
+    }
+    .number {
+      font-size: 1.6rem;
+    }
+    .description {
+      font-size: 0.85rem;
+    }
+    .icon {
+      font-size: 22px;
+    }
   }
 
   &.large {
     width: 300px;
     height: 140px;
-    flex-direction: row;
-    align-items: center;
     justify-content: space-between;
 
-    .title { font-size: 1.05rem; }
-    .number { font-size: 1.8rem; }
-    .description { font-size: 0.9rem; }
-    .icon { font-size: 24px; }
+    .title {
+      font-size: 1.05rem;
+    }
+    .number {
+      font-size: 1.8rem;
+    }
+    .description {
+      font-size: 0.9rem;
+    }
+    .icon {
+      font-size: 24px;
+    }
   }
 }
