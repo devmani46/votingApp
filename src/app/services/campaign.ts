@@ -46,6 +46,10 @@ export class CampaignService {
     }
   }
 
+  getAllCampaigns(): Campaign[] {
+    return [...this._campaigns()];
+  }
+
   addCampaign(campaign: Omit<Campaign, 'id'>) {
     const newCampaign: Campaign = {
       ...campaign,
@@ -83,6 +87,7 @@ export class CampaignService {
   deleteCampaign(id: number) {
     this._campaigns.update(list => list.filter(c => c.id !== id));
     this.saveCampaigns();
+    this.nextId = this._campaigns().length > 0 ? Math.max(...this._campaigns().map(c => c.id)) + 1 : 1;
   }
 
   getCampaignById(id: number) {
@@ -92,6 +97,7 @@ export class CampaignService {
   clearCampaigns() {
     this._campaigns.set([]);
     this.saveCampaigns();
+    this.nextId = 1;
   }
 
   vote(campaignId: number, candidateIndex: number) {
