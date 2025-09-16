@@ -25,7 +25,7 @@ export class UserPage implements OnInit {
   photoPreview: string | null = null;
 
   selectedCampaign: any = null;
-  winnerName: string | null = null;
+  winner: any = null;
 
   ngOnInit() {
     const savedUser = localStorage.getItem('currentUser');
@@ -46,9 +46,6 @@ export class UserPage implements OnInit {
     this.photoPreview = this.user.photo;
   }
 
-  /**
-   * Fetch past campaigns and attach winnerName to each
-   */
   pastCampaigns = computed(() => {
     const campaigns = this.campaignService.campaigns();
     const today = new Date();
@@ -57,38 +54,39 @@ export class UserPage implements OnInit {
       .filter(c => new Date(c.endDate) < today)
       .map(c => ({
         ...c,
-        winnerName: this.getWinner(c)
+        winner: this.getWinner(c)
       }));
   });
 
   openCampaignDetails(campaign: any) {
     this.selectedCampaign = campaign;
-    this.winnerName = campaign.winnerName || this.getWinner(campaign);
+    this.winner = campaign.winner || this.getWinner(campaign);
   }
 
   closeCampaignDialog(event?: MouseEvent) {
     if (event && event.target !== event.currentTarget) return;
     this.selectedCampaign = null;
-    this.winnerName = null;
+    this.winner = null;
   }
 
-  /**
-   * Compute winner (top candidate) of a campaign
-   */
   getWinner(campaign: any) {
     if (!campaign || !campaign.candidates?.length) return null;
 
-    const votes = JSON.parse(localStorage.getItem('votes') || '[]');
-    const campaignVotes = votes.filter((v: any) => v.campaignId === campaign.id);
+    let topCandidate: any = null;
+    let maxVotes = -1;
 
-    if (!campaignVotes.length) return null;
+    campaign.candidates.forEach((c: any) => {
+      const key = `votes_${campaign.id}_${encodeURIComponent(c.name)}`;
+      const stored = localStorage.getItem(key);
+      const votes = stored ? parseInt(stored, 10) : (c.votes ?? 0);
 
-    const counts: Record<string, number> = {};
-    campaignVotes.forEach((v: any) => {
-      counts[v.candidateName] = (counts[v.candidateName] || 0) + 1;
+      if (votes > maxVotes) {
+        maxVotes = votes;
+        topCandidate = { ...c, votes };
+      }
     });
 
-    return Object.keys(counts).reduce((a, b) => counts[a] >= counts[b] ? a : b, '');
+    return topCandidate;
   }
 
   openDialog() { this.showDialog = true; }

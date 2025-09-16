@@ -208,15 +208,35 @@ export class CreateCampaign implements OnInit, OnDestroy {
     }
   }
 
-  submitForm() {
-    if (this.form.invalid) return;
+submitForm() {
+  if (this.form.invalid) return;
 
-    if (this.editMode && this.campaignId !== null) {
-      this.campaignService.updateCampaign(this.campaignId, this.form.value);
-    } else {
-      this.campaignService.addCampaign(this.form.value);
+  if (this.editMode && this.campaignId !== null) {
+    const existing = this.campaignService.getCampaignById(this.campaignId);
+
+    if (existing) {
+      const updated = {
+        ...existing,
+        ...this.form.value,
+        candidates: this.form.value.candidates.map((c: any, i: number) => ({
+          ...c,
+          votes: existing.candidates?.[i]?.votes ?? 0
+        }))
+      };
+
+      this.campaignService.updateCampaign(this.campaignId, updated);
     }
-
-    this.router.navigate(['/campaign-status']);
+  } else {
+    const newCampaign = {
+      ...this.form.value,
+      candidates: this.form.value.candidates.map((c: any) => ({
+        ...c,
+        votes: 0
+      }))
+    };
+    this.campaignService.addCampaign(newCampaign);
   }
+
+  this.router.navigate(['/campaign-status']);
+}
 }

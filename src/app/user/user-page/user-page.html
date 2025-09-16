@@ -46,15 +46,14 @@
               size="small"
               (click)="openCampaignDetails(c)"
             >
-              <div class="campaign-winner" *ngIf="c.winnerName">
-                <strong>Winner:</strong> {{ c.winnerName }}
+              <div class="campaign-winner" *ngIf="c.winner">
+                <strong>Winner:</strong> {{ c.winner.name }}
               </div>
             </app-campaign-card>
           }
         </div>
       }
     </div>
-
   </div>
 
   @if (selectedCampaign) {
@@ -65,13 +64,23 @@
 
         <div class="winner-section">
           <h3>Winner</h3>
-          <p>
-            @if (winnerName) {
-              <strong>{{ winnerName }}</strong>
-            } @else {
-              <em>No winner determined yet.</em>
-            }
-          </p>
+
+          @if (winner) {
+            <div class="winner-card">
+              <img
+                [src]="winner.photo || '/assets/default.png'"
+                alt="Winner Photo"
+                class="winner-photo"
+              />
+              <div class="winner-info">
+                <p><strong>Name:</strong> {{ winner.name }}</p>
+                <p><strong>Bio:</strong> {{ winner.bio || 'No bio available.' }}</p>
+                <p><strong>Total Votes:</strong> {{ winner.votes }}</p>
+              </div>
+            </div>
+          } @else {
+            <em>No winner determined yet.</em>
+          }
         </div>
 
         <div class="dialog-actions">
