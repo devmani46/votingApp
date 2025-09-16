@@ -1,45 +1,36 @@
-import { Component, OnInit, inject, HostListener } from '@angular/core';
+import { Component, OnInit, inject, HostListener, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavBar } from '../../components/nav-bar/nav-bar';
 import { Footer } from '../../components/footer/footer';
 import { Button } from '../../components/button/button';
 import { FuiInput } from '../../components/fui-input/fui-input';
+import { CampaignCard } from '../../components/campaign-card/campaign-card';
+import { CampaignService } from '../../services/campaign';
 
 @Component({
   selector: 'app-user-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NavBar, Footer, Button, FuiInput],
+  imports: [CommonModule, ReactiveFormsModule, NavBar, Footer, Button, FuiInput, CampaignCard],
   templateUrl: './user-page.html',
   styleUrls: ['./user-page.scss']
 })
 export class UserPage implements OnInit {
   private fb = inject(FormBuilder);
+  private campaignService = inject(CampaignService);
 
-  user: any = {
-    photo: '',
-    firstName: '',
-    lastName: '',
-    username: '',
-    age: '',
-    dob: '',
-    email: '',
-    bio: ''
-  };
-
+  user: any = { photo: '', firstName: '', lastName: '', username: '', age: '', dob: '', email: '', bio: '' };
   form!: FormGroup;
   showDialog = false;
   photoPreview: string | null = null;
 
+  selectedCampaign: any = null;
+  winnerName: string | null = null;
+
   ngOnInit() {
     const savedUser = localStorage.getItem('currentUser');
-    if (savedUser) {
-      this.user = JSON.parse(savedUser);
-    }
-
-    if (!this.user.photo) {
-      this.user.photo = '/assets/admin.png';
-    }
+    if (savedUser) this.user = JSON.parse(savedUser);
+    if (!this.user.photo) this.user.photo = '/assets/admin.png';
 
     this.form = this.fb.group({
       firstName: [this.user.firstName || '', Validators.required],
@@ -55,27 +46,60 @@ export class UserPage implements OnInit {
     this.photoPreview = this.user.photo;
   }
 
-  openDialog() {
-    this.showDialog = true;
+  /**
+   * Fetch past campaigns and attach winnerName to each
+   */
+  pastCampaigns = computed(() => {
+    const campaigns = this.campaignService.campaigns();
+    const today = new Date();
+
+    return campaigns
+      .filter(c => new Date(c.endDate) < today)
+      .map(c => ({
+        ...c,
+        winnerName: this.getWinner(c)
+      }));
+  });
+
+  openCampaignDetails(campaign: any) {
+    this.selectedCampaign = campaign;
+    this.winnerName = campaign.winnerName || this.getWinner(campaign);
   }
 
-  closeDialog() {
-    this.showDialog = false;
+  closeCampaignDialog(event?: MouseEvent) {
+    if (event && event.target !== event.currentTarget) return;
+    this.selectedCampaign = null;
+    this.winnerName = null;
   }
 
-  closeDialogOnBackdrop(event: MouseEvent) {
-    if (event.target === event.currentTarget) {
-      this.closeDialog();
-    }
+  /**
+   * Compute winner (top candidate) of a campaign
+   */
+  getWinner(campaign: any) {
+    if (!campaign || !campaign.candidates?.length) return null;
+
+    const votes = JSON.parse(localStorage.getItem('votes') || '[]');
+    const campaignVotes = votes.filter((v: any) => v.campaignId === campaign.id);
+
+    if (!campaignVotes.length) return null;
+
+    const counts: Record<string, number> = {};
+    campaignVotes.forEach((v: any) => {
+      counts[v.candidateName] = (counts[v.candidateName] || 0) + 1;
+    });
+
+    return Object.keys(counts).reduce((a, b) => counts[a] >= counts[b] ? a : b, '');
   }
+
+  openDialog() { this.showDialog = true; }
+  closeDialog() { this.showDialog = false; }
+  closeDialogOnBackdrop(event: MouseEvent) { if (event.target === event.currentTarget) this.closeDialog(); }
 
   onPhotoSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = () => {
-        this.photoPreview = reader.result as string;
-      };
+      reader.onload = () => { this.photoPreview = reader.result as string; };
       reader.readAsDataURL(file);
     }
   }
@@ -87,20 +111,16 @@ export class UserPage implements OnInit {
       const today = new Date();
       let age = today.getFullYear() - birthDate.getFullYear();
       const monthDiff = today.getMonth() - birthDate.getMonth();
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-      }
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) age--;
       this.user.age = age;
     }
   }
 
   saveProfile() {
     if (this.form.invalid) return;
-
     if (this.form.value.password || this.form.value.confirmPassword) {
       if (this.form.value.password !== this.form.value.confirmPassword) {
-        alert('Passwords do not match');
-        return;
+        alert('Passwords do not match'); return;
       }
     }
 
@@ -109,9 +129,7 @@ export class UserPage implements OnInit {
       ...this.form.value,
       photo: this.photoPreview || this.user.photo,
       age: this.user.age,
-      password: this.form.value.password
-        ? this.form.value.password
-        : this.user.password,
+      password: this.form.value.password ? this.form.value.password : this.user.password,
     };
 
     localStorage.setItem('currentUser', JSON.stringify(this.user));
@@ -126,14 +144,10 @@ export class UserPage implements OnInit {
     window.dispatchEvent(new StorageEvent('storage', { key: 'currentUser' }));
 
     this.form.patchValue({
-      firstName: this.user.firstName,
-      lastName: this.user.lastName,
-      username: this.user.username,
-      dob: this.user.dob,
-      email: this.user.email,
-      bio: this.user.bio,
-      password: '',
-      confirmPassword: ''
+      firstName: this.user.firstName, lastName: this.user.lastName,
+      username: this.user.username, dob: this.user.dob,
+      email: this.user.email, bio: this.user.bio,
+      password: '', confirmPassword: ''
     });
 
     this.closeDialog();
@@ -141,15 +155,8 @@ export class UserPage implements OnInit {
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (!this.showDialog) return;
-
-    if (event.key === 'Escape') {
-      this.closeDialog();
-    }
-
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      this.saveProfile();
-    }
+    if (this.showDialog && event.key === 'Escape') this.closeDialog();
+    if (this.selectedCampaign && event.key === 'Escape') this.closeCampaignDialog();
+    if (this.showDialog && event.key === 'Enter') { event.preventDefault(); this.saveProfile(); }
   }
 }

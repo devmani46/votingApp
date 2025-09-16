@@ -20,8 +20,8 @@ export class VoteCandidate implements OnInit, OnDestroy {
 
   campaign?: Campaign;
   showPopup = false;
-  private votedCampaigns = new Set<number>();
-
+  private votedCampaigns: Record<string, number[]> = {};
+  private currentUserEmail: string = '';
   candidatePopupOpen = false;
   activeIndex: number | null = null;
   activeCandidate: any = null;
@@ -30,6 +30,15 @@ export class VoteCandidate implements OnInit, OnDestroy {
 
   constructor() {
     this.loadVotes();
+    const storedUser = localStorage.getItem('currentUser');
+    if (storedUser) {
+      try {
+        const parsed = JSON.parse(storedUser);
+        this.currentUserEmail = parsed.email;
+      } catch {
+        this.currentUserEmail = '';
+      }
+    }
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.campaign = this.campaignService.getCampaignById(id) ?? undefined;
   }
@@ -44,19 +53,22 @@ export class VoteCandidate implements OnInit, OnDestroy {
   }
 
   vote(candidateIndex: number) {
-    if (!this.campaign?.id) return;
-
+    if (!this.campaign?.id || !this.currentUserEmail) return;
     if (this.hasVoted(this.campaign.id)) {
       this.showPopup = true;
       return;
     }
 
     this.campaignService.vote(this.campaign.id, candidateIndex);
-    this.votedCampaigns.add(this.campaign.id);
-    localStorage.setItem('votedCampaigns', JSON.stringify([...this.votedCampaigns]));
+    if (!this.votedCampaigns[this.currentUserEmail]) {
+      this.votedCampaigns[this.currentUserEmail] = [];
+    }
+    this.votedCampaigns[this.currentUserEmail].push(this.campaign.id);
+    localStorage.setItem('votedCampaigns', JSON.stringify(this.votedCampaigns));
 
     this.campaign = this.campaignService.getCampaignById(this.campaign.id) ?? undefined;
     this.refreshTotalVotes();
+    localStorage.setItem('campaigns_updated', Date.now().toString());
 
     if (this.candidatePopupOpen && this.activeIndex === candidateIndex) {
       this.setActiveCandidate(candidateIndex);
@@ -64,13 +76,15 @@ export class VoteCandidate implements OnInit, OnDestroy {
   }
 
   hasVoted(campaignId?: number): boolean {
-    if (!campaignId) return false;
-    return this.votedCampaigns.has(campaignId);
+    if (!campaignId || !this.currentUserEmail) return false;
+    return this.votedCampaigns[this.currentUserEmail]?.includes(campaignId) ?? false;
   }
 
   private loadVotes() {
     const stored = localStorage.getItem('votedCampaigns');
-    if (stored) this.votedCampaigns = new Set(JSON.parse(stored));
+    if (stored) {
+      this.votedCampaigns = JSON.parse(stored);
+    }
   }
 
   closePopup() {
@@ -79,10 +93,8 @@ export class VoteCandidate implements OnInit, OnDestroy {
 
   openCandidatePopup(index: number) {
     if (!this.campaign) return;
-
     this.activeIndex = index;
     this.candidatePopupOpen = true;
-
     const candidate = this.campaign.candidates?.[index];
     if (candidate) {
       this.setActiveCandidate(index);
@@ -128,25 +140,21 @@ export class VoteCandidate implements OnInit, OnDestroy {
 
   keyHandler = (event: KeyboardEvent) => {
     if (!this.candidatePopupOpen) return;
-
     if (event.key === 'Escape') {
       event.preventDefault();
       this.closeCandidatePopup();
       return;
     }
-
     if (event.key === 'ArrowLeft') {
       event.preventDefault();
       this.navigateActive(-1);
       return;
     }
-
     if (event.key === 'ArrowRight') {
       event.preventDefault();
       this.navigateActive(1);
       return;
     }
-
     if (event.key === 'Enter') {
       event.preventDefault();
       if (this.activeIndex !== null && this.campaign?.id && !this.hasVoted(this.campaign.id)) {
