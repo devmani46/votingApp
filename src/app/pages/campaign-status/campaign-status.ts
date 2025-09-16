@@ -49,25 +49,7 @@ export class CampaignStatus implements OnDestroy {
   };
 
   loadCampaigns() {
-    const svc = this.campaignService as any;
-    let campaigns: Campaign[] = [];
-    if (typeof svc.getAllCampaigns === 'function') {
-      try {
-        campaigns = svc.getAllCampaigns() ?? [];
-      } catch {
-        campaigns = [];
-      }
-    } else {
-      const stored = localStorage.getItem('campaigns');
-      if (stored) {
-        try {
-          campaigns = JSON.parse(stored);
-        } catch {
-          campaigns = [];
-        }
-      }
-    }
-    this.campaigns = Array.isArray(campaigns) ? campaigns : [];
+    this.campaigns = this.campaignService.getAllCampaigns();
   }
 
   filteredCampaigns(): Campaign[] {
@@ -197,9 +179,8 @@ export class CampaignStatus implements OnDestroy {
   }
 
   deleteCampaign(id: number) {
-    this.campaigns = this.campaigns.filter(c => (c as any).id !== id);
-    localStorage.setItem('campaigns', JSON.stringify(this.campaigns));
-    localStorage.setItem('campaigns_updated', Date.now().toString());
+    this.campaignService.deleteCampaign(id);
+    this.loadCampaigns();
     if (this.selectedCampaign && (this.selectedCampaign as any).id === id) this.selectedCampaign = null;
   }
 
