@@ -1,7 +1,7 @@
 .menu-page {
   display: flex;
   min-height: 100vh;
-  background: #f9fafc;
+  background-color: var(--bg-200);
 }
 
 app-burger-menu {
@@ -15,7 +15,7 @@ app-burger-menu {
 
 .campaign-list {
   flex: 1;
-  padding: 2rem;
+  padding: 4rem;
   overflow-y: auto;
 }
 
@@ -23,25 +23,16 @@ app-burger-menu {
   font-size: 2rem;
   font-weight: 700;
   color: #333;
-  margin-bottom: 2rem;
-  text-align: center;
 }
 
 .details-section {
+  padding-top: 3rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;
 }
 
 .details-row {
-  display: grid;
-  gap: 1.5rem;
-}
-
-.details-row.large-cards {
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-}
-
-.details-row.small-cards {
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  display: flex;
+  gap: 2rem;
 }

@@ -1,10 +1,9 @@
 .detail-card {
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--colorNeutralStroke1);
   border-radius: 10px;
   padding: 16px 20px;
-  background: var(--colorNeutralBackground1);
+  background: var(--background);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
   transition: all 0.25s ease;
   cursor: pointer;

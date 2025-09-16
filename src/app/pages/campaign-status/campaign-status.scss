@@ -1,23 +1,17 @@
 .campaign-status-page {
   display: flex;
   min-height: 100vh;
-  background: #f9fafc;
-}
+  background-color: var(--bg-200);
 
-app-burger-menu {
-  flex: 0 0 250px;
-  min-height: 100vh;
-  background: #fff;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  left: 0;
-  z-index: 200;
+  --card-size: 16rem;
+  --max-image-height: 12rem;
+  --min-image-height: 12rem;
+  --max-image-height-hover: 10rem;
 }
 
 .campaigns-container {
   flex: 1;
-  padding: 2rem;
+  padding: 4rem;
   overflow-y: auto;
 }
 

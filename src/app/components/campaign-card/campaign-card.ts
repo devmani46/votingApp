@@ -1,10 +1,12 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-campaign-card',
   standalone: true,
   templateUrl: './campaign-card.html',
   styleUrls: ['./campaign-card.scss'],
+  imports: [CommonModule],
 })
 export class CampaignCard {
   @Input() id!: number;
