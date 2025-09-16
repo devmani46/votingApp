@@ -16,13 +16,7 @@ export class CampaignCard {
   @Input() size: 'small' | 'medium' | 'large' = 'medium';
   @Input() disabled = false;
 
-  @Output() deleteCampaignEvent = new EventEmitter<number>();
   @Output() edit = new EventEmitter<number>();
-
-  onDeleteClick(event: Event) {
-    event.stopPropagation();
-    this.deleteCampaignEvent.emit(this.id);
-  }
 
   onCardClick() {
     this.edit.emit(this.id);

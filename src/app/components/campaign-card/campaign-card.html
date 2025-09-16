@@ -4,15 +4,6 @@
   [class.card-large]="size === 'large'"
   [attr.data-disabled]="disabled ? 'true' : null"
 >
-  <button
-    class="delete-btn"
-    type="button"
-    (click)="onDeleteClick($event)"
-    aria-label="Delete campaign"
-  >
-    ✕
-  </button>
-
   <div class="card-clickable" (click)="onCardClick()">
     <div class="card-image">
       <img [src]="image" [alt]="title" />
