@@ -4,12 +4,19 @@
   background: var(--bg-100);
 
   h2 {
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -1px;
   }
 
   .campaign-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 1rem;
+  }
+
+  .available-campaigns {
+    margin-bottom: 4rem;
   }
 }

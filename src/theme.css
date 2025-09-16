@@ -553,6 +553,23 @@ html {
 }
 
 html.dark {
+  --text: #130e00;
+  --background: #0f0c00;
+  --primary: #feb90a;
+  --secondary: #72d7fe;
+  --accent: #4e3afe;
+
+  --primary-100: var(--accent);
+  --primary-200: var(--accent-200);
+  --primary-300: var(--accent-50);
+  --accent-100: #bfbfbf;
+  --accent-200: #616161;
+  --text-100: var(--text);
+  --text-200: var(--text);
+  --bg-100: var(--background);
+  --bg-200: #f7f4e8;
+  --bg-300: #b3b3b3;
+
   --colorNeutralForeground1: #ffffff;
   --colorNeutralForeground1Hover: #ffffff;
   --colorNeutralForeground1Pressed: #ffffff;

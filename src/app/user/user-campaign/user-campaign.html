@@ -1,44 +1,42 @@
 <app-nav-bar></app-nav-bar>
 
 <div class="user-campaign-page">
-  <h2>Available Campaigns</h2>
+  <div class="available-campaigns">
+    <h2>Available Campaigns</h2>
 
-  <div class="campaign-list">
-    @if (campaigns().length === 0) {
+    <div class="campaign-list">
+      @if (campaigns().length === 0) {
       <p>No campaigns available.</p>
-    } @else {
-      @for (c of campaigns(); track c.id) {
-        <app-campaign-card
-          [id]="c.id"
-          [title]="c.title"
-          [description]="c.description"
-          [image]="c.logo || '/assets/default.png'"
-          size="medium"
-          (click)="openCampaign(c.id)"
-        >
-        </app-campaign-card>
-      }
-    }
+      } @else { @for (c of campaigns(); track c.id) {
+      <app-campaign-card
+        [id]="c.id"
+        [title]="c.title"
+        [description]="c.description"
+        [image]="c.logo || '/assets/default.png'"
+        size="medium"
+        (click)="openCampaign(c.id)"
+      >
+      </app-campaign-card>
+      } }
+    </div>
   </div>
 
-  <h2>Upcoming Campaigns</h2>
+  <div class="upcoming-campaigns">
+    <h2>Upcoming Campaigns</h2>
 
-  <div class="campaign-list">
-    @if (upcomingCampaigns().length === 0) {
+    <div class="campaign-list">
+      @if (upcomingCampaigns().length === 0) {
       <p>No upcoming campaigns.</p>
-    } @else {
-      @for (c of upcomingCampaigns(); track c.id) {
-        <app-campaign-card
-          [id]="c.id"
-          [title]="c.title"
-          [description]="c.description"
-          [image]="c.logo || '/assets/default.png'"
-          size="medium"
-        >
-        </app-campaign-card>
-      }
-    }
+      } @else { @for (c of upcomingCampaigns(); track c.id) {
+      <app-campaign-card
+        [id]="c.id"
+        [title]="c.title"
+        [description]="c.description"
+        [image]="c.logo || '/assets/default.png'"
+        size="medium"
+      >
+      </app-campaign-card>
+      } }
+    </div>
   </div>
 </div>
-
-<app-footer></app-footer>

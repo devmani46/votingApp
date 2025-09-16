@@ -7,6 +7,8 @@
   --max-image-height: 12rem;
   --min-image-height: 12rem;
   --max-image-height-hover: 10rem;
+
+  --temp: blue;
 }
 
 .campaigns-container {
@@ -51,6 +53,11 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
+
+  .edit-btn {
+    display: flex;
+    --colorBrand90: var(--text);
+  }
 }
 
 .campaign-cards {
