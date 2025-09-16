@@ -88,9 +88,6 @@ export class CreateCampaign implements OnInit, OnDestroy {
             );
           });
         }
-      } else {
-        this.editMode = false;
-        this.campaignId = null;
       }
     });
 
@@ -177,7 +174,6 @@ export class CreateCampaign implements OnInit, OnDestroy {
     }
   }
 
-
   addProperty() {
     if (this.propertyControl.value?.trim()) {
       this.candidateProperties.push(this.propertyControl.value.trim());
@@ -205,7 +201,6 @@ export class CreateCampaign implements OnInit, OnDestroy {
 
     this.closeDialog();
   }
-
 
   deleteCandidate(index: number) {
     if (index !== null && index >= 0 && index < this.candidates.length) {

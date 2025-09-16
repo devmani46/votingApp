@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CampaignService } from '../../services/campaign';
@@ -17,7 +17,17 @@ export class UserCampaign {
   private campaignService = inject(CampaignService);
   private router = inject(Router);
 
-  campaigns = this.campaignService.campaigns;
+  campaigns = computed(() => {
+    const all = this.campaignService.campaigns();
+    const today = new Date();
+    return all.filter(c => new Date(c.startDate) <= today && new Date(c.endDate) >= today);
+  });
+
+  upcomingCampaigns = computed(() => {
+    const all = this.campaignService.campaigns();
+    const today = new Date();
+    return all.filter(c => new Date(c.startDate) > today);
+  });
 
   openCampaign(id: number) {
     this.router.navigate(['/vote-candidate', id]);

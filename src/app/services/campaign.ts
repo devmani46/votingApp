@@ -42,24 +42,40 @@ export class CampaignService {
     if (stored) {
       const parsed: Campaign[] = JSON.parse(stored);
       this._campaigns.set(parsed);
-      // update nextId so it doesn’t reuse IDs
       this.nextId = parsed.length > 0 ? Math.max(...parsed.map(c => c.id)) + 1 : 1;
     }
   }
 
   addCampaign(campaign: Omit<Campaign, 'id'>) {
-    const newCampaign: Campaign = { ...campaign, id: this.nextId++ };
-    newCampaign.candidates = newCampaign.candidates.map(c => ({
-      ...c,
-      votes: c.votes ?? 0
-    }));
+    const newCampaign: Campaign = {
+      ...campaign,
+      id: this.nextId++,
+      logo: campaign.logo || null,
+      candidates: campaign.candidates.map(c => ({
+        ...c,
+        votes: c.votes ?? 0
+      }))
+    };
     this._campaigns.update(list => [...list, newCampaign]);
     this.saveCampaigns();
   }
 
   updateCampaign(id: number, updated: Partial<Campaign>) {
     this._campaigns.update(list =>
-      list.map(c => (c.id === id ? { ...c, ...updated } : c))
+      list.map(c =>
+        c.id === id
+          ? {
+              ...c,
+              ...updated,
+              id: c.id,
+              logo: updated.logo ?? c.logo ?? null,
+              candidates: (updated.candidates ?? c.candidates).map(cand => ({
+                ...cand,
+                votes: cand.votes ?? 0
+              }))
+            }
+          : c
+      )
     );
     this.saveCampaigns();
   }
