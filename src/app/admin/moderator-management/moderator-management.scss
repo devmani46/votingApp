@@ -58,7 +58,9 @@
       }
 
       app-button {
-        margin-left: auto;
+        --colorNeutralBackground1: var(--text-100);
+        --colorBrand90: var(--accent);
+        width: 80%;
       }
     }
 

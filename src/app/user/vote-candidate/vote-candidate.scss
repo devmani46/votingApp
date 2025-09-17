@@ -1,5 +1,5 @@
 .vote-candidate-page {
-  background-color: var(--bg-100);
+  background-color: var(--bg-200);
   color: var(--text-100);
   font-family: Manrope;
   --card-size: 20rem;
@@ -10,8 +10,9 @@
   --colorNeutralForeground1: var(--text-100);
 
   .banner-container {
+    background-size: cover;
+    background-repeat: no-repeat;
     min-height: 20rem;
-    background: var(--primary-100);
   }
 
   .about-campaign {
