@@ -37,8 +37,12 @@
 </div>
 
 @if (type === 'password' && getPasswordStrength()) {
-<div class="fw-password-strength">
-  Strength:
-  <span [ngClass]="getPasswordStrength()">{{ getPasswordStrength() }}</span>
-</div>
-}
+
+  @if (allowStrength) {
+    <div class="fw-password-strength">
+    Strength:
+    <span [ngClass]="getPasswordStrength()">{{ getPasswordStrength() }}</span>
+  </div>
+  }
+    }
+

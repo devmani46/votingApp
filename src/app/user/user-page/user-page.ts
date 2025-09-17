@@ -11,7 +11,7 @@ import { CampaignService } from '../../services/campaign';
 @Component({
   selector: 'app-user-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NavBar, Footer, Button, FuiInput, CampaignCard],
+  imports: [CommonModule, ReactiveFormsModule, NavBar,Button, FuiInput, CampaignCard],
   templateUrl: './user-page.html',
   styleUrls: ['./user-page.scss']
 })

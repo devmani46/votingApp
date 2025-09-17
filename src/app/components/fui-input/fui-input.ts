@@ -24,6 +24,7 @@ export class FuiInput implements ControlValueAccessor {
   @Input() required = false;
   @Input() type: 'text' | 'password' = 'text';
   @Input() allowGenerate = true;
+  @Input() allowStrength = true;
 
   value = '';
   showPassword = false;
