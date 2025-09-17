@@ -22,24 +22,22 @@
     </div>
 
     <cdk-table [dataSource]="filteredModerators" class="moderators-table">
-      <!-- Username -->
       <ng-container cdkColumnDef="username">
         <cdk-header-cell *cdkHeaderCellDef (click)="changeSort('name')">
           Username
-          <span *ngIf="sortField === 'name'">
-            {{ sortDirection === "asc" ? "↑" : "↓" }}
-          </span>
+          @if (sortField === 'name') {
+            <span>{{ sortDirection === "asc" ? "↑" : "↓" }}</span>
+          }
         </cdk-header-cell>
         <cdk-cell *cdkCellDef="let mod"> {{ mod.name }} </cdk-cell>
       </ng-container>
 
-      <!-- Email -->
       <ng-container cdkColumnDef="email">
         <cdk-header-cell *cdkHeaderCellDef (click)="changeSort('email')">
           Email
-          <span *ngIf="sortField === 'email'">
-            {{ sortDirection === "asc" ? "↑" : "↓" }}
-          </span>
+          @if (sortField === 'email') {
+            <span>{{ sortDirection === "asc" ? "↑" : "↓" }}</span>
+          }
         </cdk-header-cell>
         <cdk-cell *cdkCellDef="let mod"> {{ mod.email }} </cdk-cell>
       </ng-container>
@@ -54,7 +52,6 @@
         <cdk-cell *cdkCellDef="let user">2026-17-18</cdk-cell>
       </ng-container>
 
-      <!-- Actions -->
       <ng-container cdkColumnDef="actions">
         <cdk-header-cell *cdkHeaderCellDef> Actions </cdk-header-cell>
         <cdk-cell *cdkCellDef="let user; let i = index">
@@ -77,52 +74,52 @@
         </cdk-cell>
       </ng-container>
 
-      <!-- Header + Row -->
       <cdk-header-row *cdkHeaderRowDef="displayedColumns"></cdk-header-row>
       <cdk-row *cdkRowDef="let row; columns: displayedColumns"></cdk-row>
     </cdk-table>
 
-    <!-- Empty State -->
-    <div *ngIf="filteredModerators.length === 0" class="empty-state">
-      <p>No users found.</p>
-    </div>
+    @if (filteredModerators.length === 0) {
+      <div class="empty-state">
+        <p>No users found.</p>
+      </div>
+    }
   </div>
 
   @if (showDialog) {
-  <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">
-    <div class="dialog-content" (click)="$event.stopPropagation()">
-      <h3>{{ editIndex !== null ? "Edit Moderator" : "Add Moderator" }}</h3>
+    <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">
+      <div class="dialog-content" (click)="$event.stopPropagation()">
+        <h3>{{ editIndex !== null ? "Edit Moderator" : "Add Moderator" }}</h3>
 
-      <div class="moderator-form">
-        <label>Name</label>
-        <app-fui-input
-          [formControl]="nameControl"
-          placeholder="Moderator Name"
-        ></app-fui-input>
+        <div class="moderator-form">
+          <label>Name</label>
+          <app-fui-input
+            [formControl]="nameControl"
+            placeholder="Moderator Name"
+          ></app-fui-input>
 
-        <label>Email</label>
-        <app-fui-input
-          [formControl]="emailControl"
-          placeholder="Moderator Email"
-        ></app-fui-input>
+          <label>Email</label>
+          <app-fui-input
+            [formControl]="emailControl"
+            placeholder="Moderator Email"
+          ></app-fui-input>
 
-        <label>Password</label>
-        <app-fui-input
-          [formControl]="passwordControl"
-          type="password"
-          placeholder="Password"
-        ></app-fui-input>
-      </div>
+          <label>Password</label>
+          <app-fui-input
+            [formControl]="passwordControl"
+            type="password"
+            placeholder="Password"
+          ></app-fui-input>
+        </div>
 
-      <div class="dialog-actions">
-        <app-button appearance="secondary" (click)="closeDialog()"
-          >Cancel</app-button
-        >
-        <app-button appearance="primary" (click)="saveModerator()"
-          >Save</app-button
-        >
+        <div class="dialog-actions">
+          <app-button appearance="secondary" (click)="closeDialog()"
+            >Cancel</app-button
+          >
+          <app-button appearance="primary" (click)="saveModerator()"
+            >Save</app-button
+          >
+        </div>
       </div>
     </div>
-  </div>
   }
 </div>

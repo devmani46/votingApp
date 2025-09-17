@@ -27,59 +27,57 @@
     </div>
 
     <div class="dashboard-content">
-      <div *ngIf="viewMode === 'cards'" class="campaign-cards">
-        <div
-          *ngFor="
-            let campaign of filteredCampaigns();
-            trackBy: trackByCampaignId
-          "
-          class="campaign-wrapper"
-        >
-          <app-campaign-card
-            [title]="campaign.title"
-            [description]="'Votes: ' + getTotalVotes(campaign)"
-            [image]="getImage(campaign)"
-            size="medium"
-            (click)="openCampaignDetails(campaign)"
-          >
-            <div class="card-meta">
-              <div class="meta-row">
-                <div class="meta-item">
-                  <div class="meta-value">{{ getTotalVotes(campaign) }}</div>
-                  <div class="meta-label">Total votes</div>
-                </div>
-                <div class="meta-item">
-                  <div class="meta-value">
-                    {{ getTopCandidate(campaign)?.name ?? "—" }}
+      <ng-container *ngIf="viewMode === 'cards'; else chartsView">
+        <div class="campaign-cards">
+          <ng-container *ngFor="let campaign of filteredCampaigns(); trackBy: trackByCampaignId">
+            <div class="campaign-wrapper">
+              <app-campaign-card
+                [title]="campaign.title"
+                [description]="'Votes: ' + getTotalVotes(campaign)"
+                [image]="getImage(campaign)"
+                size="medium"
+                (click)="openCampaignDetails(campaign)"
+              >
+                <div class="card-meta">
+                  <div class="meta-row">
+                    <div class="meta-item">
+                      <div class="meta-value">{{ getTotalVotes(campaign) }}</div>
+                      <div class="meta-label">Total votes</div>
+                    </div>
+                    <div class="meta-item">
+                      <div class="meta-value">
+                        {{ getTopCandidate(campaign)?.name ?? "—" }}
+                      </div>
+                      <div class="meta-label">Top candidate</div>
+                    </div>
+                    <div class="meta-item">
+                      <div class="meta-value">{{ candidateCount(campaign) }}</div>
+                      <div class="meta-label">Candidates</div>
+                    </div>
                   </div>
-                  <div class="meta-label">Top candidate</div>
                 </div>
-                <div class="meta-item">
-                  <div class="meta-value">{{ candidateCount(campaign) }}</div>
-                  <div class="meta-label">Candidates</div>
-                </div>
+              </app-campaign-card>
+
+              <div class="manipulation-btns">
+                <app-button
+                  class="edit-btn"
+                  appearance="primary"
+                  (click)="editCampaign(campaign.id)"
+                  ><span class="material-symbols-outlined">edit</span>Edit
+                  Campaign</app-button
+                >
+                <app-button
+                  class="delete-btn"
+                  appearance="primary"
+                  (click)="deleteCampaign(campaign.id)"
+                  ><span class="material-symbols-outlined">delete</span>Delete
+                  Campaign</app-button
+                >
               </div>
             </div>
-          </app-campaign-card>
-
-          <div class="manipulation-btns">
-            <app-button
-              class="edit-btn"
-              appearance="primary"
-              (click)="editCampaign(campaign.id)"
-              ><span class="material-symbols-outlined">edit</span>Edit
-              Campaign</app-button
-            >
-            <app-button
-              class="delete-btn"
-              appearance="primary"
-              (click)="deleteCampaign(campaign.id)"
-              ><span class="material-symbols-outlined">delete</span>Delete
-              Campaign</app-button
-            >
-          </div>
+          </ng-container>
         </div>
-      </div>
+      </ng-container>
 
       <div class="side-drawer" [class.open]="selectedCampaign">
         <ng-container *ngIf="selectedCampaign as sc">
@@ -110,70 +108,65 @@
               </div>
             </div>
 
-            <div *ngIf="candidateCount(sc) > 0" class="ranks-and-chart">
-              <div class="ranks">
-                <div class="ranks-title">Ranks</div>
-                <div
-                  *ngFor="let rc of getRankedCandidates(sc); let idx = index"
-                  class="rank-item"
-                >
-                  {{ getOrdinal(idx + 1) }} — {{ rc.name }} ({{
-                    getCandidateVotes(sc.id, rc.name)
-                  }}
-                  votes)
+            <ng-container *ngIf="candidateCount(sc) > 0">
+              <div class="ranks-and-chart">
+                <div class="ranks">
+                  <div class="ranks-title">Ranks</div>
+                  <ng-container *ngFor="let rc of getRankedCandidates(sc); let idx = index">
+                    <div class="rank-item">
+                      {{ getOrdinal(idx + 1) }} — {{ rc.name }} ({{
+                        getCandidateVotes(sc.id, rc.name)
+                      }}
+                      votes)
+                    </div>
+                  </ng-container>
+                </div>
+
+                <div class="drawer-chart">
+                  <div
+                    echarts
+                    [options]="getChartOptions(sc)"
+                    class="echart"
+                  ></div>
                 </div>
               </div>
-
-              <div class="drawer-chart">
-                <div
-                  echarts
-                  [options]="getChartOptions(sc)"
-                  class="echart"
-                ></div>
-              </div>
-            </div>
+            </ng-container>
 
             <div class="candidate-grid">
-              <div
-                *ngFor="
-                  let candidate of sc.candidates;
-                  trackBy: trackByCandidateName
-                "
-                class="candidate-item"
-              >
-                <div class="candidate-votes-text">
-                  Total votes of {{ candidate.name }}:
-                  {{ getCandidateVotes(sc.id, candidate.name) }}
+              <ng-container *ngFor="let candidate of sc.candidates; trackBy: trackByCandidateName">
+                <div class="candidate-item">
+                  <div class="candidate-votes-text">
+                    Total votes of {{ candidate.name }}:
+                    {{ getCandidateVotes(sc.id, candidate.name) }}
+                  </div>
+                  <app-campaign-card
+                    [title]="candidate.name"
+                    [description]="candidate.bio"
+                    [image]="getImage(candidate)"
+                    size="small"
+                  >
+                  </app-campaign-card>
                 </div>
-                <app-campaign-card
-                  [title]="candidate.name"
-                  [description]="candidate.bio"
-                  [image]="getImage(candidate)"
-                  size="small"
-                >
-                </app-campaign-card>
-              </div>
+              </ng-container>
             </div>
           </div>
         </ng-container>
       </div>
 
-      <div *ngIf="viewMode === 'charts'" class="chart-view">
-        <div
-          *ngFor="
-            let campaign of filteredCampaigns();
-            trackBy: trackByCampaignId
-          "
-          class="chart-card"
-        >
-          <h3>{{ campaign.title }}</h3>
-          <div
-            echarts
-            [options]="getChartOptions(campaign)"
-            class="echart"
-          ></div>
+      <ng-template #chartsView>
+        <div class="chart-view">
+          <ng-container *ngFor="let campaign of filteredCampaigns(); trackBy: trackByCampaignId">
+            <div class="chart-card">
+              <h3>{{ campaign.title }}</h3>
+              <div
+                echarts
+                [options]="getChartOptions(campaign)"
+                class="echart"
+              ></div>
+            </div>
+          </ng-container>
         </div>
-      </div>
+      </ng-template>
     </div>
   </div>
 </div>

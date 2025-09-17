@@ -2,131 +2,111 @@
 
 <div class="vote-candidate-page">
   @if (campaign) {
-  <div class="banner-container"></div>
-  <div class="about-campaign">
-    <h2 class="campaign-title">{{ campaign.title }}</h2>
-    <p class="description">{{ campaign.description }}</p>
-  </div>
-
-  <div class="candidate-list">
-    @for (candidate of campaign.candidates; let i = $index; track i) {
-    <div
-      class="candidate-wrapper"
-      (click)="openCandidatePopup(i)"
-      tabindex="0"
-      (keydown.enter)="openCandidatePopup(i)"
-    >
-      <app-campaign-card
-        [id]="i"
-        [title]="candidate.name"
-        [description]="candidate.bio"
-        [image]="candidate.photo || '/assets/default-user.png'"
-        size="medium"
-      >
-      </app-campaign-card>
+    <div class="banner-container"></div>
+    <div class="about-campaign">
+      <h2 class="campaign-title">{{ campaign.title }}</h2>
+      <p class="description">{{ campaign.description }}</p>
     </div>
-    }
-  </div>
+
+    <div class="candidate-list">
+      @for (candidate of campaign.candidates; let i = $index; track i) {
+        <div
+          class="candidate-wrapper"
+          (click)="openCandidatePopup(i)"
+          tabindex="0"
+          (keydown.enter)="openCandidatePopup(i)"
+        >
+          <app-campaign-card
+            [id]="i"
+            [title]="candidate.name"
+            [description]="candidate.bio"
+            [image]="candidate.photo || '/assets/default-user.png'"
+            size="medium"
+          >
+          </app-campaign-card>
+        </div>
+      }
+    </div>
   } @else {
-  <p class="not-found">Campaign not found.</p>
+    <p class="not-found">Campaign not found.</p>
   }
 </div>
 
 @if (showPopup) {
-<div class="popup-backdrop" (click)="closePopup()">
-  <div class="popup" (click)="$event.stopPropagation()">
-    <p>You have already voted. Only 1 vote per user per campaign.</p>
-    <app-button appearance="primary" (click)="closePopup()">OK</app-button>
-  </div>
-</div>
-} @if (candidatePopupOpen) {
-<div
-  class="detail-backdrop"
-  (click)="closeCandidatePopup()"
-  aria-modal="true"
-  role="dialog"
->
-  <div
-    class="detail-popup"
-    (click)="$event.stopPropagation()"
-    tabindex="0"
-    aria-label="Candidate details"
-  >
-    <button
-      class="close-btn"
-      (click)="closeCandidatePopup()"
-      aria-label="Close details"
-    >
-      ✕
-    </button>
-
-    <div class="detail-top">
-      <div class="photo-wrap">
-        <img
-          [src]="activeCandidate?.photo || '/assets/default-user.png'"
-          [alt]="activeCandidate?.name"
-        />
-      </div>
-
-      <div class="detail-meta">
-        <h3 class="candidate-name">{{ activeCandidate?.name }}</h3>
-        <p class="candidate-bio">{{ activeCandidate?.bio }}</p>
-
-        <!-- <div class="stat-row">
-          <div class="votes">
-            <div class="votes-count">{{ activeCandidate?.votes ?? 0 }}</div>
-            <div class="votes-label">votes</div>
-          </div>
-
-          <div
-            class="vote-bar"
-            [attr.aria-valuenow]="activeCandidate?.votes ?? 0"
-            aria-valuemin="0"
-            [attr.aria-valuemax]="totalVotes"
-          >
-            <div class="vote-fill" [style.width.%]="votePercent"></div>
-          </div>
-        </div> -->
-
-        <div class="popup-actions">
-          <app-button
-            appearance="primary"
-            (click)="vote(activeIndex!); $event.stopPropagation()"
-            [disabled]="hasVoted(campaign?.id!)"
-          >
-            Vote
-          </app-button>
-          <app-button appearance="secondary" (click)="closeCandidatePopup()"
-            >Close</app-button
-          >
-        </div>
-      </div>
+  <div class="popup-backdrop" (click)="closePopup()">
+    <div class="popup" (click)="$event.stopPropagation()">
+      <p>You have already voted. Only 1 vote per user per campaign.</p>
+      <app-button appearance="primary" (click)="closePopup()">OK</app-button>
     </div>
+  </div>
+}
 
-    <div class="properties-section">
-      <h4>Properties</h4>
-
-      <div
-        class="props-grid"
-        *ngIf="
-          activeCandidate?.properties && activeCandidate.properties.length > 0;
-          else noProps
-        "
+@if (candidatePopupOpen) {
+  <div
+    class="detail-backdrop"
+    (click)="closeCandidatePopup()"
+    aria-modal="true"
+    role="dialog"
+  >
+    <div
+      class="detail-popup"
+      (click)="$event.stopPropagation()"
+      tabindex="0"
+      aria-label="Candidate details"
+    >
+      <button
+        class="close-btn"
+        (click)="closeCandidatePopup()"
+        aria-label="Close details"
       >
-        @for (p of activeCandidate?.properties ?? []; let j = $index; track j) {
-        <div class="prop-chip">
-          <span class="prop-icon">🔹</span>
-          <span class="prop-text">{{ p }}</span>
+        ✕
+      </button>
+
+      <div class="detail-top">
+        <div class="photo-wrap">
+          <img
+            [src]="activeCandidate?.photo || '/assets/default-user.png'"
+            [alt]="activeCandidate?.name"
+          />
         </div>
+
+        <div class="detail-meta">
+          <h3 class="candidate-name">{{ activeCandidate?.name }}</h3>
+          <p class="candidate-bio">{{ activeCandidate?.bio }}</p>
+
+          <div class="popup-actions">
+            <app-button
+              appearance="primary"
+              (click)="vote(activeIndex!); $event.stopPropagation()"
+              [disabled]="hasVoted(campaign?.id!)"
+            >
+              Vote
+            </app-button>
+            <app-button appearance="secondary" (click)="closeCandidatePopup()">
+              Close
+            </app-button>
+          </div>
+        </div>
+      </div>
+
+      <div class="properties-section">
+        <h4>Properties</h4>
+
+        @if (activeCandidate?.properties?.length ?? 0) {
+          <div class="props-grid">
+            @for (p of activeCandidate?.properties ?? []; let j = $index; track j) {
+              <div class="prop-chip">
+                <span class="prop-icon">🔹</span>
+                <span class="prop-text">{{ p }}</span>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="no-props">No properties were added for this candidate.</p>
         }
       </div>
-
-      <ng-template #noProps>
-        <p class="no-props">No properties were added for this candidate.</p>
-      </ng-template>
     </div>
   </div>
-</div>
 }
 
 <app-footer></app-footer>

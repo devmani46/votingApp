@@ -19,24 +19,22 @@
     </div>
 
     <cdk-table [dataSource]="filteredUsers" class="user-table">
-      <!-- Username -->
       <ng-container cdkColumnDef="username">
         <cdk-header-cell *cdkHeaderCellDef (click)="changeSort('username')">
           Username
-          <span *ngIf="sortField === 'username'">
-            {{ sortDirection === "asc" ? "↑" : "↓" }}
-          </span>
+          @if (sortField === 'username') {
+            <span>{{ sortDirection === "asc" ? "↑" : "↓" }}</span>
+          }
         </cdk-header-cell>
         <cdk-cell *cdkCellDef="let user"> {{ user.username }} </cdk-cell>
       </ng-container>
 
-      <!-- Email -->
       <ng-container cdkColumnDef="email">
         <cdk-header-cell *cdkHeaderCellDef (click)="changeSort('email')">
           Email
-          <span *ngIf="sortField === 'email'">
-            {{ sortDirection === "asc" ? "↑" : "↓" }}
-          </span>
+          @if (sortField === 'email') {
+            <span>{{ sortDirection === "asc" ? "↑" : "↓" }}</span>
+          }
         </cdk-header-cell>
         <cdk-cell *cdkCellDef="let user"> {{ user.email }} </cdk-cell>
       </ng-container>
@@ -51,7 +49,6 @@
         <cdk-cell *cdkCellDef="let user">2026-17-18</cdk-cell>
       </ng-container>
 
-      <!-- Actions -->
       <ng-container cdkColumnDef="actions">
         <cdk-header-cell *cdkHeaderCellDef> Actions </cdk-header-cell>
         <cdk-cell *cdkCellDef="let user; let i = index">
@@ -74,62 +71,62 @@
         </cdk-cell>
       </ng-container>
 
-      <!-- Header + Row -->
       <cdk-header-row *cdkHeaderRowDef="displayedColumns"></cdk-header-row>
       <cdk-row *cdkRowDef="let row; columns: displayedColumns"></cdk-row>
     </cdk-table>
 
-    <!-- Empty State -->
-    <div *ngIf="filteredUsers.length === 0" class="empty-state">
-      <p>No users found.</p>
-    </div>
+    @if (filteredUsers.length === 0) {
+      <div class="empty-state">
+        <p>No users found.</p>
+      </div>
+    }
   </div>
 
   @if (showDialog) {
-  <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">
-    <div class="dialog-content" (click)="$event.stopPropagation()">
-      <h3>{{ editIndex !== null ? "Edit User" : "Add User" }}</h3>
+    <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">
+      <div class="dialog-content" (click)="$event.stopPropagation()">
+        <h3>{{ editIndex !== null ? "Edit User" : "Add User" }}</h3>
 
-      <div class="user-form">
-        <label>First Name</label>
-        <app-fui-input
-          [formControl]="firstNameControl"
-          placeholder="First Name"
-        ></app-fui-input>
+        <div class="user-form">
+          <label>First Name</label>
+          <app-fui-input
+            [formControl]="firstNameControl"
+            placeholder="First Name"
+          ></app-fui-input>
 
-        <label>Last Name</label>
-        <app-fui-input
-          [formControl]="lastNameControl"
-          placeholder="Last Name"
-        ></app-fui-input>
+          <label>Last Name</label>
+          <app-fui-input
+            [formControl]="lastNameControl"
+            placeholder="Last Name"
+          ></app-fui-input>
 
-        <label>Username</label>
-        <app-fui-input
-          [formControl]="usernameControl"
-          placeholder="Username"
-        ></app-fui-input>
+          <label>Username</label>
+          <app-fui-input
+            [formControl]="usernameControl"
+            placeholder="Username"
+          ></app-fui-input>
 
-        <label>Email</label>
-        <app-fui-input
-          [formControl]="emailControl"
-          placeholder="Email"
-        ></app-fui-input>
+          <label>Email</label>
+          <app-fui-input
+            [formControl]="emailControl"
+            placeholder="Email"
+          ></app-fui-input>
 
-        <label>Password</label>
-        <app-fui-input
-          [formControl]="passwordControl"
-          type="password"
-          placeholder="Password"
-        ></app-fui-input>
-      </div>
+          <label>Password</label>
+          <app-fui-input
+            [formControl]="passwordControl"
+            type="password"
+            placeholder="Password"
+          ></app-fui-input>
+        </div>
 
-      <div class="dialog-actions">
-        <app-button appearance="secondary" (click)="closeDialog()"
-          >Cancel</app-button
-        >
-        <app-button appearance="primary" (click)="saveUser()">Save</app-button>
+        <div class="dialog-actions">
+          <app-button appearance="secondary" (click)="closeDialog()"
+            >Cancel</app-button
+          >
+          <app-button appearance="primary" (click)="saveUser()">Save</app-button>
+        </div>
       </div>
     </div>
-  </div>
   }
 </div>
