@@ -553,13 +553,13 @@ html {
 }
 
 html.dark {
-  --text: #fffaeb;
-  --background: #0f0c00;
-  --primary: #f4af01;
-  --secondary: #01668e;
-  --accent: #1501c6;
+  --text: #dfe7f2;
+  --background: #11171e;
+  --primary: #a1bad9;
+  --secondary: #3b2f76;
+  --accent: #8264c1;
 
-  --primary-100: var(--accent);
+  --primary-100: var(--primary);
   --primary-200: var(--accent-200);
   --primary-300: var(--accent-50);
   --accent-100: #bfbfbf;
@@ -567,7 +567,7 @@ html.dark {
   --text-100: var(--text);
   --text-200: var(--text);
   --bg-100: var(--background);
-  --bg-200: #1b1b1b;
+  --bg-200: #090f17;
   --bg-300: #b3b3b3;
 
   --colorNeutralForeground1: #ffffff;

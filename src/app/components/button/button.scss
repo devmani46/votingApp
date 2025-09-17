@@ -39,12 +39,13 @@
 
 /* variants */
 .btn--primary {
-  background-color: var(--colorBrand90);
+  background: var(--colorBrand90);
   color: var(--colorNeutralBackground1);
   border-color: var(--colorNeutralBackground1);
 
   &:hover {
     background-color: var(--colorBrandBackgroundHover);
+    color: var(--colorNeutralBackground1);
   }
 
   &:active {

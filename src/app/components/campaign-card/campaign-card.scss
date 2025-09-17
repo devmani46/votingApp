@@ -48,17 +48,8 @@
   //   var(--secondary-800) 35%,
   //   var(--secondary-900) 100%
   // );
-  background-color: hsla(188, 0%, 18%, 1);
-  background-image: radial-gradient(
-      at 48% 90%,
-      hsla(358, 0%, 21%, 1) 0px,
-      transparent 50%
-    ),
-    radial-gradient(at 47% 1%, hsla(48, 0%, 16%, 1) 0px, transparent 50%),
-    radial-gradient(at 39% 13%, hsla(2, 0%, 10%, 1) 0px, transparent 50%),
-    radial-gradient(at 7% 54%, hsla(215, 0%, 0%, 1) 0px, transparent 50%),
-    radial-gradient(at 46% 89%, hsla(333, 0%, 51%, 1) 0px, transparent 50%);
-
+  background-color: var(--bg-100);
+  border: solid 1px rgb(0, 0, 0, 0.2);
   color: var(--bg-100);
   box-shadow: 0 0 0 rgb(0, 0, 0, 0);
   background-size: 200% 200%;
@@ -69,9 +60,6 @@
   cursor: default;
 
   &:hover {
-    box-shadow: 0 15px 25px rgba(255, 190, 153, 0.5),
-      0 0 50px rgba(255, 110, 220, 0.4), 0 0 60px rgba(20, 200, 255, 0.3);
-    animation: gradientMove 4s linear infinite;
   }
 
   .card-clickable {
@@ -100,6 +88,7 @@
   }
 
   .card-content {
+    color: var(--text-200);
     padding: 12px;
     text-align: center;
     transition: all 200ms ease-in-out;
@@ -138,7 +127,6 @@
         opacity: 1;
       }
     }
-
   }
 
   &.card-small {
@@ -173,5 +161,20 @@
     opacity: 0.6;
     pointer-events: none;
     cursor: not-allowed;
+  }
+
+  :host-context(html.dark) & {
+    background-color: white;
+    background-image: radial-gradient(
+        at 55% 59%,
+        hsla(58, 63%, 79%, 1) 0px,
+        transparent 50%
+      ),
+      radial-gradient(at 26% 97%, hsla(76, 70%, 67%, 1) 0px, transparent 50%),
+      radial-gradient(at 17% 38%, hsla(179, 88%, 74%, 1) 0px, transparent 50%),
+      radial-gradient(at 48% 93%, hsla(338, 83%, 71%, 1) 0px, transparent 50%),
+      radial-gradient(at 15% 12%, hsla(209, 86%, 72%, 1) 0px, transparent 50%),
+      radial-gradient(at 10% 86%, hsla(108, 86%, 76%, 1) 0px, transparent 50%),
+      radial-gradient(at 67% 69%, hsla(277, 93%, 67%, 1) 0px, transparent 50%);
   }
 }

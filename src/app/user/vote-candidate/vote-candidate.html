@@ -24,15 +24,6 @@
         size="medium"
       >
       </app-campaign-card>
-
-      <app-button
-        class="vote-btn"
-        appearance="primary"
-        [disabled]="hasVoted(campaign.id!)"
-        (click)="vote(i); $event.stopPropagation()"
-      >
-        Vote ({{ candidate.votes ?? 0 }})
-      </app-button>
     </div>
     }
   </div>
@@ -134,7 +125,6 @@
         <p class="no-props">No properties were added for this candidate.</p>
       </ng-template>
     </div>
-
   </div>
 </div>
 }
