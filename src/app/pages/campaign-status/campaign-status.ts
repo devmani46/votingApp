@@ -90,13 +90,6 @@ export class CampaignStatus implements OnDestroy {
     const arr = Array.isArray(campaign.candidates) ? campaign.candidates : [];
     return arr.reduce((s, c) => s + this.getCandidateVotes((campaign as any).id, c.name), 0);
   }
-
-  /**
-   * Always returns a string:
-   * - "Candidate Name" if one winner
-   * - "Draw between X, Y" if tie
-   * - "—" if no candidates
-   */
   getTopCandidate(campaign: Campaign | null): string {
     if (!campaign || !Array.isArray(campaign.candidates) || campaign.candidates.length === 0) {
       return '—';
