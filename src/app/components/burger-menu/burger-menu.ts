@@ -24,6 +24,10 @@ export class BurgerMenu {
     this.isOpen = false;
   }
 
+  toggleDarkMode() {
+    document.documentElement.classList.toggle('dark');
+  }
+
   logout() {
     localStorage.removeItem('role');
     this.closeMenu();

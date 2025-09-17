@@ -6,7 +6,7 @@ import { Router, RouterModule } from '@angular/router';
   standalone: true,
   imports: [RouterModule],
   templateUrl: './nav-bar.html',
-  styleUrls: ['./nav-bar.scss']
+  styleUrls: ['./nav-bar.scss'],
 })
 export class NavBar implements OnInit, OnDestroy {
   user: any = {};
@@ -39,6 +39,10 @@ export class NavBar implements OnInit, OnDestroy {
 
   toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;
+  }
+
+  toggleDarkMode() {
+    document.documentElement.classList.toggle('dark');
   }
 
   logout() {

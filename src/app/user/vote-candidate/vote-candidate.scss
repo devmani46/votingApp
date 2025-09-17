@@ -1,5 +1,6 @@
 .vote-candidate-page {
   background-color: var(--bg-100);
+  color: var(--text-100);
   font-family: Manrope;
   --card-size: 20rem;
   --min-image-height: 16rem;
@@ -98,7 +99,8 @@
 .detail-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(20px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -107,7 +109,8 @@
 }
 
 .detail-popup {
-  background: #fff;
+  color: var(--text-100);
+  background: var(--bg-200);
   border-radius: 14px;
   max-width: 900px;
   width: 100%;

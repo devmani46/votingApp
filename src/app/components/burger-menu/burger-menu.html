@@ -63,6 +63,10 @@
         Moderator Management
       </li>
       } @if (role) {
+      <li (click)="toggleDarkMode()">
+        <span class="material-symbols-outlined">dark_mode</span> Toggle dark
+        mode
+      </li>
       <li class="logout-btn" (click)="logout()">
         <span class="material-symbols-outlined">logout</span>Logout
       </li>

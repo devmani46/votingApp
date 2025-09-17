@@ -91,10 +91,12 @@
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(20px);
 }
 
 .dialog-content {
-  background: var(--bg-100);
+  background: var(--bg-200);
+  color: var(--text-100);
   padding: 32px;
   border-radius: 16px;
   width: 720px;
@@ -136,7 +138,7 @@
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 4px;
-  color: #20160b;
+  color: var(--text);
 }
 
 .dialog-subtitle {
@@ -160,11 +162,18 @@
     display: block;
     margin-bottom: 6px;
     font-weight: 500;
-    color: #333;
+    color: var(--text);
+  }
+
+  app-fui-input {
+    --colorNeutralBackground1: var(--bg-100);
+    --colorNeutralStroke1: var(--bg-100);
+    --colorNeutralStrokeAccessible: var(--bg-100);
   }
 
   input,
   textarea {
+    color: var(--text);
     width: 100%;
     padding: 10px 12px;
     border-radius: 8px;

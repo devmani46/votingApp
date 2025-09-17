@@ -35,8 +35,11 @@
     border: solid 1px var(--text-100);
     border-radius: 350px;
     padding: 0.6rem 1rem;
-
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    span {
+      font-size: 18px;
+    }
 
     &:hover {
       background-color: var(--text-100);
