@@ -1,3 +1,26 @@
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 0%, 100% 0%, 0% 50%, 100% 50%, 0% 100%, 100% 100%,
+      50% 0%;
+  }
+  25% {
+    background-position: 30% 70%, 80% 20%, 10% 40%, 90% 50%, 20% 90%, 70% 10%,
+      60% 30%;
+  }
+  50% {
+    background-position: 70% 30%, 40% 80%, 50% 10%, 10% 50%, 90% 20%, 30% 70%,
+      20% 60%;
+  }
+  75% {
+    background-position: 50% 90%, 60% 40%, 80% 20%, 30% 70%, 10% 50%, 50% 20%,
+      80% 10%;
+  }
+  100% {
+    background-position: 0% 0%, 100% 0%, 0% 50%, 100% 50%, 0% 100%, 100% 100%,
+      50% 0%;
+  }
+}
+
 .vote-candidate-page {
   background-color: var(--bg-200);
   color: var(--text-100);
@@ -10,9 +33,29 @@
   --colorNeutralForeground1: var(--text-100);
 
   .banner-container {
-    background-size: cover;
-    background-repeat: no-repeat;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    background-color: #ffbe99;
+    background-image: radial-gradient(
+        at 62% 72%,
+        hsla(255, 86%, 69%, 1) 0px,
+        transparent 50%
+      ),
+      radial-gradient(at 66% 19%, hsla(20, 78%, 65%, 1) 0px, transparent 50%),
+      radial-gradient(at 88% 33%, hsla(20, 78%, 65%, 1) 0px, transparent 50%),
+      radial-gradient(at 96% 8%, hsla(331, 73%, 62%, 1) 0px, transparent 50%),
+      radial-gradient(at 71% 22%, hsla(342, 95%, 70%, 1) 0px, transparent 50%),
+      radial-gradient(at 86% 96%, hsla(346, 63%, 73%, 1) 0px, transparent 50%),
+      radial-gradient(at 51% 0%, hsla(250, 90%, 68%, 1) 0px, transparent 50%);
+    background-size: 200% 200%;
     min-height: 20rem;
+    animation: gradientMove 4s linear infinite;
+
+    img {
+      border: solid 2px var(--bg-100);
+      border-radius: 1rem;
+    }
   }
 
   .about-campaign {

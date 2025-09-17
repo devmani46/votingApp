@@ -2,15 +2,12 @@
 
 <div class="vote-candidate-page">
   @if (campaign) {
-  <div
-    [ngStyle]="{ 'background-image': 'url(' + campaign.logo + ')' }"
-    class="banner-container"
-  >
-    <!-- <img
+  <div class="banner-container">
+    <img
       class="banner-image"
       [src]="campaign.logo || '/assets/default-banner.png'"
       alt="Campaign Banner"
-    /> -->
+    />
   </div>
   <div class="about-campaign">
     <h2 class="campaign-title">{{ campaign.title }}</h2>
