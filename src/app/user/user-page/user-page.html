@@ -14,7 +14,6 @@
           Edit Profile
         </app-button>
       </div>
-
       <img
         class="profile-photo"
         [src]="user.photo || '/assets/admin.png'"
@@ -32,7 +31,6 @@
 
     <div class="past-campaigns">
       <h2>Past Campaigns</h2>
-
       @if (pastCampaigns().length === 0) {
       <p>You have not participated in any campaigns yet.</p>
       } @else {
@@ -61,10 +59,8 @@
     <div class="dialog-content" (click)="$event.stopPropagation()">
       <h2>{{ selectedCampaign.title }}</h2>
       <p>{{ selectedCampaign.description }}</p>
-
       <div class="winner-section">
         <h3>Winner:</h3>
-
         @if (winner) {
         <div class="winner-card">
           <img
@@ -82,7 +78,6 @@
         <em>No winner determined yet.</em>
         }
       </div>
-
       <div class="dialog-actions">
         <app-button appearance="secondary" (click)="closeCampaignDialog()">
           Close
@@ -95,8 +90,7 @@
     <div class="dialog-content" (click)="$event.stopPropagation()">
       <h2 class="dialog-title">Edit Your Profile</h2>
       <p class="dialog-subtitle">Update your personal details and photo</p>
-
-      <form [formGroup]="form" class="dialog-form">
+      <form [formGroup]="form" class="dialog-form" (ngSubmit)="saveProfile()">
         <div class="photo-upload">
           <input
             type="file"
@@ -112,7 +106,7 @@
           >
             <img
               class="profile-photo-preview"
-              [src]="photoPreview || '/assets/admin.png'"
+              [src]="tempPhotoPreview || '/assets/admin.png'"
               alt="Profile Photo"
             />
           </button>
@@ -126,22 +120,18 @@
               placeholder="First Name"
             />
           </div>
-
           <div>
             <label>Last Name</label>
             <app-fui-input formControlName="lastName" placeholder="Last Name" />
           </div>
-
           <div>
             <label>Username</label>
             <app-fui-input formControlName="username" placeholder="Username" />
           </div>
-
           <div>
             <label>Date of Birth</label>
             <input type="date" formControlName="dob" (change)="updateAge()" />
           </div>
-
           <div>
             <label>Email</label>
             <app-fui-input
@@ -150,7 +140,6 @@
               placeholder="Email"
             />
           </div>
-
           <div>
             <label>Bio</label>
             <textarea
@@ -158,7 +147,6 @@
               placeholder="Write something about yourself..."
             ></textarea>
           </div>
-
           <div>
             <label>Password (leave blank to keep current)</label>
             <app-fui-input
@@ -169,7 +157,6 @@
               [allowStrength]="false"
             />
           </div>
-
           <div>
             <label>Confirm Password</label>
             <app-fui-input
@@ -181,12 +168,12 @@
         </div>
 
         <div class="dialog-actions">
-          <app-button appearance="secondary" (click)="closeDialog()"
-            >Cancel</app-button
-          >
-          <app-button appearance="primary" (click)="saveProfile()"
-            >Save Changes</app-button
-          >
+          <app-button appearance="secondary" type="button" (click)="closeDialog()">
+            Cancel
+          </app-button>
+          <app-button appearance="primary" type="submit">
+            Save Changes
+          </app-button>
         </div>
       </form>
     </div>

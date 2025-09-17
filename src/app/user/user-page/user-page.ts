@@ -11,7 +11,7 @@ import { CampaignService } from '../../services/campaign';
 @Component({
   selector: 'app-user-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NavBar,Button, FuiInput, CampaignCard],
+  imports: [CommonModule, ReactiveFormsModule, NavBar, Button, FuiInput, CampaignCard],
   templateUrl: './user-page.html',
   styleUrls: ['./user-page.scss']
 })
@@ -22,7 +22,8 @@ export class UserPage implements OnInit {
   user: any = { photo: '', firstName: '', lastName: '', username: '', age: '', dob: '', email: '', bio: '' };
   form!: FormGroup;
   showDialog = false;
-  photoPreview: string | null = null;
+  tempUser: any = {};
+  tempPhotoPreview: string | null = null;
 
   selectedCampaign: any = null;
   winner: any = null;
@@ -42,14 +43,11 @@ export class UserPage implements OnInit {
       password: [''],
       confirmPassword: [''],
     });
-
-    this.photoPreview = this.user.photo;
   }
 
   pastCampaigns = computed(() => {
     const campaigns = this.campaignService.campaigns();
     const today = new Date();
-
     return campaigns
       .filter(c => new Date(c.endDate) < today)
       .map(c => ({
@@ -71,33 +69,51 @@ export class UserPage implements OnInit {
 
   getWinner(campaign: any) {
     if (!campaign || !campaign.candidates?.length) return null;
-
     let topCandidate: any = null;
     let maxVotes = -1;
-
     campaign.candidates.forEach((c: any) => {
       const key = `votes_${campaign.id}_${encodeURIComponent(c.name)}`;
       const stored = localStorage.getItem(key);
       const votes = stored ? parseInt(stored, 10) : (c.votes ?? 0);
-
       if (votes > maxVotes) {
         maxVotes = votes;
         topCandidate = { ...c, votes };
       }
     });
-
     return topCandidate;
   }
 
-  openDialog() { this.showDialog = true; }
-  closeDialog() { this.showDialog = false; }
-  closeDialogOnBackdrop(event: MouseEvent) { if (event.target === event.currentTarget) this.closeDialog(); }
+  openDialog() {
+    this.tempUser = { ...this.user };
+    this.tempPhotoPreview = this.user.photo;
+    this.form.reset({
+      firstName: this.tempUser.firstName,
+      lastName: this.tempUser.lastName,
+      username: this.tempUser.username,
+      dob: this.tempUser.dob,
+      email: this.tempUser.email,
+      bio: this.tempUser.bio,
+      password: '',
+      confirmPassword: ''
+    });
+    this.showDialog = true;
+  }
+
+  closeDialog() {
+    this.tempUser = {};
+    this.tempPhotoPreview = null;
+    this.showDialog = false;
+  }
+
+  closeDialogOnBackdrop(event: MouseEvent) {
+    if (event.target === event.currentTarget) this.closeDialog();
+  }
 
   onPhotoSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = () => { this.photoPreview = reader.result as string; };
+      reader.onload = () => { this.tempPhotoPreview = reader.result as string; };
       reader.readAsDataURL(file);
     }
   }
@@ -121,33 +137,21 @@ export class UserPage implements OnInit {
         alert('Passwords do not match'); return;
       }
     }
-
     this.user = {
-      ...this.user,
+      ...this.tempUser,
       ...this.form.value,
-      photo: this.photoPreview || this.user.photo,
+      photo: this.tempPhotoPreview || this.user.photo,
       age: this.user.age,
       password: this.form.value.password ? this.form.value.password : this.user.password,
     };
-
     localStorage.setItem('currentUser', JSON.stringify(this.user));
-
     const users = JSON.parse(localStorage.getItem('users') || '[]');
     const idx = users.findIndex((u: any) => u.email === this.user.email);
     if (idx > -1) {
       users[idx] = this.user;
       localStorage.setItem('users', JSON.stringify(users));
     }
-
     window.dispatchEvent(new StorageEvent('storage', { key: 'currentUser' }));
-
-    this.form.patchValue({
-      firstName: this.user.firstName, lastName: this.user.lastName,
-      username: this.user.username, dob: this.user.dob,
-      email: this.user.email, bio: this.user.bio,
-      password: '', confirmPassword: ''
-    });
-
     this.closeDialog();
   }
 
