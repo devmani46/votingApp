@@ -91,12 +91,32 @@ export class CampaignStatus implements OnDestroy {
     return arr.reduce((s, c) => s + this.getCandidateVotes((campaign as any).id, c.name), 0);
   }
 
-  getTopCandidate(campaign: Campaign | null): Candidate | null {
-    if (!campaign) return null;
-    const arr = Array.isArray(campaign.candidates) ? campaign.candidates.slice() : [];
-    if (!arr.length) return null;
-    arr.sort((a, b) => this.getCandidateVotes((campaign as any).id, b.name) - this.getCandidateVotes((campaign as any).id, a.name));
-    return arr[0] ?? null;
+  /**
+   * Always returns a string:
+   * - "Candidate Name" if one winner
+   * - "Draw between X, Y" if tie
+   * - "—" if no candidates
+   */
+  getTopCandidate(campaign: Campaign | null): string {
+    if (!campaign || !Array.isArray(campaign.candidates) || campaign.candidates.length === 0) {
+      return '—';
+    }
+
+    const candidatesWithVotes = campaign.candidates.map(c => ({
+      ...c,
+      votes: this.getCandidateVotes((campaign as any).id, c.name)
+    }));
+
+    candidatesWithVotes.sort((a, b) => b.votes - a.votes);
+
+    const topVotes = candidatesWithVotes[0].votes;
+    const topCandidates = candidatesWithVotes.filter(c => c.votes === topVotes);
+
+    if (topCandidates.length === 1) {
+      return topCandidates[0].name;
+    }
+
+    return `Draw between ${topCandidates.map(c => c.name).join(', ')}`;
   }
 
   candidateCount(campaign: Campaign | null): number {
