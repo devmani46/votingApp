@@ -53,6 +53,7 @@
     animation: gradientMove 4s linear infinite;
 
     img {
+      min-width: 50%;
       border: solid 2px var(--bg-100);
       border-radius: 1rem;
     }
