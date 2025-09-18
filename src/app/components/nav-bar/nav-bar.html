@@ -4,7 +4,10 @@
   </div>
 
   <div class="navbar-right">
-    <ul class="nav-list">
+    <div class="hamburger" (click)="menuOpen = !menuOpen">
+      <span class="material-symbols-outlined">menu</span>
+    </div>
+    <ul class="nav-list" [class.open]="menuOpen">
       <li routerLink="/user-page" routerLinkActive="active">
         <a>Home</a>
       </li>

@@ -12,6 +12,7 @@ import { AuthService } from '../../services/auth';
 export class NavBar implements OnInit, OnDestroy {
   user: any = {};
   dropdownOpen = false;
+  menuOpen = false;
 
   constructor(private auth: AuthService) {}
 
@@ -31,11 +32,10 @@ export class NavBar implements OnInit, OnDestroy {
   };
 
   private loadUser() {
-    this.user =
-      this.auth.getCurrentUser() || {
-        username: 'Guest',
-        photo: '/assets/admin.png',
-      };
+    this.user = this.auth.getCurrentUser() || {
+      username: 'Guest',
+      photo: '/assets/admin.png',
+    };
   }
 
   toggleDropdown() {
