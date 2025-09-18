@@ -9,10 +9,11 @@ import {
   ValidatorFn,
   ValidationErrors,
 } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { FuiField } from '../../components/fui-field/fui-field';
 import { FuiInput } from '../../components/fui-input/fui-input';
 import { Button } from '../../components/button/button';
+import { AuthService } from '../../services/auth';
 
 type RegisterForm = {
   firstName: FormControl<string>;
@@ -69,7 +70,7 @@ export class Register implements OnInit {
   form!: FormGroup<RegisterForm>;
   submitted = false;
 
-  constructor(private fb: NonNullableFormBuilder, private router: Router) {}
+  constructor(private fb: NonNullableFormBuilder, private auth: AuthService) {}
 
   ngOnInit(): void {
     this.form = this.fb.group<RegisterForm>(
@@ -91,22 +92,14 @@ export class Register implements OnInit {
     this.submitted = true;
 
     if (this.form.valid) {
-      const newUser = this.form.getRawValue();
-      console.log('Register data:', newUser);
-
-      const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
-      existingUsers.push(newUser);
-      localStorage.setItem('users', JSON.stringify(existingUsers));
-
-      localStorage.setItem('currentUser', JSON.stringify(newUser));
-      localStorage.setItem('role', 'user');
-
-      this.router.navigate(['/user-page']);
+      const success = this.auth.register(this.form.getRawValue());
+      if (!success) {
+        alert('User already exists with this email or username');
+      }
     } else {
       this.form.markAllAsTouched();
     }
   }
-
 
   get firstName() {
     return this.form.controls.firstName;

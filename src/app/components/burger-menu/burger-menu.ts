@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-burger-menu',
@@ -12,8 +13,8 @@ export class BurgerMenu {
   isOpen = true;
   role: string | null = null;
 
-  constructor(private router: Router) {
-    this.role = localStorage.getItem('role');
+  constructor(private auth: AuthService) {
+    this.role = this.auth.getRole();
   }
 
   toggleMenu() {
@@ -29,8 +30,7 @@ export class BurgerMenu {
   }
 
   logout() {
-    localStorage.removeItem('role');
+    this.auth.logout();
     this.closeMenu();
-    this.router.navigate(['/login']);
   }
 }

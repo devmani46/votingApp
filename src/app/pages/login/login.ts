@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
@@ -6,10 +6,11 @@ import {
   FormGroup,
   FormControl,
 } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { FuiField } from '../../components/fui-field/fui-field';
 import { FuiInput } from '../../components/fui-input/fui-input';
 import { Button } from '../../components/button/button';
+import { AuthService } from '../../services/auth';
 
 type LoginForm = {
   email: FormControl<string>;
@@ -22,17 +23,16 @@ type LoginForm = {
   imports: [ReactiveFormsModule, RouterModule, FuiField, FuiInput, Button],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Login implements OnInit {
-  form!: FormGroup<LoginForm>;
+  form: FormGroup<LoginForm>;
   submitted = false;
 
-  private adminEmail = 'admin@gmail.com';
-  private adminPassword = 'Admin@123';
-
-  constructor(private fb: NonNullableFormBuilder, private router: Router) {}
-
-  ngOnInit(): void {
+  constructor(
+    private fb: NonNullableFormBuilder,
+    private auth: AuthService
+  ) {
     this.form = this.fb.group<LoginForm>({
       email: this.fb.control('', {
         validators: [Validators.required, Validators.email],
@@ -41,54 +41,18 @@ export class Login implements OnInit {
     });
   }
 
+  ngOnInit(): void {}
+
   onSubmit() {
     this.submitted = true;
 
     if (this.form.valid) {
       const { email, password } = this.form.getRawValue();
+      const success = this.auth.login(email, password);
 
-      if (email === this.adminEmail && password === this.adminPassword) {
-        localStorage.setItem('role', 'admin');
-        localStorage.removeItem('currentUser');
-        this.router.navigate(['/menu']);
-        return;
+      if (!success) {
+        alert('Invalid email or password');
       }
-
-      const moderators = JSON.parse(localStorage.getItem('moderators') || '[]');
-      const foundModerator = moderators.find(
-        (m: any) => m.email === email && m.password === password
-      );
-
-      if (foundModerator) {
-        localStorage.setItem('role', 'moderator');
-
-        if (!foundModerator.photo && !foundModerator.image) {
-          foundModerator.photo = 'assets/admin.png';
-        }
-
-        localStorage.setItem('currentUser', JSON.stringify(foundModerator));
-        this.router.navigate(['/menu']);
-        return;
-      }
-
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const foundUser = users.find(
-        (u: any) => u.email === email && u.password === password
-      );
-
-      if (foundUser) {
-        localStorage.setItem('role', 'user');
-
-        if (!foundUser.photo && !foundUser.image) {
-          foundUser.photo = 'assets/admin.png';
-        }
-
-        localStorage.setItem('currentUser', JSON.stringify(foundUser));
-        this.router.navigate(['/user-page']);
-        return;
-      }
-
-      alert('Invalid email or password');
     } else {
       this.form.markAllAsTouched();
     }

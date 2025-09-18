@@ -1,5 +1,6 @@
 import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-nav-bar',
@@ -12,11 +13,10 @@ export class NavBar implements OnInit, OnDestroy {
   user: any = {};
   dropdownOpen = false;
 
-  constructor(private router: Router) {}
+  constructor(private auth: AuthService) {}
 
   ngOnInit() {
     this.loadUser();
-
     window.addEventListener('storage', this.syncUser);
   }
 
@@ -31,10 +31,11 @@ export class NavBar implements OnInit, OnDestroy {
   };
 
   private loadUser() {
-    const stored = localStorage.getItem('currentUser');
-    this.user = stored
-      ? JSON.parse(stored)
-      : { username: 'Guest', photo: '/assets/admin.png' };
+    this.user =
+      this.auth.getCurrentUser() || {
+        username: 'Guest',
+        photo: '/assets/admin.png',
+      };
   }
 
   toggleDropdown() {
@@ -46,8 +47,7 @@ export class NavBar implements OnInit, OnDestroy {
   }
 
   logout() {
-    localStorage.removeItem('currentUser');
-    this.router.navigate(['/login']);
+    this.auth.logout();
     this.loadUser();
   }
 

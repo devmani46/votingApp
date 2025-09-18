@@ -57,7 +57,7 @@ export class UserManagement implements OnInit, OnDestroy {
   ngOnInit() {
     const savedUsers = localStorage.getItem('users');
     this.users = savedUsers ? JSON.parse(savedUsers) : [];
-    this.applyFilters(); // ✅ ensures list shows immediately
+    this.applyFilters();
 
     this.searchControl.valueChanges.subscribe(() => {
       this.applyFilters();
