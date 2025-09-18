@@ -7,6 +7,7 @@ import { Button } from '../../components/button/button';
 import { FuiInput } from '../../components/fui-input/fui-input';
 import { CampaignCard } from '../../components/campaign-card/campaign-card';
 import { CampaignService } from '../../services/campaign';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-user-page',
@@ -18,18 +19,17 @@ import { CampaignService } from '../../services/campaign';
 export class UserPage implements OnInit {
   private fb = inject(FormBuilder);
   private campaignService = inject(CampaignService);
+  private authService = inject(AuthService);
 
   user: any = { photo: '', firstName: '', lastName: '', username: '', age: '', dob: '', email: '', bio: '' };
   form!: FormGroup;
   showDialog = false;
   photoPreview: string | null = null;
-
   selectedCampaign: any = null;
   winner: any = null;
 
   ngOnInit() {
-    const savedUser = localStorage.getItem('currentUser');
-    if (savedUser) this.user = JSON.parse(savedUser);
+    this.user = this.authService.getCurrentUser() || this.user;
     if (!this.user.photo) this.user.photo = '/assets/admin.png';
 
     this.form = this.fb.group({
@@ -53,13 +53,13 @@ export class UserPage implements OnInit {
       .filter(c => new Date(c.endDate) < today)
       .map(c => ({
         ...c,
-        winner: this.getWinner(c)
+        winner: this.campaignService.getWinner(c)
       }));
   });
 
   openCampaignDetails(campaign: any) {
     this.selectedCampaign = campaign;
-    this.winner = campaign.winner || this.getWinner(campaign);
+    this.winner = campaign.winner || this.campaignService.getWinner(campaign);
   }
 
   closeCampaignDialog(event?: MouseEvent) {
@@ -68,24 +68,8 @@ export class UserPage implements OnInit {
     this.winner = null;
   }
 
-  getWinner(campaign: any) {
-    if (!campaign || !campaign.candidates?.length) return null;
-    const candidatesWithVotes = campaign.candidates.map((c: any) => {
-      const key = `votes_${campaign.id}_${encodeURIComponent(c.name)}`;
-      const stored = localStorage.getItem(key);
-      const votes = stored ? parseInt(stored, 10) : (c.votes ?? 0);
-      return { ...c, votes };
-    });
-    const maxVotes = Math.max(...candidatesWithVotes.map((c: any) => c.votes));
-    const topCandidates = candidatesWithVotes.filter((c: any) => c.votes === maxVotes);
-    if (topCandidates.length > 1) {
-      return { draw: true, candidates: topCandidates };
-    }
-    return { draw: false, candidates: [topCandidates[0]] };
-  }
-
   getDrawNames(campaign: any): string {
-    const winner = this.getWinner(campaign);
+    const winner = this.campaignService.getWinner(campaign);
     if (winner && winner.draw) {
       return winner.candidates.map((c: any) => c.name).join(', ');
     }
@@ -131,14 +115,7 @@ export class UserPage implements OnInit {
       age: this.user.age,
       password: this.form.value.password ? this.form.value.password : this.user.password,
     };
-    localStorage.setItem('currentUser', JSON.stringify(this.user));
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const idx = users.findIndex((u: any) => u.email === this.user.email);
-    if (idx > -1) {
-      users[idx] = this.user;
-      localStorage.setItem('users', JSON.stringify(users));
-    }
-    window.dispatchEvent(new StorageEvent('storage', { key: 'currentUser' }));
+    this.authService.updateUser(this.user);
     this.form.patchValue({
       firstName: this.user.firstName, lastName: this.user.lastName,
       username: this.user.username, dob: this.user.dob,

@@ -2,6 +2,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CampaignService, Campaign } from '../../services/campaign';
+import { AuthService } from '../../services/auth';
 import { NavBar } from '../../components/nav-bar/nav-bar';
 import { Footer } from '../../components/footer/footer';
 import { CampaignCard } from '../../components/campaign-card/campaign-card';
@@ -17,6 +18,7 @@ import { Button } from '../../components/button/button';
 export class VoteCandidate implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private campaignService = inject(CampaignService);
+  private authService = inject(AuthService);
 
   campaign?: Campaign;
   showPopup = false;
@@ -29,16 +31,9 @@ export class VoteCandidate implements OnInit, OnDestroy {
   votePercent = 0;
 
   constructor() {
-    this.loadVotes();
-    const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
-      try {
-        const parsed = JSON.parse(storedUser);
-        this.currentUserEmail = parsed.email;
-      } catch {
-        this.currentUserEmail = '';
-      }
-    }
+    this.votedCampaigns = this.authService.getVotedCampaigns();
+    const currentUser = this.authService.getCurrentUser();
+    this.currentUserEmail = currentUser?.email || '';
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.campaign = this.campaignService.getCampaignById(id) ?? undefined;
   }
@@ -58,18 +53,14 @@ export class VoteCandidate implements OnInit, OnDestroy {
       this.showPopup = true;
       return;
     }
-
     this.campaignService.vote(this.campaign.id, candidateIndex);
     if (!this.votedCampaigns[this.currentUserEmail]) {
       this.votedCampaigns[this.currentUserEmail] = [];
     }
     this.votedCampaigns[this.currentUserEmail].push(this.campaign.id);
-    localStorage.setItem('votedCampaigns', JSON.stringify(this.votedCampaigns));
-
+    this.authService.saveVotedCampaigns(this.votedCampaigns);
     this.campaign = this.campaignService.getCampaignById(this.campaign.id) ?? undefined;
     this.refreshTotalVotes();
-    localStorage.setItem('campaigns_updated', Date.now().toString());
-
     if (this.candidatePopupOpen && this.activeIndex === candidateIndex) {
       this.setActiveCandidate(candidateIndex);
     }
@@ -78,13 +69,6 @@ export class VoteCandidate implements OnInit, OnDestroy {
   hasVoted(campaignId?: number): boolean {
     if (!campaignId || !this.currentUserEmail) return false;
     return this.votedCampaigns[this.currentUserEmail]?.includes(campaignId) ?? false;
-  }
-
-  private loadVotes() {
-    const stored = localStorage.getItem('votedCampaigns');
-    if (stored) {
-      this.votedCampaigns = JSON.parse(stored);
-    }
   }
 
   closePopup() {
@@ -98,21 +82,6 @@ export class VoteCandidate implements OnInit, OnDestroy {
     const candidate = this.campaign.candidates?.[index];
     if (candidate) {
       this.setActiveCandidate(index);
-    } else {
-      const stored = localStorage.getItem('campaigns');
-      if (stored) {
-        try {
-          const arr = JSON.parse(stored);
-          const found = arr.find((c: any) => c.id === this.campaign?.id);
-          if (found?.candidates?.[index]) {
-            this.activeCandidate = found.candidates[index];
-          } else {
-            this.activeCandidate = null;
-          }
-        } catch {
-          this.activeCandidate = null;
-        }
-      }
     }
   }
 

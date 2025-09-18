@@ -23,10 +23,8 @@ export interface Campaign {
 })
 export class CampaignService {
   private storageKey = 'campaigns';
-
   private _campaigns = signal<Campaign[]>([]);
   campaigns = this._campaigns.asReadonly();
-
   private nextId = 1;
 
   constructor() {
@@ -117,5 +115,19 @@ export class CampaignService {
       })
     );
     this.saveCampaigns();
+  }
+
+  getWinner(campaign: Campaign) {
+    if (!campaign || !campaign.candidates?.length) return null;
+    const candidatesWithVotes = campaign.candidates.map((c: any) => ({
+      ...c,
+      votes: c.votes ?? 0
+    }));
+    const maxVotes = Math.max(...candidatesWithVotes.map((c: any) => c.votes));
+    const topCandidates = candidatesWithVotes.filter((c: any) => c.votes === maxVotes);
+    if (topCandidates.length > 1) {
+      return { draw: true, candidates: topCandidates };
+    }
+    return { draw: false, candidates: [topCandidates[0]] };
   }
 }

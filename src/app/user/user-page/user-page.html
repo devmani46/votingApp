@@ -40,12 +40,16 @@
               size="small"
               (click)="openCampaignDetails(c)"
             >
-              <div class="campaign-winner" *ngIf="c.winner">
+              <div class="campaign-winner">
                 <strong>Winner:</strong>
-                @if (!c.winner.draw) {
-                  {{ c.winner.candidates[0].name }}
+                @if (c.winner) {
+                  @if (!c.winner.draw) {
+                    {{ c.winner.candidates[0].name }}
+                  } @else {
+                    Draw between {{ getDrawNames(c) }}
+                  }
                 } @else {
-                  Draw between {{ getDrawNames(c) }}
+                  <em>No winner determined yet.</em>
                 }
               </div>
             </app-campaign-card>

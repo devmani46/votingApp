@@ -25,11 +25,9 @@ export class AuthService {
 
     if (foundModerator) {
       localStorage.setItem('role', 'moderator');
-
       if (!foundModerator.photo && !foundModerator.image) {
         foundModerator.photo = 'assets/admin.png';
       }
-
       localStorage.setItem('currentUser', JSON.stringify(foundModerator));
       this.router.navigate(['/menu']);
       return true;
@@ -42,11 +40,9 @@ export class AuthService {
 
     if (foundUser) {
       localStorage.setItem('role', 'user');
-
       if (!foundUser.photo && !foundUser.image) {
         foundUser.photo = 'assets/admin.png';
       }
-
       localStorage.setItem('currentUser', JSON.stringify(foundUser));
       this.router.navigate(['/user-page']);
       return true;
@@ -57,7 +53,6 @@ export class AuthService {
 
   register(newUser: any): boolean {
     const users = JSON.parse(localStorage.getItem('users') || '[]');
-
     const exists = users.some(
       (u: any) => u.email === newUser.email || u.username === newUser.username
     );
@@ -71,7 +66,6 @@ export class AuthService {
 
     users.push(newUser);
     localStorage.setItem('users', JSON.stringify(users));
-
     localStorage.setItem('currentUser', JSON.stringify(newUser));
     localStorage.setItem('role', 'user');
 
@@ -93,4 +87,25 @@ export class AuthService {
   getRole(): string | null {
     return localStorage.getItem('role');
   }
+
+  updateUser(updatedUser: any) {
+    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const idx = users.findIndex((u: any) => u.email === updatedUser.email);
+    if (idx > -1) {
+      users[idx] = updatedUser;
+      localStorage.setItem('users', JSON.stringify(users));
+    }
+  }
+
+  getVotedCampaigns(): Record<string, number[]> {
+    const stored = localStorage.getItem('votedCampaigns');
+    return stored ? JSON.parse(stored) : {};
+  }
+
+  saveVotedCampaigns(voted: Record<string, number[]>) {
+    localStorage.setItem('votedCampaigns', JSON.stringify(voted));
+  }
 }
+
+
