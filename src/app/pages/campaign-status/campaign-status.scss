@@ -54,14 +54,21 @@
   flex-direction: column;
   gap: 2rem;
 
+  .campaign-wrapper {
+    max-width: 33%;
+  }
+
   .manipulation-btns {
     display: flex;
+    gap: 1rem;
     --colorBrand90: var(--text);
 
     .delete-btn {
       width: 100%;
       --colorBrand90: var(--bg-100);
       --colorNeutralBackground1: rgb(235, 73, 15);
+      --colorNeutralBackground2: rgba(235, 73, 15, 0.2);
+
       --colorBrandBackgroundHover: rgb(235, 73, 15);
 
       &:hover {
@@ -70,17 +77,21 @@
     }
 
     .edit-btn {
-      --colorBrand90: var(--text-100);
-
+      --colorBrand90: var(--bg-100);
+      --colorNeutralBackground1: var(--text-100);
+      --colorNeutralBackground2: #33333320;
       width: 100%;
+
+      &:hover {
+        --colorNeutralBackground1: var(--bg-100);
+      }
     }
   }
 }
 
 .campaign-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.5rem;
+  display: flex;
+  gap: 1rem;
 }
 
 .campaign-wrapper {
@@ -194,9 +205,7 @@
 }
 
 .candidate-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  display: flex;
 }
 
 .candidate-item {

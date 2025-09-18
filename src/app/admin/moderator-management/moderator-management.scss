@@ -1,7 +1,9 @@
 .moderator-management {
   --colorNeutralBackground1: var(--bg-100);
+  --colorNeutralBackground2: var(--primary);
+
   --colorNeutralStroke1: rgba(0, 0, 0, 0.1);
-  --colorBrand90: #20160b;
+  --colorBrand90: var(--text-200);
   font-family: Manrope, sans-serif;
   background: var(--bg-200);
   color: var(--text-200);
@@ -32,7 +34,7 @@
   }
 
   .section {
-    width: 70vw;
+    width: 100vw;
     border-radius: 12px;
     padding: 4rem;
 
@@ -58,8 +60,8 @@
       }
 
       app-button {
-        --colorNeutralBackground1: var(--text-100);
-        --colorBrand90: var(--accent);
+        --colorNeutralBackground1: var(--bg-100);
+        --colorBrand90: var(--primary-100);
         width: 80%;
       }
     }
