@@ -38,7 +38,7 @@ export class Menu implements OnDestroy {
   }
 
   get totalUsers(): number {
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const users = this.authService.getAllUsers();
     return Array.isArray(users) ? users.length : 0;
   }
 

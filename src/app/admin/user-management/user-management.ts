@@ -10,7 +10,7 @@ import { FuiInput } from '../../components/fui-input/fui-input';
 import { Button } from '../../components/button/button';
 import { BurgerMenu } from '../../components/burger-menu/burger-menu';
 import { CdkTableModule } from '@angular/cdk/table';
-import { NgModule } from '@angular/core';
+import { UserService, User } from '../../services/user';
 
 type SortField = 'firstName' | 'email' | 'username';
 type SortDirection = 'asc' | 'desc';
@@ -31,9 +31,10 @@ type SortDirection = 'asc' | 'desc';
 })
 export class UserManagement implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
+  private userService = inject(UserService);
 
-  users: any[] = [];
-  filteredUsers: any[] = [];
+  users: User[] = [];
+  filteredUsers: User[] = [];
   showDialog = false;
   editIndex: number | null = null;
 
@@ -46,6 +47,7 @@ export class UserManagement implements OnInit, OnDestroy {
   searchControl = new FormControl('');
   sortField: SortField = 'firstName';
   sortDirection: SortDirection = 'asc';
+
   displayedColumns: string[] = [
     'username',
     'email',
@@ -55,8 +57,7 @@ export class UserManagement implements OnInit, OnDestroy {
   ];
 
   ngOnInit() {
-    const savedUsers = localStorage.getItem('users');
-    this.users = savedUsers ? JSON.parse(savedUsers) : [];
+    this.users = this.userService.getAll();
     this.applyFilters();
 
     this.searchControl.valueChanges.subscribe(() => {
@@ -113,7 +114,7 @@ export class UserManagement implements OnInit, OnDestroy {
   }
 
   saveUser() {
-    const user = {
+    const user: User = {
       firstName: this.firstNameControl.value ?? '',
       lastName: this.lastNameControl.value ?? '',
       username: this.usernameControl.value ?? '',
@@ -131,22 +132,19 @@ export class UserManagement implements OnInit, OnDestroy {
       return;
 
     if (this.editIndex !== null) {
-      this.users[this.editIndex] = user;
+      this.userService.update(this.editIndex, user);
     } else {
-      this.users.push(user);
+      this.userService.add(user);
     }
 
-    this.save();
+    this.users = this.userService.getAll();
+    this.applyFilters();
     this.closeDialog();
   }
 
   deleteUser(index: number) {
-    this.users.splice(index, 1);
-    this.save();
-  }
-
-  private save() {
-    localStorage.setItem('users', JSON.stringify(this.users));
+    this.userService.delete(index);
+    this.users = this.userService.getAll();
     this.applyFilters();
   }
 

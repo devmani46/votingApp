@@ -106,6 +106,12 @@ export class AuthService {
   saveVotedCampaigns(voted: Record<string, number[]>) {
     localStorage.setItem('votedCampaigns', JSON.stringify(voted));
   }
+
+  getAllUsers(): any[] {
+  const stored = localStorage.getItem('users');
+  return stored ? JSON.parse(stored) : [];
+}
+
 }
 
 

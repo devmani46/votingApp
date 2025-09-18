@@ -10,7 +10,7 @@ import { FuiInput } from '../../components/fui-input/fui-input';
 import { Button } from '../../components/button/button';
 import { BurgerMenu } from '../../components/burger-menu/burger-menu';
 import { CdkTableModule } from '@angular/cdk/table';
-import { NgModule } from '@angular/core';
+import { ModeratorService, Moderator } from '../../services/moderator';
 
 type SortField = 'name' | 'email';
 type SortDirection = 'asc' | 'desc';
@@ -31,9 +31,10 @@ type SortDirection = 'asc' | 'desc';
 })
 export class ModeratorManagement implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
+  private moderatorService = inject(ModeratorService);
 
-  moderators: any[] = [];
-  filteredModerators: any[] = [];
+  moderators: Moderator[] = [];
+  filteredModerators: Moderator[] = [];
   showDialog = false;
   editIndex: number | null = null;
 
@@ -54,8 +55,7 @@ export class ModeratorManagement implements OnInit, OnDestroy {
   ];
 
   ngOnInit() {
-    const savedMods = localStorage.getItem('moderators');
-    this.moderators = savedMods ? JSON.parse(savedMods) : [];
+    this.moderators = this.moderatorService.getAll();
     this.applyFilters();
 
     this.searchControl.valueChanges.subscribe(() => {
@@ -106,7 +106,7 @@ export class ModeratorManagement implements OnInit, OnDestroy {
   }
 
   saveModerator() {
-    const moderator = {
+    const moderator: Moderator = {
       name: this.nameControl.value ?? '',
       email: this.emailControl.value ?? '',
       password: this.passwordControl.value ?? '',
@@ -115,22 +115,19 @@ export class ModeratorManagement implements OnInit, OnDestroy {
     if (!moderator.name || !moderator.email || !moderator.password) return;
 
     if (this.editIndex !== null) {
-      this.moderators[this.editIndex] = moderator;
+      this.moderatorService.update(this.editIndex, moderator);
     } else {
-      this.moderators.push(moderator);
+      this.moderatorService.add(moderator);
     }
 
-    this.save();
+    this.moderators = this.moderatorService.getAll();
+    this.applyFilters();
     this.closeDialog();
   }
 
   deleteModerator(index: number) {
-    this.moderators.splice(index, 1);
-    this.save();
-  }
-
-  private save() {
-    localStorage.setItem('moderators', JSON.stringify(this.moderators));
+    this.moderatorService.delete(index);
+    this.moderators = this.moderatorService.getAll();
     this.applyFilters();
   }
 
