@@ -2,6 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CampaignService, Campaign } from '../../services/campaign';
+import { AuthService } from '../../services/auth';
 import { BurgerMenu } from '../../components/burger-menu/burger-menu';
 import { DetailCards } from '../../components/detail-cards/detail-cards';
 
@@ -15,7 +16,11 @@ import { DetailCards } from '../../components/detail-cards/detail-cards';
 export class Menu implements OnDestroy {
   campaigns: Campaign[] = [];
 
-  constructor(private campaignService: CampaignService, private router: Router) {
+  constructor(
+    private campaignService: CampaignService,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.loadCampaigns();
     window.addEventListener('storage', this.handleStorageChange);
   }
@@ -24,21 +29,17 @@ export class Menu implements OnDestroy {
     window.removeEventListener('storage', this.handleStorageChange);
   }
 
-  handleStorageChange = (event: StorageEvent) => {
-    if (event.key === 'campaigns' || event.key === 'campaigns_updated') {
-      this.loadCampaigns();
-    }
+  handleStorageChange = () => {
+    this.loadCampaigns();
   };
 
   loadCampaigns() {
-    const stored = localStorage.getItem('campaigns');
-    this.campaigns = stored ? JSON.parse(stored) : [];
+    this.campaigns = this.campaignService.getAllCampaigns();
   }
 
   get totalUsers(): number {
-    const stored = localStorage.getItem('users');
-    const arr = stored ? JSON.parse(stored) : [];
-    return Array.isArray(arr) ? arr.length : 0;
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    return Array.isArray(users) ? users.length : 0;
   }
 
   get totalCampaigns(): number {
@@ -50,8 +51,10 @@ export class Menu implements OnDestroy {
   }
 
   get totalVotes(): number {
-    return this.campaigns.reduce((sum, c) =>
-      sum + (c.candidates || []).reduce((s, cand) => s + (cand.votes || 0), 0), 0);
+    return this.campaigns.reduce(
+      (sum, c) => sum + c.candidates.reduce((s, cand) => s + (cand.votes ?? 0), 0),
+      0
+    );
   }
 
   navigate(path: string) {

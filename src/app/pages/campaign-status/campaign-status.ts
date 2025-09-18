@@ -38,14 +38,8 @@ export class CampaignStatus implements OnDestroy {
     this.closeCampaignDetails();
   }
 
-  handleStorageChange = (event: StorageEvent) => {
-    if (!event?.key) {
-      this.loadCampaigns();
-      return;
-    }
-    if (event.key === 'campaigns' || event.key === 'campaigns_updated' || event.key.startsWith('votes_')) {
-      this.loadCampaigns();
-    }
+  handleStorageChange = () => {
+    this.loadCampaigns();
   };
 
   loadCampaigns() {
@@ -58,70 +52,34 @@ export class CampaignStatus implements OnDestroy {
     return this.campaigns.filter(c => (c.title ?? '').toLowerCase().includes(term));
   }
 
-  generateVoteKeys(campaignId: any, candidateName: string) {
-    const enc = encodeURIComponent(candidateName);
-    return [
-      `votes_${campaignId}_${enc}`,
-      `votes_${campaignId}_${candidateName}`,
-      `votes_${campaignId}_${candidateName.toLowerCase()}`
-    ];
-  }
-
-  getCandidateVotes(campaignId: any, candidateName: string): number {
-    if (campaignId == null || candidateName == null) return 0;
-    const keys = this.generateVoteKeys(campaignId, candidateName);
-    for (const k of keys) {
-      const stored = localStorage.getItem(k);
-      if (stored != null) {
-        const n = parseInt(stored, 10);
-        return Number.isFinite(n) ? n : 0;
-      }
-    }
-    const camp = this.campaigns.find(c => (c as any).id === campaignId);
-    if (camp && Array.isArray(camp.candidates)) {
-      const cand = camp.candidates.find((x: any) => x.name === candidateName);
-      return cand ? (cand.votes ?? 0) : 0;
-    }
-    return 0;
+  getCandidateVotes(campaignId: number, candidateName: string): number {
+    const campaign = this.campaignService.getCampaignById(campaignId);
+    if (!campaign) return 0;
+    const candidate = campaign.candidates.find(c => c.name === candidateName);
+    return candidate ? (candidate.votes ?? 0) : 0;
   }
 
   getTotalVotes(campaign: Campaign | null): number {
     if (!campaign) return 0;
-    const arr = Array.isArray(campaign.candidates) ? campaign.candidates : [];
-    return arr.reduce((s, c) => s + this.getCandidateVotes((campaign as any).id, c.name), 0);
+    return campaign.candidates.reduce((s, c) => s + (c.votes ?? 0), 0);
   }
+
   getTopCandidate(campaign: Campaign | null): string {
-    if (!campaign || !Array.isArray(campaign.candidates) || campaign.candidates.length === 0) {
-      return '—';
-    }
-
-    const candidatesWithVotes = campaign.candidates.map(c => ({
-      ...c,
-      votes: this.getCandidateVotes((campaign as any).id, c.name)
-    }));
-
-    candidatesWithVotes.sort((a, b) => b.votes - a.votes);
-
-    const topVotes = candidatesWithVotes[0].votes;
-    const topCandidates = candidatesWithVotes.filter(c => c.votes === topVotes);
-
-    if (topCandidates.length === 1) {
-      return topCandidates[0].name;
-    }
-
-    return `Draw between ${topCandidates.map(c => c.name).join(', ')}`;
+    if (!campaign || campaign.candidates.length === 0) return '—';
+    const winner = this.campaignService.getWinner(campaign);
+    if (!winner) return '—';
+    return winner.draw
+      ? `Draw between ${winner.candidates.map(c => c.name).join(', ')}`
+      : winner.candidates[0].name;
   }
 
   candidateCount(campaign: Campaign | null): number {
-    if (!campaign) return 0;
-    return Array.isArray(campaign.candidates) ? campaign.candidates.length : 0;
+    return campaign ? campaign.candidates.length : 0;
   }
 
   getRankedCandidates(campaign: Campaign | null): Candidate[] {
-    if (!campaign || !Array.isArray(campaign.candidates)) return [];
-    return [...campaign.candidates].sort((a, b) =>
-      this.getCandidateVotes((campaign as any).id, b.name) - this.getCandidateVotes((campaign as any).id, a.name)
-    );
+    if (!campaign) return [];
+    return [...campaign.candidates].sort((a, b) => (b.votes ?? 0) - (a.votes ?? 0));
   }
 
   getOrdinal(n: number): string {
@@ -132,9 +90,9 @@ export class CampaignStatus implements OnDestroy {
 
   getChartOptions(campaign: Campaign | null) {
     if (!campaign) return { tooltip: { show: false }, series: [] };
-    const data = (Array.isArray(campaign.candidates) ? campaign.candidates : []).map(c => ({
+    const data = campaign.candidates.map(c => ({
       name: c.name,
-      value: this.getCandidateVotes((campaign as any).id, c.name)
+      value: c.votes ?? 0
     }));
     return {
       tooltip: { trigger: 'item' },
@@ -162,20 +120,10 @@ export class CampaignStatus implements OnDestroy {
   }
 
   exportCSV() {
-    const rows: string[] = [];
-    rows.push('campaignId,title,candidateName,candidateVotes');
+    const rows: string[] = ['campaignId,title,candidateName,candidateVotes'];
     for (const c of this.campaigns) {
-      const cid = (c as any).id ?? '';
-      const title = (c.title ?? '').replace(/"/g, '""');
-      const candidates = Array.isArray(c.candidates) ? c.candidates : [];
-      if (candidates.length) {
-        for (const cand of candidates) {
-          const name = (cand.name ?? '').replace(/"/g, '""');
-          const votes = this.getCandidateVotes(cid, cand.name);
-          rows.push(`${cid},"${title}","${name}",${votes}`);
-        }
-      } else {
-        rows.push(`${cid},"${title}","",0`);
+      for (const cand of c.candidates) {
+        rows.push(`${c.id},"${c.title}","${cand.name}",${cand.votes ?? 0}`);
       }
     }
     const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
@@ -194,11 +142,11 @@ export class CampaignStatus implements OnDestroy {
   deleteCampaign(id: number) {
     this.campaignService.deleteCampaign(id);
     this.loadCampaigns();
-    if (this.selectedCampaign && (this.selectedCampaign as any).id === id) this.selectedCampaign = null;
+    if (this.selectedCampaign?.id === id) this.selectedCampaign = null;
   }
 
   trackByCampaignId(index: number, item: Campaign) {
-    return (item as any).id ?? index;
+    return item.id ?? index;
   }
 
   trackByCandidateName(index: number, item: Candidate) {
@@ -210,3 +158,5 @@ export class CampaignStatus implements OnDestroy {
     return (entity.logo ?? entity.photo ?? '/assets/default-user.png') as string;
   }
 }
+
+
