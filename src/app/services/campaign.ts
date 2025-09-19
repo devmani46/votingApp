@@ -33,10 +33,21 @@ export class CampaignService {
   }
 
   private loadCampaigns() {
-    this.http.get<Campaign[]>(`${this.apiUrl}/campaigns`, { withCredentials: true }).subscribe(campaigns => {
-      const normalized = campaigns.map(c => ({ ...c, candidates: c.candidates || [] }));
-      this._campaigns.set(normalized);
+    this.http.get<Campaign[]>(`${this.apiUrl}/campaigns`).subscribe({
+      next: campaigns => {
+        const normalized = campaigns.map(c => ({ ...c, candidates: c.candidates || [] }));
+        this._campaigns.set(normalized);
+      },
+      error: error => {
+        console.error('Failed to load campaigns:', error);
+        // Optionally, you can set an empty array or handle the error differently
+        this._campaigns.set([]);
+      }
     });
+  }
+
+  refreshCampaigns() {
+    this.loadCampaigns();
   }
 
   getAllCampaigns(): Campaign[] {

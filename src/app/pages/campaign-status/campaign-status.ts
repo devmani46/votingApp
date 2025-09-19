@@ -22,10 +22,9 @@ export class CampaignStatus implements OnDestroy {
   viewMode: 'cards' | 'charts' = 'cards';
   searchTerm = '';
   selectedCampaign: Campaign | null = null;
-  campaigns: Campaign[] = [];
+  campaigns = this.campaignService.campaigns;
 
   constructor() {
-    this.loadCampaigns();
     window.addEventListener('storage', this.handleStorageChange);
   }
 
@@ -39,17 +38,13 @@ export class CampaignStatus implements OnDestroy {
   }
 
   handleStorageChange = () => {
-    this.loadCampaigns();
+    this.campaignService.refreshCampaigns();
   };
-
-  loadCampaigns() {
-    this.campaigns = this.campaignService.getAllCampaigns();
-  }
 
   filteredCampaigns(): Campaign[] {
     const term = this.searchTerm?.trim().toLowerCase() ?? '';
-    if (!term) return this.campaigns;
-    return this.campaigns.filter(c => (c.title ?? '').toLowerCase().includes(term));
+    if (!term) return this.campaigns();
+    return this.campaigns().filter(c => (c.title ?? '').toLowerCase().includes(term));
   }
 
   getCandidateVotes(campaignId: string, candidateName: string): number {
@@ -121,7 +116,7 @@ export class CampaignStatus implements OnDestroy {
 
   exportCSV() {
     const rows: string[] = ['campaignId,title,candidateName,candidateVotes'];
-    for (const c of this.campaigns) {
+    for (const c of this.campaigns()) {
       for (const cand of c.candidates) {
         rows.push(`${c.id},"${c.title}","${cand.name}",${cand.votes ?? 0}`);
       }
@@ -141,7 +136,6 @@ export class CampaignStatus implements OnDestroy {
 
   deleteCampaign(id: string) {
     this.campaignService.deleteCampaign(id).subscribe(() => {
-      this.loadCampaigns();
       if (this.selectedCampaign?.id === id) this.selectedCampaign = null;
     });
   }
@@ -156,7 +150,7 @@ export class CampaignStatus implements OnDestroy {
 
   getImage(entity: any): string {
     if (!entity) return '/assets/default-user.png';
-    return (entity.logo ?? entity.photo ?? '/assets/default-user.png') as string;
+    return (entity.banner_url ?? entity.photo_url ?? entity.logo ?? entity.photo ?? '/assets/default-user.png') as string;
   }
 }
 

@@ -208,52 +208,54 @@ export class CreateCampaign implements OnInit, OnDestroy {
     }
   }
 
-async submitForm() {
-  if (this.form.invalid) {
-    console.error('Form is invalid:', this.form.errors);
-    return;
-  }
-
-  console.log('Submitting form...');
-  const formValue = this.form.value;
-  const campaignData = {
-    title: formValue.title,
-    description: formValue.description,
-    banner_url: formValue.logo || null,
-    start_date: formValue.startDate,
-    end_date: formValue.endDate
-  };
-
-  console.log('Campaign data:', campaignData);
-
-  try {
-    if (this.editMode && this.campaignId !== null) {
-      console.log('Updating campaign:', this.campaignId);
-      await this.campaignService.updateCampaign(this.campaignId, campaignData).toPromise();
-      console.log('Update successful, navigating to campaign-status');
-      this.router.navigate(['/campaign-status']);
-    } else {
-      console.log('Creating new campaign');
-      const createdCampaign = await this.campaignService.addCampaign(campaignData).toPromise();
-      console.log('Campaign created:', createdCampaign);
-
-      // Add candidates after creating campaign
-      if (!createdCampaign || !createdCampaign.id) {
-        throw new Error('Created campaign is undefined or missing id');
-      }
-      for (const c of formValue.candidates) {
-        await this.campaignService.addCandidate(createdCampaign.id, {
-          name: c.name,
-          bio: c.bio || null,
-          photo_url: c.photo || null
-        }).toPromise();
-      }
-
-      console.log('All candidates added, navigating to campaign-status');
-      this.router.navigate(['/campaign-status']);
+  async submitForm() {
+    if (this.form.invalid) {
+      console.error('Form is invalid:', this.form.errors);
+      return;
     }
-  } catch (err) {
-    console.error('Error during campaign create/update:', err);
+
+    console.log('Submitting form...');
+    const formValue = this.form.value;
+    const campaignData = {
+      title: formValue.title,
+      description: formValue.description,
+      banner_url: formValue.logo || null,
+      start_date: formValue.startDate,
+      end_date: formValue.endDate
+    };
+
+    console.log('Campaign data:', campaignData);
+
+    try {
+      if (this.editMode && this.campaignId !== null) {
+        console.log('Updating campaign:', this.campaignId);
+        await this.campaignService.updateCampaign(this.campaignId, campaignData).toPromise();
+        console.log('Update successful, refreshing campaigns and navigating to campaign-status');
+        this.campaignService.refreshCampaigns(); // refresh campaigns list
+        this.router.navigate(['/campaign-status']);
+      } else {
+        console.log('Creating new campaign');
+        const createdCampaign = await this.campaignService.addCampaign(campaignData).toPromise();
+        console.log('Campaign created:', createdCampaign);
+
+        // Add candidates after creating campaign
+        if (!createdCampaign || !createdCampaign.id) {
+          throw new Error('Created campaign is undefined or missing id');
+        }
+        for (const c of formValue.candidates) {
+          await this.campaignService.addCandidate(createdCampaign.id, {
+            name: c.name,
+            bio: c.bio || null,
+            photo_url: c.photo || null
+          }).toPromise();
+        }
+
+        console.log('All candidates added, refreshing campaigns and navigating to campaign-status');
+        this.campaignService['loadCampaigns'](); // refresh campaigns list
+        this.router.navigate(['/campaign-status']);
+      }
+    } catch (err) {
+      console.error('Error during campaign create/update:', err);
+    }
   }
-}
 }
