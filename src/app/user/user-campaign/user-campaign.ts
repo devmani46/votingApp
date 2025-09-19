@@ -20,16 +20,16 @@ export class UserCampaign {
   campaigns = computed(() => {
     const all = this.campaignService.campaigns();
     const today = new Date();
-    return all.filter(c => new Date(c.startDate) <= today && new Date(c.endDate) >= today);
+    return all.filter(c => new Date(c.start_date) <= today && new Date(c.end_date) >= today);
   });
 
   upcomingCampaigns = computed(() => {
     const all = this.campaignService.campaigns();
     const today = new Date();
-    return all.filter(c => new Date(c.startDate) > today);
+    return all.filter(c => new Date(c.start_date) > today);
   });
 
-  openCampaign(id: number) {
+  openCampaign(id: string) {
     this.router.navigate(['/vote-candidate', id]);
   }
 }

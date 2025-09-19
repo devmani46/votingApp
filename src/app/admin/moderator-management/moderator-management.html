@@ -23,13 +23,13 @@
 
     <cdk-table [dataSource]="filteredModerators" class="moderators-table">
       <ng-container cdkColumnDef="username">
-        <cdk-header-cell *cdkHeaderCellDef (click)="changeSort('name')">
-          Username
-          @if (sortField === 'name') {
+        <cdk-header-cell *cdkHeaderCellDef (click)="changeSort('first_name')">
+          Name
+          @if (sortField === 'first_name') {
             <span>{{ sortDirection === "asc" ? "↑" : "↓" }}</span>
           }
         </cdk-header-cell>
-        <cdk-cell *cdkCellDef="let mod"> {{ mod.name }} </cdk-cell>
+        <cdk-cell *cdkCellDef="let mod"> {{ mod.first_name }} {{ mod.last_name }} </cdk-cell>
       </ng-container>
 
       <ng-container cdkColumnDef="email">
@@ -44,29 +44,29 @@
 
       <ng-container cdkColumnDef="session">
         <cdk-header-cell *cdkHeaderCellDef> Session </cdk-header-cell>
-        <cdk-cell *cdkCellDef="let user">Active</cdk-cell>
+        <cdk-cell *cdkCellDef="let mod">Active</cdk-cell>
       </ng-container>
 
       <ng-container cdkColumnDef="joinDate">
         <cdk-header-cell *cdkHeaderCellDef> Join Date </cdk-header-cell>
-        <cdk-cell *cdkCellDef="let user">2026-17-18</cdk-cell>
+        <cdk-cell *cdkCellDef="let mod"> {{ mod.created_at | date:'short' }} </cdk-cell>
       </ng-container>
 
       <ng-container cdkColumnDef="actions">
         <cdk-header-cell *cdkHeaderCellDef> Actions </cdk-header-cell>
-        <cdk-cell *cdkCellDef="let user; let i = index">
+        <cdk-cell *cdkCellDef="let mod">
           <div class="action-buttons">
             <app-button
               size="small"
               appearance="secondary"
-              (click)="openDialog(i)"
+              (click)="openDialog(mod.id)"
             >
               <span class="material-symbols-outlined">edit</span>
             </app-button>
             <app-button
               size="small"
               appearance="primary"
-              (click)="deleteModerator(i)"
+              (click)="deleteModerator(mod.id)"
             >
               <span class="material-symbols-outlined">delete</span>
             </app-button>
@@ -88,26 +88,31 @@
   @if (showDialog) {
     <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">
       <div class="dialog-content" (click)="$event.stopPropagation()">
-        <h3>{{ editIndex !== null ? "Edit Moderator" : "Add Moderator" }}</h3>
+        <h3>{{ editId !== null ? "Edit Moderator" : "Add Moderator" }}</h3>
 
         <div class="moderator-form">
-          <label>Name</label>
+          <label>First Name</label>
           <app-fui-input
-            [formControl]="nameControl"
-            placeholder="Moderator Name"
+            [formControl]="firstNameControl"
+            placeholder="First Name"
+          ></app-fui-input>
+
+          <label>Last Name</label>
+          <app-fui-input
+            [formControl]="lastNameControl"
+            placeholder="Last Name"
+          ></app-fui-input>
+
+          <label>Username</label>
+          <app-fui-input
+            [formControl]="usernameControl"
+            placeholder="Username"
           ></app-fui-input>
 
           <label>Email</label>
           <app-fui-input
             [formControl]="emailControl"
             placeholder="Moderator Email"
-          ></app-fui-input>
-
-          <label>Password</label>
-          <app-fui-input
-            [formControl]="passwordControl"
-            type="password"
-            placeholder="Password"
           ></app-fui-input>
         </div>
 

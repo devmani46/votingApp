@@ -1,47 +1,61 @@
 import { Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
 
 export interface Moderator {
-  name: string;
+  id: string;
+  first_name: string;
+  last_name: string;
+  username: string;
   email: string;
-  password: string;
+  role: string;
+  dob?: string;
+  bio?: string;
+  photo_url?: string;
+  created_at: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class ModeratorService {
-  private moderatorsSignal = signal<Moderator[]>(this.load());
+  private apiUrl = 'http://localhost:4000/api';
+  private moderatorsSignal = signal<Moderator[]>([]);
 
-  private load(): Moderator[] {
-    const data = localStorage.getItem('moderators');
-    return data ? JSON.parse(data) : [];
+  constructor(private http: HttpClient) {}
+
+  getAll(): Observable<Moderator[]> {
+    return this.http.get<Moderator[]>(`${this.apiUrl}/users`).pipe(
+      tap(moderators => {
+        const mods = moderators.filter(m => m.role === 'moderator');
+        this.moderatorsSignal.set(mods);
+      })
+    );
   }
 
-  private saveToStorage(data: Moderator[]) {
-    localStorage.setItem('moderators', JSON.stringify(data));
+  getModeratorsSignal() {
+    return this.moderatorsSignal.asReadonly();
   }
 
-  getAll(): Moderator[] {
-    return this.moderatorsSignal();
+  updateModerator(id: string, moderator: Partial<Moderator>): Observable<Moderator> {
+    return this.http.put<Moderator>(`${this.apiUrl}/users/${id}`, moderator).pipe(
+      tap(updated => {
+        const mods = [...this.moderatorsSignal()];
+        const index = mods.findIndex(m => m.id === id);
+        if (index > -1) {
+          mods[index] = updated;
+          this.moderatorsSignal.set(mods);
+        }
+      })
+    );
   }
 
-  add(moderator: Moderator) {
-    const mods = [...this.moderatorsSignal(), moderator];
-    this.moderatorsSignal.set(mods);
-    this.saveToStorage(mods);
-  }
-
-  update(index: number, moderator: Moderator) {
-    const mods = [...this.moderatorsSignal()];
-    mods[index] = moderator;
-    this.moderatorsSignal.set(mods);
-    this.saveToStorage(mods);
-  }
-
-  delete(index: number) {
-    const mods = [...this.moderatorsSignal()];
-    mods.splice(index, 1);
-    this.moderatorsSignal.set(mods);
-    this.saveToStorage(mods);
+  deleteModerator(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/users/${id}`).pipe(
+      tap(() => {
+        const mods = this.moderatorsSignal().filter(m => m.id !== id);
+        this.moderatorsSignal.set(mods);
+      })
+    );
   }
 }

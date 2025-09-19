@@ -1,20 +1,22 @@
 import { Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
 
 export interface Candidate {
+  id: string;
   name: string;
   bio: string;
-  photo: string;
-  properties: string[];
+  photo_url: string;
   votes?: number;
 }
 
 export interface Campaign {
-  id: number;
+  id: string;
   title: string;
   description: string;
-  logo: string | null;
-  startDate: string;
-  endDate: string;
+  banner_url: string | null;
+  start_date: string;
+  end_date: string;
   candidates: Candidate[];
 }
 
@@ -22,112 +24,95 @@ export interface Campaign {
   providedIn: 'root'
 })
 export class CampaignService {
-  private storageKey = 'campaigns';
+  private apiUrl = 'http://localhost:4000/api';
   private _campaigns = signal<Campaign[]>([]);
   campaigns = this._campaigns.asReadonly();
-  private nextId = 1;
 
-  constructor() {
+  constructor(private http: HttpClient) {
     this.loadCampaigns();
   }
 
-  private saveCampaigns() {
-    localStorage.setItem(this.storageKey, JSON.stringify(this._campaigns()));
-  }
-
   private loadCampaigns() {
-    const stored = localStorage.getItem(this.storageKey);
-    if (stored) {
-      const parsed: Campaign[] = JSON.parse(stored);
-      this._campaigns.set(parsed);
-      this.nextId = parsed.length > 0 ? Math.max(...parsed.map(c => c.id)) + 1 : 1;
-    }
+    this.http.get<Campaign[]>(`${this.apiUrl}/campaigns`, { withCredentials: true }).subscribe(campaigns => {
+      const normalized = campaigns.map(c => ({ ...c, candidates: c.candidates || [] }));
+      this._campaigns.set(normalized);
+    });
   }
 
   getAllCampaigns(): Campaign[] {
     return [...this._campaigns()];
   }
 
-  addCampaign(campaign: Omit<Campaign, 'id'>) {
-    const newCampaign: Campaign = {
-      ...campaign,
-      id: this.nextId++,
-      logo: campaign.logo || null,
-      candidates: campaign.candidates.map(c => ({
-        ...c,
-        votes: c.votes ?? 0
-      }))
-    };
-    this._campaigns.update(list => [...list, newCampaign]);
-    this.saveCampaigns();
+  getCampaignById(id: string): Campaign | undefined {
+    const campaign = this._campaigns().find(c => c.id === id);
+    if (campaign && !Array.isArray(campaign.candidates)) {
+      campaign.candidates = [];
+    }
+    return campaign;
   }
 
-  updateCampaign(id: number, updated: Partial<Campaign>) {
-    this._campaigns.update(list =>
-      list.map(c =>
-        c.id === id
-          ? {
-              ...c,
-              ...updated,
-              id: c.id,
-              logo: updated.logo ?? c.logo ?? null,
-              candidates: (updated.candidates ?? c.candidates).map(cand => ({
-                ...cand,
-                votes: cand.votes ?? 0
-              }))
-            }
-          : c
-      )
-    );
-    this.saveCampaigns();
-  }
-
-  deleteCampaign(id: number) {
-    this._campaigns.update(list => list.filter(c => c.id !== id));
-    this.saveCampaigns();
-    this.nextId = this._campaigns().length > 0 ? Math.max(...this._campaigns().map(c => c.id)) + 1 : 1;
-  }
-
-  getCampaignById(id: number) {
-    return this._campaigns().find(c => c.id === id);
-  }
-
-  clearCampaigns() {
-    this._campaigns.set([]);
-    this.saveCampaigns();
-    this.nextId = 1;
-  }
-
-  vote(campaignId: number, candidateIndex: number) {
-    this._campaigns.update(list =>
-      list.map(c => {
-        if (c.id === campaignId) {
-          return {
-            ...c,
-            candidates: c.candidates.map((cand, idx) =>
-              idx === candidateIndex
-                ? { ...cand, votes: (cand.votes ?? 0) + 1 }
-                : cand
-            )
-          };
-        }
-        return c;
+  addCampaign(campaign: Omit<Campaign, 'id' | 'candidates'>): Observable<Campaign> {
+    return this.http.post<Campaign>(`${this.apiUrl}/campaigns`, campaign, { withCredentials: true }).pipe(
+      tap(newCampaign => {
+        newCampaign.candidates = newCampaign.candidates || [];
+        this._campaigns.update(list => [...list, newCampaign]);
       })
     );
-    this.saveCampaigns();
   }
 
-  getWinner(campaign: Campaign) {
-    if (!campaign || !campaign.candidates?.length) return null;
-    const candidatesWithVotes = campaign.candidates.map((c: any) => ({
-      ...c,
-      votes: c.votes ?? 0
-    }));
-    const maxVotes = Math.max(...candidatesWithVotes.map((c: any) => c.votes));
-    const topCandidates = candidatesWithVotes.filter((c: any) => c.votes === maxVotes);
-    if (topCandidates.length > 1) {
-      return { draw: true, candidates: topCandidates };
-    }
-    return { draw: false, candidates: [topCandidates[0]] };
+  updateCampaign(id: string, updated: Partial<Campaign>): Observable<Campaign> {
+    return this.http.put<Campaign>(`${this.apiUrl}/campaigns/${id}`, updated, { withCredentials: true }).pipe(
+      tap(updatedCampaign => {
+        updatedCampaign.candidates = updatedCampaign.candidates || [];
+        this._campaigns.update(list =>
+          list.map(c => (c.id === id ? updatedCampaign : c))
+        );
+      })
+    );
+  }
+
+  deleteCampaign(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/campaigns/${id}`, { withCredentials: true }).pipe(
+      tap(() => {
+        this._campaigns.update(list => list.filter(c => c.id !== id));
+      })
+    );
+  }
+
+  addCandidate(campaignId: string, candidate: Omit<Candidate, 'id'>): Observable<Candidate> {
+    return this.http.post<Candidate>(`${this.apiUrl}/campaigns/${campaignId}/candidates`, candidate, { withCredentials: true }).pipe(
+      tap(newCandidate => {
+        this._campaigns.update(list =>
+          list.map(c => {
+            if (c.id === campaignId) {
+              c.candidates = c.candidates || [];
+              return { ...c, candidates: [...c.candidates, newCandidate] };
+            }
+            return c;
+          })
+        );
+      })
+    );
+  }
+
+  castVote(campaignId: string, candidateId: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/campaigns/${campaignId}/vote`, { candidate_id: candidateId }, { withCredentials: true }).pipe(
+      tap(() => {
+        // Optionally refresh campaigns or update votes locally
+        this.loadCampaigns();
+      })
+    );
+  }
+
+  getWinner(campaign: Campaign): { candidates: Candidate[]; draw: boolean } | null {
+    if (!campaign || campaign.candidates.length === 0) return null;
+
+    const maxVotes = Math.max(...campaign.candidates.map(c => c.votes ?? 0));
+    const winners = campaign.candidates.filter(c => (c.votes ?? 0) === maxVotes);
+
+    return {
+      candidates: winners,
+      draw: winners.length > 1
+    };
   }
 }

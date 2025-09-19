@@ -51,19 +51,19 @@
 
       <ng-container cdkColumnDef="actions">
         <cdk-header-cell *cdkHeaderCellDef> Actions </cdk-header-cell>
-        <cdk-cell *cdkCellDef="let user; let i = index">
+        <cdk-cell *cdkCellDef="let user">
           <div class="action-buttons">
             <app-button
               size="small"
               appearance="secondary"
-              (click)="openDialog(i)"
+              (click)="openDialog(user.id)"
             >
               <span class="material-symbols-outlined">edit</span>
             </app-button>
             <app-button
               size="small"
               appearance="primary"
-              (click)="deleteUser(i)"
+              (click)="deleteUser(user.id)"
             >
               <span class="material-symbols-outlined">delete</span>
             </app-button>
@@ -85,7 +85,7 @@
   @if (showDialog) {
     <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">
       <div class="dialog-content" (click)="$event.stopPropagation()">
-        <h3>{{ editIndex !== null ? "Edit User" : "Add User" }}</h3>
+        <h3>{{ editId !== null ? "Edit User" : "Add User" }}</h3>
 
         <div class="user-form">
           <label>First Name</label>
@@ -110,13 +110,6 @@
           <app-fui-input
             [formControl]="emailControl"
             placeholder="Email"
-          ></app-fui-input>
-
-          <label>Password</label>
-          <app-fui-input
-            [formControl]="passwordControl"
-            type="password"
-            placeholder="Password"
           ></app-fui-input>
         </div>
 

@@ -12,7 +12,7 @@ import { BurgerMenu } from '../../components/burger-menu/burger-menu';
 import { CdkTableModule } from '@angular/cdk/table';
 import { ModeratorService, Moderator } from '../../services/moderator';
 
-type SortField = 'name' | 'email';
+type SortField = 'first_name' | 'email';
 type SortDirection = 'asc' | 'desc';
 
 @Component({
@@ -36,14 +36,15 @@ export class ModeratorManagement implements OnInit, OnDestroy {
   moderators: Moderator[] = [];
   filteredModerators: Moderator[] = [];
   showDialog = false;
-  editIndex: number | null = null;
+  editId: string | null = null;
 
-  nameControl = new FormControl('', Validators.required);
+  firstNameControl = new FormControl('', Validators.required);
+  lastNameControl = new FormControl('', Validators.required);
+  usernameControl = new FormControl('', Validators.required);
   emailControl = new FormControl('', [Validators.required, Validators.email]);
-  passwordControl = new FormControl('', Validators.required);
 
   searchControl = new FormControl('');
-  sortField: SortField = 'name';
+  sortField: SortField = 'first_name';
   sortDirection: SortDirection = 'asc';
 
   displayedColumns: string[] = [
@@ -55,8 +56,7 @@ export class ModeratorManagement implements OnInit, OnDestroy {
   ];
 
   ngOnInit() {
-    this.moderators = this.moderatorService.getAll();
-    this.applyFilters();
+    this.loadModerators();
 
     this.searchControl.valueChanges.subscribe(() => {
       this.applyFilters();
@@ -69,28 +69,40 @@ export class ModeratorManagement implements OnInit, OnDestroy {
     document.removeEventListener('keydown', this.handleEsc);
   }
 
-  openDialog(index: number | null = null) {
-    this.showDialog = true;
-    this.editIndex = index;
+  loadModerators() {
+    this.moderatorService.getAll().subscribe(moderators => {
+      this.moderators = moderators;
+      this.applyFilters();
+    });
+  }
 
-    if (index !== null) {
-      const mod = this.moderators[index];
-      this.nameControl.setValue(mod.name);
-      this.emailControl.setValue(mod.email);
-      this.passwordControl.setValue(mod.password);
+  openDialog(id: string | null = null) {
+    this.showDialog = true;
+    this.editId = id;
+
+    if (id !== null) {
+      const mod = this.moderators.find(m => m.id === id);
+      if (mod) {
+        this.firstNameControl.setValue(mod.first_name);
+        this.lastNameControl.setValue(mod.last_name);
+        this.usernameControl.setValue(mod.username);
+        this.emailControl.setValue(mod.email);
+      }
     } else {
-      this.nameControl.reset('');
+      this.firstNameControl.reset('');
+      this.lastNameControl.reset('');
+      this.usernameControl.reset('');
       this.emailControl.reset('');
-      this.passwordControl.reset('');
     }
   }
 
   closeDialog() {
     this.showDialog = false;
-    this.editIndex = null;
-    this.nameControl.reset('');
+    this.editId = null;
+    this.firstNameControl.reset('');
+    this.lastNameControl.reset('');
+    this.usernameControl.reset('');
     this.emailControl.reset('');
-    this.passwordControl.reset('');
   }
 
   handleEsc = (event: KeyboardEvent) => {
@@ -106,36 +118,40 @@ export class ModeratorManagement implements OnInit, OnDestroy {
   }
 
   saveModerator() {
-    const moderator: Moderator = {
-      name: this.nameControl.value ?? '',
+    const moderator: Partial<Moderator> = {
+      first_name: this.firstNameControl.value ?? '',
+      last_name: this.lastNameControl.value ?? '',
+      username: this.usernameControl.value ?? '',
       email: this.emailControl.value ?? '',
-      password: this.passwordControl.value ?? '',
     };
 
-    if (!moderator.name || !moderator.email || !moderator.password) return;
+    if (!moderator.first_name || !moderator.last_name || !moderator.username || !moderator.email) return;
 
-    if (this.editIndex !== null) {
-      this.moderatorService.update(this.editIndex, moderator);
+    if (this.editId !== null) {
+      this.moderatorService.updateModerator(this.editId, moderator).subscribe(() => {
+        this.loadModerators();
+        this.closeDialog();
+      });
     } else {
-      this.moderatorService.add(moderator);
+      // Note: Adding new moderators would require a separate API endpoint
+      // For now, we'll just close the dialog
+      this.closeDialog();
     }
-
-    this.moderators = this.moderatorService.getAll();
-    this.applyFilters();
-    this.closeDialog();
   }
 
-  deleteModerator(index: number) {
-    this.moderatorService.delete(index);
-    this.moderators = this.moderatorService.getAll();
-    this.applyFilters();
+  deleteModerator(id: string) {
+    this.moderatorService.deleteModerator(id).subscribe(() => {
+      this.loadModerators();
+    });
   }
 
   applyFilters() {
     const search = (this.searchControl.value || '').toLowerCase();
     this.filteredModerators = this.moderators.filter(
       (mod) =>
-        mod.name.toLowerCase().includes(search) ||
+        mod.first_name.toLowerCase().includes(search) ||
+        mod.last_name.toLowerCase().includes(search) ||
+        mod.username.toLowerCase().includes(search) ||
         mod.email.toLowerCase().includes(search)
     );
 

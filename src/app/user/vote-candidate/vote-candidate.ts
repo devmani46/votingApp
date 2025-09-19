@@ -22,7 +22,7 @@ export class VoteCandidate implements OnInit, OnDestroy {
 
   campaign?: Campaign;
   showPopup = false;
-  private votedCampaigns: Record<string, number[]> = {};
+  private votedCampaigns: Record<string, string[]> = {};
   private currentUserEmail: string = '';
   candidatePopupOpen = false;
   activeIndex: number | null = null;
@@ -31,11 +31,13 @@ export class VoteCandidate implements OnInit, OnDestroy {
   votePercent = 0;
 
   constructor() {
-    this.votedCampaigns = this.authService.getVotedCampaigns();
+    // Removed getVotedCampaigns call
     const currentUser = this.authService.getCurrentUser();
     this.currentUserEmail = currentUser?.email || '';
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.campaign = this.campaignService.getCampaignById(id) ?? undefined;
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.campaign = this.campaignService.getCampaignById(id) ?? undefined;
+    }
   }
 
   ngOnInit() {
@@ -53,20 +55,21 @@ export class VoteCandidate implements OnInit, OnDestroy {
       this.showPopup = true;
       return;
     }
-    this.campaignService.vote(this.campaign.id, candidateIndex);
-    if (!this.votedCampaigns[this.currentUserEmail]) {
-      this.votedCampaigns[this.currentUserEmail] = [];
-    }
-    this.votedCampaigns[this.currentUserEmail].push(this.campaign.id);
-    this.authService.saveVotedCampaigns(this.votedCampaigns);
-    this.campaign = this.campaignService.getCampaignById(this.campaign.id) ?? undefined;
-    this.refreshTotalVotes();
-    if (this.candidatePopupOpen && this.activeIndex === candidateIndex) {
-      this.setActiveCandidate(candidateIndex);
-    }
+    this.campaignService.castVote(this.campaign.id, this.campaign.candidates[candidateIndex].id).subscribe(() => {
+      if (!this.votedCampaigns[this.currentUserEmail]) {
+        this.votedCampaigns[this.currentUserEmail] = [];
+      }
+      this.votedCampaigns[this.currentUserEmail].push(this.campaign!.id);
+      // Removed saveVotedCampaigns call
+      this.campaign = this.campaignService.getCampaignById(this.campaign!.id) ?? undefined;
+      this.refreshTotalVotes();
+      if (this.candidatePopupOpen && this.activeIndex === candidateIndex) {
+        this.setActiveCandidate(candidateIndex);
+      }
+    });
   }
 
-  hasVoted(campaignId?: number): boolean {
+  hasVoted(campaignId?: string): boolean {
     if (!campaignId || !this.currentUserEmail) return false;
     return this.votedCampaigns[this.currentUserEmail]?.includes(campaignId) ?? false;
   }
@@ -91,9 +94,9 @@ export class VoteCandidate implements OnInit, OnDestroy {
     this.activeCandidate = {
       name: c.name,
       bio: c.bio,
-      photo: c.photo,
+      photo: c.photo_url,
       votes: c.votes ?? 0,
-      properties: Array.isArray(c.properties) ? [...c.properties] : [],
+      properties: [], // Candidates don't have properties in the interface
     };
     this.activeIndex = index;
     this.refreshTotalVotes();

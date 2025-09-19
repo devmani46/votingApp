@@ -52,7 +52,7 @@ export class CampaignStatus implements OnDestroy {
     return this.campaigns.filter(c => (c.title ?? '').toLowerCase().includes(term));
   }
 
-  getCandidateVotes(campaignId: number, candidateName: string): number {
+  getCandidateVotes(campaignId: string, candidateName: string): number {
     const campaign = this.campaignService.getCampaignById(campaignId);
     if (!campaign) return 0;
     const candidate = campaign.candidates.find(c => c.name === candidateName);
@@ -135,14 +135,15 @@ export class CampaignStatus implements OnDestroy {
     URL.revokeObjectURL(url);
   }
 
-  editCampaign(id: number) {
+  editCampaign(id: string) {
     this.router.navigate(['/create-campaign', id]);
   }
 
-  deleteCampaign(id: number) {
-    this.campaignService.deleteCampaign(id);
-    this.loadCampaigns();
-    if (this.selectedCampaign?.id === id) this.selectedCampaign = null;
+  deleteCampaign(id: string) {
+    this.campaignService.deleteCampaign(id).subscribe(() => {
+      this.loadCampaigns();
+      if (this.selectedCampaign?.id === id) this.selectedCampaign = null;
+    });
   }
 
   trackByCampaignId(index: number, item: Campaign) {

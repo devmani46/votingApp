@@ -12,7 +12,7 @@
         [id]="c.id"
         [title]="c.title"
         [description]="c.description"
-        [image]="c.logo || '/assets/default.png'"
+        [image]="c.banner_url || '/assets/default.png'"
         size="medium"
         (click)="openCampaign(c.id)"
       >
@@ -32,7 +32,7 @@
         [id]="c.id"
         [title]="c.title"
         [description]="c.description"
-        [image]="c.logo || '/assets/default.png'"
+        [image]="c.banner_url || '/assets/default.png'"
         size="medium"
       >
       </app-campaign-card>

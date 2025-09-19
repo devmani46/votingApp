@@ -38,8 +38,9 @@ export class Menu implements OnDestroy {
   }
 
   get totalUsers(): number {
-    const users = this.authService.getAllUsers();
-    return Array.isArray(users) ? users.length : 0;
+    // For now, return 0 since we don't have user count from backend
+    // TODO: Implement user count from backend
+    return 0;
   }
 
   get totalCampaigns(): number {
@@ -52,7 +53,7 @@ export class Menu implements OnDestroy {
 
   get totalVotes(): number {
     return this.campaigns.reduce(
-      (sum, c) => sum + c.candidates.reduce((s, cand) => s + (cand.votes ?? 0), 0),
+      (sum, c) => sum + (c.candidates?.reduce((s, cand) => s + (cand.votes ?? 0), 0) || 0),
       0
     );
   }

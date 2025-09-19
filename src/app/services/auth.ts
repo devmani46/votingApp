@@ -1,117 +1,97 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { tap, map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+
+interface LoginResponse {
+  user: {
+    id: string;
+    email: string;
+    role: string;
+    username: string;
+    first_name?: string;
+    last_name?: string;
+    photo_url?: string;
+  };
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private adminEmail = 'admin@gmail.com';
-  private adminPassword = 'Admin@123';
+  private apiUrl = 'http://localhost:4000/api';
+  private userKey = 'currentUser';
+  private roleKey = 'role';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private http: HttpClient) {}
 
-  login(email: string, password: string): boolean {
-    if (email === this.adminEmail && password === this.adminPassword) {
-      localStorage.setItem('role', 'admin');
-      localStorage.removeItem('currentUser');
-      this.router.navigate(['/menu']);
-      return true;
-    }
+  login(email: string, password: string): Observable<boolean> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, { email, password }, { withCredentials: true }).pipe(
+      tap(response => {
+        // Store user data in sessionStorage (cleared on browser close)
+        sessionStorage.setItem(this.userKey, JSON.stringify(response.user));
+        sessionStorage.setItem(this.roleKey, response.user.role);
 
-    const moderators = JSON.parse(localStorage.getItem('moderators') || '[]');
-    const foundModerator = moderators.find(
-      (m: any) => m.email === email && m.password === password
+        // Navigate based on role
+        if (response.user.role === 'admin' || response.user.role === 'moderator') {
+          this.router.navigate(['/menu']);
+        } else {
+          this.router.navigate(['/user-page']);
+        }
+      }),
+      map(() => true)
     );
-
-    if (foundModerator) {
-      localStorage.setItem('role', 'moderator');
-      if (!foundModerator.photo && !foundModerator.image) {
-        foundModerator.photo = 'assets/admin.png';
-      }
-      localStorage.setItem('currentUser', JSON.stringify(foundModerator));
-      this.router.navigate(['/menu']);
-      return true;
-    }
-
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const foundUser = users.find(
-      (u: any) => u.email === email && u.password === password
-    );
-
-    if (foundUser) {
-      localStorage.setItem('role', 'user');
-      if (!foundUser.photo && !foundUser.image) {
-        foundUser.photo = 'assets/admin.png';
-      }
-      localStorage.setItem('currentUser', JSON.stringify(foundUser));
-      this.router.navigate(['/user-page']);
-      return true;
-    }
-
-    return false;
   }
 
-  register(newUser: any): boolean {
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const exists = users.some(
-      (u: any) => u.email === newUser.email || u.username === newUser.username
+  register(newUser: any): Observable<boolean> {
+    return this.http.post(`${this.apiUrl}/auth/signup`, newUser, { withCredentials: true }).pipe(
+      tap(() => {
+        this.router.navigate(['/login']);
+      }),
+      map(() => true)
     );
-    if (exists) {
-      return false;
-    }
-
-    if (!newUser.photo && !newUser.image) {
-      newUser.photo = 'assets/admin.png';
-    }
-
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-    localStorage.setItem('currentUser', JSON.stringify(newUser));
-    localStorage.setItem('role', 'user');
-
-    this.router.navigate(['/user-page']);
-    return true;
   }
 
   logout(): void {
-    localStorage.removeItem('role');
-    localStorage.removeItem('currentUser');
-    this.router.navigate(['/login']);
+    // Clear session storage
+    sessionStorage.removeItem(this.userKey);
+    sessionStorage.removeItem(this.roleKey);
+
+    // Call logout endpoint to clear cookies
+    this.http.post(`${this.apiUrl}/auth/logout`, {}, { withCredentials: true }).subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
+      },
+      error: () => {
+        // Even if logout endpoint fails, navigate to login
+        this.router.navigate(['/login']);
+      }
+    });
   }
 
   getCurrentUser(): any {
-    const stored = localStorage.getItem('currentUser');
+    const stored = sessionStorage.getItem(this.userKey);
     return stored ? JSON.parse(stored) : null;
   }
 
   getRole(): string | null {
-    return localStorage.getItem('role');
+    const role = sessionStorage.getItem(this.roleKey);
+    return role;
   }
 
-  updateUser(updatedUser: any) {
-    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const idx = users.findIndex((u: any) => u.email === updatedUser.email);
-    if (idx > -1) {
-      users[idx] = updatedUser;
-      localStorage.setItem('users', JSON.stringify(users));
-    }
+  getToken(): string | null {
+    // Token is now handled by HttpOnly cookies, not accessible from JavaScript
+    return null;
   }
 
-  getVotedCampaigns(): Record<string, number[]> {
-    const stored = localStorage.getItem('votedCampaigns');
-    return stored ? JSON.parse(stored) : {};
+  updateUser(updatedUser: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/users/me`, updatedUser, { withCredentials: true });
   }
 
-  saveVotedCampaigns(voted: Record<string, number[]>) {
-    localStorage.setItem('votedCampaigns', JSON.stringify(voted));
+  getAllUsers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/users`, { withCredentials: true });
   }
-
-  getAllUsers(): any[] {
-  const stored = localStorage.getItem('users');
-  return stored ? JSON.parse(stored) : [];
-}
-
 }
 
 

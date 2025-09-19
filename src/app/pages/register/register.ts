@@ -92,10 +92,16 @@ export class Register implements OnInit {
     this.submitted = true;
 
     if (this.form.valid) {
-      const success = this.auth.register(this.form.getRawValue());
-      if (!success) {
-        alert('User already exists with this email or username');
-      }
+      this.auth.register(this.form.getRawValue()).subscribe({
+        next: () => {
+          // Navigation is handled in the auth service
+          console.log('Registration successful');
+        },
+        error: (err) => {
+          console.error('Registration failed:', err);
+          alert('Registration failed. User may already exist with this email or username.');
+        }
+      });
     } else {
       this.form.markAllAsTouched();
     }

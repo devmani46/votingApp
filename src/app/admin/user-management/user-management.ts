@@ -12,7 +12,7 @@ import { BurgerMenu } from '../../components/burger-menu/burger-menu';
 import { CdkTableModule } from '@angular/cdk/table';
 import { UserService, User } from '../../services/user';
 
-type SortField = 'firstName' | 'email' | 'username';
+type SortField = 'first_name' | 'email' | 'username';
 type SortDirection = 'asc' | 'desc';
 
 @Component({
@@ -36,16 +36,15 @@ export class UserManagement implements OnInit, OnDestroy {
   users: User[] = [];
   filteredUsers: User[] = [];
   showDialog = false;
-  editIndex: number | null = null;
+  editId: string | null = null;
 
   firstNameControl = new FormControl('', Validators.required);
   lastNameControl = new FormControl('', Validators.required);
   usernameControl = new FormControl('', Validators.required);
   emailControl = new FormControl('', [Validators.required, Validators.email]);
-  passwordControl = new FormControl('', Validators.required);
 
   searchControl = new FormControl('');
-  sortField: SortField = 'firstName';
+  sortField: SortField = 'first_name';
   sortDirection: SortDirection = 'asc';
 
   displayedColumns: string[] = [
@@ -57,8 +56,7 @@ export class UserManagement implements OnInit, OnDestroy {
   ];
 
   ngOnInit() {
-    this.users = this.userService.getAll();
-    this.applyFilters();
+    this.loadUsers();
 
     this.searchControl.valueChanges.subscribe(() => {
       this.applyFilters();
@@ -71,34 +69,40 @@ export class UserManagement implements OnInit, OnDestroy {
     document.removeEventListener('keydown', this.handleEsc);
   }
 
-  openDialog(index: number | null = null) {
-    this.showDialog = true;
-    this.editIndex = index;
+  loadUsers() {
+    this.userService.getAll().subscribe(users => {
+      this.users = users;
+      this.applyFilters();
+    });
+  }
 
-    if (index !== null) {
-      const user = this.users[index];
-      this.firstNameControl.setValue(user.firstName);
-      this.lastNameControl.setValue(user.lastName);
-      this.usernameControl.setValue(user.username);
-      this.emailControl.setValue(user.email);
-      this.passwordControl.setValue(user.password);
+  openDialog(id: string | null = null) {
+    this.showDialog = true;
+    this.editId = id;
+
+    if (id !== null) {
+      const user = this.users.find(u => u.id === id);
+      if (user) {
+        this.firstNameControl.setValue(user.first_name);
+        this.lastNameControl.setValue(user.last_name);
+        this.usernameControl.setValue(user.username);
+        this.emailControl.setValue(user.email);
+      }
     } else {
       this.firstNameControl.reset('');
       this.lastNameControl.reset('');
       this.usernameControl.reset('');
       this.emailControl.reset('');
-      this.passwordControl.reset('');
     }
   }
 
   closeDialog() {
     this.showDialog = false;
-    this.editIndex = null;
+    this.editId = null;
     this.firstNameControl.reset('');
     this.lastNameControl.reset('');
     this.usernameControl.reset('');
     this.emailControl.reset('');
-    this.passwordControl.reset('');
   }
 
   handleEsc = (event: KeyboardEvent) => {
@@ -114,46 +118,45 @@ export class UserManagement implements OnInit, OnDestroy {
   }
 
   saveUser() {
-    const user: User = {
-      firstName: this.firstNameControl.value ?? '',
-      lastName: this.lastNameControl.value ?? '',
+    const user: Partial<User> = {
+      first_name: this.firstNameControl.value ?? '',
+      last_name: this.lastNameControl.value ?? '',
       username: this.usernameControl.value ?? '',
       email: this.emailControl.value ?? '',
-      password: this.passwordControl.value ?? '',
     };
 
     if (
-      !user.firstName ||
-      !user.lastName ||
+      !user.first_name ||
+      !user.last_name ||
       !user.username ||
-      !user.email ||
-      !user.password
+      !user.email
     )
       return;
 
-    if (this.editIndex !== null) {
-      this.userService.update(this.editIndex, user);
+    if (this.editId !== null) {
+      this.userService.updateUser(this.editId, user).subscribe(() => {
+        this.loadUsers();
+        this.closeDialog();
+      });
     } else {
-      this.userService.add(user);
+      // Note: Adding new users would require a separate API endpoint
+      // For now, we'll just close the dialog
+      this.closeDialog();
     }
-
-    this.users = this.userService.getAll();
-    this.applyFilters();
-    this.closeDialog();
   }
 
-  deleteUser(index: number) {
-    this.userService.delete(index);
-    this.users = this.userService.getAll();
-    this.applyFilters();
+  deleteUser(id: string) {
+    this.userService.deleteUser(id).subscribe(() => {
+      this.loadUsers();
+    });
   }
 
   applyFilters() {
     const search = (this.searchControl.value || '').toLowerCase();
     this.filteredUsers = this.users.filter(
       (u) =>
-        u.firstName.toLowerCase().includes(search) ||
-        u.lastName.toLowerCase().includes(search) ||
+        u.first_name.toLowerCase().includes(search) ||
+        u.last_name.toLowerCase().includes(search) ||
         u.username.toLowerCase().includes(search) ||
         u.email.toLowerCase().includes(search)
     );

@@ -37,7 +37,7 @@ export class CreateCampaign implements OnInit, OnDestroy {
 
   form!: FormGroup;
   editMode = false;
-  campaignId: number | null = null;
+  campaignId: string | null = null;
 
   logoPreview: string | null = null;
 
@@ -55,8 +55,8 @@ export class CreateCampaign implements OnInit, OnDestroy {
       title: ['', Validators.required],
       description: ['', Validators.required],
       logo: [''],
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
+          startDate: ['', Validators.required],
+          endDate: ['', Validators.required],
       candidates: this.fb.array([])
     });
 
@@ -64,26 +64,26 @@ export class CreateCampaign implements OnInit, OnDestroy {
       const id = params.get('id');
       if (id) {
         this.editMode = true;
-        this.campaignId = +id;
-        const existing = this.campaignService.getCampaignById(+id);
+        this.campaignId = id;
+        const existing = this.campaignService.getCampaignById(id);
 
         if (existing) {
           this.form.patchValue({
             title: existing.title,
             description: existing.description,
-            logo: existing.logo,
-            startDate: existing.startDate,
-            endDate: existing.endDate
+            logo: existing.banner_url,
+            startDate: existing.start_date,
+            endDate: existing.end_date
           });
-          this.logoPreview = existing.logo;
+          this.logoPreview = existing.banner_url;
 
           existing.candidates.forEach(c => {
             this.candidates.push(
               this.fb.group({
                 name: [c.name, Validators.required],
                 bio: [c.bio],
-                photo: [c.photo],
-                properties: [Array.isArray(c.properties) ? c.properties : []]
+                photo: [c.photo_url],
+                properties: [[]]
               })
             );
           });
@@ -127,9 +127,9 @@ export class CreateCampaign implements OnInit, OnDestroy {
         ? [...candidate.properties]
         : [];
     } else {
-      this.nameControl.reset('');
-      this.bioControl.reset('');
-      this.propertyControl.reset('');
+      this.nameControl.reset();
+      this.bioControl.reset();
+      this.propertyControl.reset();
       this.candidatePhotoPreview = null;
       this.candidateProperties = [];
     }
@@ -138,11 +138,11 @@ export class CreateCampaign implements OnInit, OnDestroy {
   closeDialog() {
     this.showDialog = false;
     this.editIndex = null;
-    this.nameControl.reset('');
-    this.bioControl.reset('');
-    this.propertyControl.reset('');
-    this.candidatePhotoPreview = null;
-    this.candidateProperties = [];
+      this.nameControl.reset();
+      this.bioControl.reset();
+      this.propertyControl.reset();
+      this.candidatePhotoPreview = null;
+      this.candidateProperties = [];
   }
 
   handleEsc = (event: KeyboardEvent) => {
@@ -208,35 +208,52 @@ export class CreateCampaign implements OnInit, OnDestroy {
     }
   }
 
-submitForm() {
-  if (this.form.invalid) return;
-
-  if (this.editMode && this.campaignId !== null) {
-    const existing = this.campaignService.getCampaignById(this.campaignId);
-
-    if (existing) {
-      const updated = {
-        ...existing,
-        ...this.form.value,
-        candidates: this.form.value.candidates.map((c: any, i: number) => ({
-          ...c,
-          votes: existing.candidates?.[i]?.votes ?? 0
-        }))
-      };
-
-      this.campaignService.updateCampaign(this.campaignId, updated);
-    }
-  } else {
-    const newCampaign = {
-      ...this.form.value,
-      candidates: this.form.value.candidates.map((c: any) => ({
-        ...c,
-        votes: 0
-      }))
-    };
-    this.campaignService.addCampaign(newCampaign);
+async submitForm() {
+  if (this.form.invalid) {
+    console.error('Form is invalid:', this.form.errors);
+    return;
   }
 
-  this.router.navigate(['/campaign-status']);
+  console.log('Submitting form...');
+  const formValue = this.form.value;
+  const campaignData = {
+    title: formValue.title,
+    description: formValue.description,
+    banner_url: formValue.logo || null,
+    start_date: formValue.startDate,
+    end_date: formValue.endDate
+  };
+
+  console.log('Campaign data:', campaignData);
+
+  try {
+    if (this.editMode && this.campaignId !== null) {
+      console.log('Updating campaign:', this.campaignId);
+      await this.campaignService.updateCampaign(this.campaignId, campaignData).toPromise();
+      console.log('Update successful, navigating to campaign-status');
+      this.router.navigate(['/campaign-status']);
+    } else {
+      console.log('Creating new campaign');
+      const createdCampaign = await this.campaignService.addCampaign(campaignData).toPromise();
+      console.log('Campaign created:', createdCampaign);
+
+      // Add candidates after creating campaign
+      if (!createdCampaign || !createdCampaign.id) {
+        throw new Error('Created campaign is undefined or missing id');
+      }
+      for (const c of formValue.candidates) {
+        await this.campaignService.addCandidate(createdCampaign.id, {
+          name: c.name,
+          bio: c.bio || null,
+          photo_url: c.photo || null
+        }).toPromise();
+      }
+
+      console.log('All candidates added, navigating to campaign-status');
+      this.router.navigate(['/campaign-status']);
+    }
+  } catch (err) {
+    console.error('Error during campaign create/update:', err);
+  }
 }
 }

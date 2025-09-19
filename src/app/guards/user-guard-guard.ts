@@ -6,7 +6,8 @@ export const userGuard: CanActivateFn = () => {
   const router = inject(Router);
   const authService = inject(AuthService);
 
-  if (authService.getRole() === 'user') {
+  const role = authService.getRole();
+  if (role === 'voter' || role === 'user') {
     return true;
   }
 

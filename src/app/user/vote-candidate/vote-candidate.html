@@ -5,7 +5,7 @@
   <div class="banner-container">
     <img
       class="banner-image"
-      [src]="campaign.logo || '/assets/default-banner.png'"
+      [src]="campaign.banner_url || '/assets/default-banner.png'"
       alt="Campaign Banner"
     />
   </div>
@@ -23,10 +23,10 @@
       (keydown.enter)="openCandidatePopup(i)"
     >
       <app-campaign-card
-        [id]="i"
+        [id]="i.toString()"
         [title]="candidate.name"
         [description]="candidate.bio"
-        [image]="candidate.photo || '/assets/default-user.png'"
+        [image]="candidate.photo_url || '/assets/default-user.png'"
         size="medium"
       >
       </app-campaign-card>

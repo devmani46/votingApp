@@ -29,8 +29,17 @@ export class UserPage implements OnInit {
   winner: any = null;
 
   ngOnInit() {
-    this.user = this.authService.getCurrentUser() || this.user;
-    if (!this.user.photo) this.user.photo = '/assets/admin.png';
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser) {
+      // Map backend field names to frontend expectations
+      this.user = {
+        ...this.user,
+        ...currentUser,
+        firstName: currentUser.first_name || currentUser.firstName || '',
+        lastName: currentUser.last_name || currentUser.lastName || '',
+        photo: currentUser.photo_url || currentUser.photo || '/assets/admin.png'
+      };
+    }
 
     this.form = this.fb.group({
       firstName: [this.user.firstName || '', Validators.required],
@@ -50,7 +59,7 @@ export class UserPage implements OnInit {
     const campaigns = this.campaignService.campaigns();
     const today = new Date();
     return campaigns
-      .filter(c => new Date(c.endDate) < today)
+      .filter(c => new Date(c.end_date) < today)
       .map(c => ({
         ...c,
         winner: this.campaignService.getWinner(c)

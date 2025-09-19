@@ -35,107 +35,106 @@
         </div>
 
         <div class="candidates-list">
-          @for (c of candidates.controls; let i = $index; track i) {
-          <app-campaign-card
-            [id]="i"
-            [title]="c.value.name"
-            [description]="c.value.bio"
-            [image]="c.value.photo"
-            size="small"
-            (edit)="openDialog($event)"
-          >
-          </app-campaign-card>
-          }
+          <ng-container *ngFor="let c of candidates.controls; let i = index">
+            <app-campaign-card
+              [id]="i.toString()"
+              [title]="c.value.name"
+              [description]="c.value.bio"
+              [image]="c.value.photo"
+              size="small"
+              (edit)="openDialog(i)"
+            >
+            </app-campaign-card>
+          </ng-container>
         </div>
 
-        @if (showDialog) {
-        <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">
-          <div class="dialog-content" (click)="$event.stopPropagation()">
-            <h3>
-              {{ editIndex !== null ? "Edit Candidate" : "Add Candidate" }}
-            </h3>
+        <ng-container *ngIf="showDialog">
+          <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">
+            <div class="dialog-content" (click)="$event.stopPropagation()">
+              <h3>
+                {{ editIndex !== null ? "Edit Candidate" : "Add Candidate" }}
+              </h3>
 
-            <div class="candidate-form">
-              <div class="candidate-form-divided">
-                <div class="candidate-photo-upload">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    (change)="onCandidatePhotoSelected($event)"
-                    hidden
-                    #candidateFile
-                  />
-                  <button
-                    type="button"
-                    class="choose-photo-btn"
-                    (click)="candidateFile.click()"
-                  >
-                    @if (candidatePhotoPreview) {
-                    <img
-                      class="candidate-photo"
-                      [src]="candidatePhotoPreview"
-                      alt="Candidate Photo"
+              <div class="candidate-form">
+                <div class="candidate-form-divided">
+                  <div class="candidate-photo-upload">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      (change)="onCandidatePhotoSelected($event)"
+                      hidden
+                      #candidateFile
                     />
-                    } @else {
-                    <span class="material-symbols-outlined"
-                      >add_photo_alternate</span
+                    <button
+                      type="button"
+                      class="choose-photo-btn"
+                      (click)="candidateFile.click()"
                     >
-                    <h2>Add Photo</h2>
-                    }
-                  </button>
-                </div>
-
-                <div class="candidate-details">
-                  <label for="name">Enter your name:</label>
-                  <app-fui-input
-                    [formControl]="nameControl"
-                    placeholder="Name"
-                  ></app-fui-input>
-
-                  <label for="bio">Enter your bio:</label>
-                  <textarea
-                    class="bio-box"
-                    [formControl]="bioControl"
-                    placeholder="Bio"
-                  ></textarea>
-                  <label for="properties">Enter your properties:</label>
-                  <div class="properties">
-                    <div class="row">
-                      <app-fui-input
-                        [formControl]="propertyControl"
-                        placeholder="Property"
-                      ></app-fui-input>
-                      <app-button appearance="primary" (click)="addProperty()">
-                        Add
-                      </app-button>
-                    </div>
-
-                    <ul class="properties-list">
-                      @for (p of candidateProperties; let j = $index; track j) {
-                      <li>
-                        <span class="prop-text">{{ p }}</span>
-                        <span class="remove-prop" (click)="removeProperty(j)"
-                          >✕</span
+                      <ng-container *ngIf="candidatePhotoPreview; else addPhoto">
+                        <img
+                          class="candidate-photo"
+                          [src]="candidatePhotoPreview"
+                          alt="Candidate Photo"
+                        />
+                      </ng-container>
+                      <ng-template #addPhoto>
+                        <span class="material-symbols-outlined"
+                          >add_photo_alternate</span
                         >
-                      </li>
-                      }
-                    </ul>
+                        <h2>Add Photo</h2>
+                      </ng-template>
+                    </button>
+                  </div>
+
+                  <div class="candidate-details">
+                    <label for="name">Enter your name:</label>
+                    <app-fui-input
+                      [formControl]="nameControl"
+                      placeholder="Name"
+                    ></app-fui-input>
+
+                    <label for="bio">Enter your bio:</label>
+                    <textarea
+                      class="bio-box"
+                      [formControl]="bioControl"
+                      placeholder="Bio"
+                    ></textarea>
+                    <label for="properties">Enter your properties:</label>
+                    <div class="properties">
+                      <div class="row">
+                        <app-fui-input
+                          [formControl]="propertyControl"
+                          placeholder="Property"
+                        ></app-fui-input>
+                        <app-button appearance="primary" (click)="addProperty()">
+                          Add
+                        </app-button>
+                      </div>
+
+                      <ul class="properties-list">
+                        <li *ngFor="let p of candidateProperties; let j = index">
+                          <span class="prop-text">{{ p }}</span>
+                          <span class="remove-prop" (click)="removeProperty(j)"
+                            >✕</span
+                          >
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div class="dialog-actions">
-              <app-button appearance="secondary" (click)="closeDialog()"
-                >Cancel</app-button
-              >
-              <app-button appearance="primary" (click)="saveCandidate()"
-                >Save</app-button
-              >
+              <div class="dialog-actions">
+                <app-button appearance="secondary" (click)="closeDialog()"
+                  >Cancel</app-button
+                >
+                <app-button appearance="primary" (click)="saveCandidate()"
+                  >Save</app-button
+                >
+              </div>
             </div>
           </div>
-        </div>
-        }
+        </ng-container>
 
         <div class="row dates">
           <div class="start-date">
@@ -161,14 +160,15 @@
           #logoInput
         />
         <button class="image-upload" type="button" (click)="logoInput.click()">
-          @if (logoPreview) {
-          <div class="logo-preview">
-            <img [src]="logoPreview" alt="Campaign Logo" />
-          </div>
-          } @else {
-          <span class="material-symbols-outlined">add_photo_alternate</span>
-          <p>Add banner photo</p>
-          }
+          <ng-container *ngIf="logoPreview; else addBannerPhoto">
+            <div class="logo-preview">
+              <img [src]="logoPreview" alt="Campaign Logo" />
+            </div>
+          </ng-container>
+          <ng-template #addBannerPhoto>
+            <span class="material-symbols-outlined">add_photo_alternate</span>
+            <p>Add banner photo</p>
+          </ng-template>
         </button>
       </div>
     </form>

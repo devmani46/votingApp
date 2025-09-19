@@ -48,11 +48,18 @@ export class Login implements OnInit {
 
     if (this.form.valid) {
       const { email, password } = this.form.getRawValue();
-      const success = this.auth.login(email, password);
-
-      if (!success) {
-        alert('Invalid email or password');
-      }
+      this.auth.login(email, password).subscribe({
+        next: (success) => {
+          if (!success) {
+            alert('Invalid email or password');
+          }
+          // Navigation is handled in the auth service
+        },
+        error: (err) => {
+          console.error('Login failed:', err);
+          alert('Login failed. Please check your credentials.');
+        }
+      });
     } else {
       this.form.markAllAsTouched();
     }

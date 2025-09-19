@@ -9,14 +9,14 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
 })
 export class CampaignCard {
-  @Input() id!: number;
+  @Input() id!: string;
   @Input() title!: string;
   @Input() description!: string;
   @Input() image!: string;
   @Input() size: 'small' | 'medium' | 'large' = 'medium';
   @Input() disabled = false;
 
-  @Output() edit = new EventEmitter<number>();
+  @Output() edit = new EventEmitter<string>();
 
   onCardClick() {
     this.edit.emit(this.id);
