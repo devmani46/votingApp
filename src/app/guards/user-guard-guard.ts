@@ -1,13 +1,12 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { StorageService } from '../services/storage';
+import { AuthService } from '../services/auth';
 
 export const userGuard: CanActivateFn = () => {
   const router = inject(Router);
-  const storage = inject(StorageService);
-  const role = storage.getRole();
+  const authService = inject(AuthService);
 
-  if (role === 'user') {
+  if (authService.getRole() === 'user') {
     return true;
   }
 
