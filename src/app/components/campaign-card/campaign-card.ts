@@ -17,8 +17,14 @@ export class CampaignCard {
   @Input() disabled = false;
 
   @Output() edit = new EventEmitter<string>();
+  @Output() delete = new EventEmitter<string>();
 
   onCardClick() {
     this.edit.emit(this.id);
+  }
+
+  onDeleteClick(event: Event) {
+    event.stopPropagation();
+    this.delete.emit(this.id);
   }
 }

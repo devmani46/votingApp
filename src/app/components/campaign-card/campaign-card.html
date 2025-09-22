@@ -14,4 +14,15 @@
       <p class="description">{{ description }}</p>
     </div>
   </div>
+
+  <div class="card-actions" *ngIf="size === 'small'">
+    <button
+      class="delete-btn"
+      type="button"
+      (click)="onDeleteClick($event)"
+      title="Delete candidate"
+    >
+      <span class="material-symbols-outlined">delete</span>
+    </button>
+  </div>
 </div>

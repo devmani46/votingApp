@@ -47,8 +47,41 @@ export class CreateCampaign implements OnInit, OnDestroy {
 
   nameControl = new FormControl('', Validators.required);
   bioControl = new FormControl('');
-  propertyControl = new FormControl('');
-  candidateProperties: string[] = [];
+
+  // File size limit in bytes (5MB)
+  private readonly MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+  // Utility function to convert ISO date to YYYY-MM-DD format for HTML date inputs
+  private formatDateForInput(isoDate: string): string {
+    if (!isoDate) return '';
+    try {
+      const date = new Date(isoDate);
+      // Check if date is valid
+      if (isNaN(date.getTime())) return '';
+      return date.toISOString().split('T')[0];
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return '';
+    }
+  }
+
+  // Utility function to validate file size
+  private validateFileSize(file: File): boolean {
+    if (file.size > this.MAX_FILE_SIZE) {
+      alert(`File size exceeds the maximum limit of ${this.MAX_FILE_SIZE / (1024 * 1024)}MB. Please choose a smaller file.`);
+      return false;
+    }
+    return true;
+  }
+
+  // Utility function to format file size for display
+  private formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -72,8 +105,8 @@ export class CreateCampaign implements OnInit, OnDestroy {
             title: existing.title,
             description: existing.description,
             logo: existing.banner_url,
-            startDate: existing.start_date,
-            endDate: existing.end_date
+            startDate: this.formatDateForInput(existing.start_date),
+            endDate: this.formatDateForInput(existing.end_date)
           });
           this.logoPreview = existing.banner_url;
 
@@ -83,8 +116,7 @@ export class CreateCampaign implements OnInit, OnDestroy {
                 id: [c.id],
                 name: [c.name, Validators.required],
                 bio: [c.bio],
-                photo: [c.photo_url],
-                properties: [[]]
+                photo: [c.photo_url]
               })
             );
           });
@@ -106,6 +138,12 @@ export class CreateCampaign implements OnInit, OnDestroy {
   onLogoSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
+      if (!this.validateFileSize(file)) {
+        // Clear the file input
+        (event.target as HTMLInputElement).value = '';
+        return;
+      }
+
       const reader = new FileReader();
       reader.onload = () => {
         this.logoPreview = reader.result as string;
@@ -124,15 +162,10 @@ export class CreateCampaign implements OnInit, OnDestroy {
       this.nameControl.setValue(candidate.name);
       this.bioControl.setValue(candidate.bio);
       this.candidatePhotoPreview = candidate.photo;
-      this.candidateProperties = Array.isArray(candidate.properties)
-        ? [...candidate.properties]
-        : [];
     } else {
       this.nameControl.reset();
       this.bioControl.reset();
-      this.propertyControl.reset();
       this.candidatePhotoPreview = null;
-      this.candidateProperties = [];
     }
   }
 
@@ -141,9 +174,7 @@ export class CreateCampaign implements OnInit, OnDestroy {
     this.editIndex = null;
       this.nameControl.reset();
       this.bioControl.reset();
-      this.propertyControl.reset();
       this.candidatePhotoPreview = null;
-      this.candidateProperties = [];
   }
 
   handleEsc = (event: KeyboardEvent) => {
@@ -161,6 +192,12 @@ export class CreateCampaign implements OnInit, OnDestroy {
   onCandidatePhotoSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
+      if (!this.validateFileSize(file)) {
+        // Clear the file input
+        (event.target as HTMLInputElement).value = '';
+        return;
+      }
+
       const reader = new FileReader();
       reader.onload = () => {
         this.candidatePhotoPreview = reader.result as string;
@@ -175,29 +212,21 @@ export class CreateCampaign implements OnInit, OnDestroy {
     }
   }
 
-  addProperty() {
-    if (this.propertyControl.value?.trim()) {
-      this.candidateProperties.push(this.propertyControl.value.trim());
-      this.propertyControl.reset('');
-    }
-  }
 
-  removeProperty(index: number) {
-    this.candidateProperties.splice(index, 1);
-  }
 
   saveCandidate() {
     const candidate = {
       name: this.nameControl.value ?? '',
       bio: this.bioControl.value ?? '',
-      photo: this.candidatePhotoPreview ?? '',
-      properties: [...this.candidateProperties]
+      photo: this.candidatePhotoPreview ?? ''
     };
 
     if (this.editIndex !== null) {
       this.candidates.at(this.editIndex).patchValue(candidate);
+      console.log('Updated candidate at index', this.editIndex, ':', this.candidates.at(this.editIndex).value);
     } else {
       this.candidates.push(this.fb.group(candidate));
+      console.log('Added new candidate:', candidate);
     }
 
     this.closeDialog();
@@ -219,6 +248,11 @@ export class CreateCampaign implements OnInit, OnDestroy {
     } else {
       this.candidates.removeAt(index);
     }
+  }
+
+  onCandidateDelete(candidateId: string) {
+    const index = parseInt(candidateId);
+    this.deleteCandidate(index);
   }
 
   async submitForm() {

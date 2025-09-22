@@ -43,6 +43,7 @@
               [image]="c.value.photo"
               size="small"
               (edit)="openDialog(i)"
+              (delete)="onCandidateDelete($event)"
             >
             </app-campaign-card>
           </ng-container>
@@ -99,27 +100,7 @@
                       [formControl]="bioControl"
                       placeholder="Bio"
                     ></textarea>
-                    <label for="properties">Enter your properties:</label>
-                    <div class="properties">
-                      <div class="row">
-                        <app-fui-input
-                          [formControl]="propertyControl"
-                          placeholder="Property"
-                        ></app-fui-input>
-                        <app-button appearance="primary" (click)="addProperty()">
-                          Add
-                        </app-button>
-                      </div>
 
-                      <ul class="properties-list">
-                        <li *ngFor="let p of candidateProperties; let j = index">
-                          <span class="prop-text">{{ p }}</span>
-                          <span class="remove-prop" (click)="removeProperty(j)"
-                            >✕</span
-                          >
-                        </li>
-                      </ul>
-                    </div>
                   </div>
                 </div>
               </div>
