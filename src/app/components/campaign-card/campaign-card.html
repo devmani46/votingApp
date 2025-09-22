@@ -3,6 +3,7 @@
   [class.card-small]="size === 'small'"
   [class.card-large]="size === 'large'"
   [attr.data-disabled]="disabled ? 'true' : null"
+  [attr.data-deleted]="disabled ? 'true' : null"
 >
   <div class="card-clickable" (click)="onCardClick()">
     <div class="card-image">
@@ -15,7 +16,7 @@
     </div>
   </div>
 
-  <div class="card-actions" *ngIf="size === 'small'">
+  <div class="card-actions" *ngIf="deleted">
     <button
       class="delete-btn"
       type="button"

@@ -15,6 +15,7 @@ export class CampaignCard {
   @Input() image!: string;
   @Input() size: 'small' | 'medium' | 'large' = 'medium';
   @Input() disabled = false;
+  @Input() deleted = false;
 
   @Output() edit = new EventEmitter<string>();
   @Output() delete = new EventEmitter<string>();

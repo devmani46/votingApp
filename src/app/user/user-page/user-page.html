@@ -21,7 +21,7 @@
   <div class="main-section">
     <div class="about">
       <h2>About me</h2>
-      <p><strong>Age:</strong> {{ user.age }}</p>
+      <p><strong>Age:</strong> {{ user.age || "No age added yet." }}</p>
       <p><strong>Bio:</strong> {{ user.bio || "No bio added yet." }}</p>
     </div>
 

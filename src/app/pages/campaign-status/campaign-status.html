@@ -38,6 +38,7 @@
             [description]="'Votes: ' + getTotalVotes(campaign)"
             [image]="getImage(campaign)"
             size="medium"
+            [deleted]="true"
             (click)="openCampaignDetails(campaign)"
           >
             <div class="card-meta">
@@ -67,14 +68,14 @@
               <span class="material-symbols-outlined">edit</span>
               Edit Campaign
             </app-button>
-            <app-button
+            <!-- <app-button
               class="delete-btn"
               appearance="primary"
               (click)="deleteCampaign(campaign.id)"
             >
               <span class="material-symbols-outlined">delete</span>
               Delete Campaign
-            </app-button>
+            </app-button> -->
           </div>
         </div>
       </div>
