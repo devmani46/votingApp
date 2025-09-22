@@ -42,6 +42,7 @@ export class UserManagement implements OnInit, OnDestroy {
   lastNameControl = new FormControl('', Validators.required);
   usernameControl = new FormControl('', Validators.required);
   emailControl = new FormControl('', [Validators.required, Validators.email]);
+  passwordControl = new FormControl('', Validators.required);
 
   searchControl = new FormControl('');
   sortField: SortField = 'first_name';

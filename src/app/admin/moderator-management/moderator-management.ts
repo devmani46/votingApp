@@ -42,6 +42,7 @@ export class ModeratorManagement implements OnInit, OnDestroy {
   lastNameControl = new FormControl('', Validators.required);
   usernameControl = new FormControl('', Validators.required);
   emailControl = new FormControl('', [Validators.required, Validators.email]);
+  passwordControl = new FormControl('', Validators.required);
 
   searchControl = new FormControl('');
   sortField: SortField = 'first_name';
@@ -118,24 +119,26 @@ export class ModeratorManagement implements OnInit, OnDestroy {
   }
 
   saveModerator() {
-    const moderator: Partial<Moderator> = {
+    const moderatorData = {
       first_name: this.firstNameControl.value ?? '',
       last_name: this.lastNameControl.value ?? '',
       username: this.usernameControl.value ?? '',
       email: this.emailControl.value ?? '',
+      password: this.passwordControl.value ?? '',
     };
 
-    if (!moderator.first_name || !moderator.last_name || !moderator.username || !moderator.email) return;
+    if (!moderatorData.first_name || !moderatorData.last_name || !moderatorData.username || !moderatorData.email || !moderatorData.password) return;
 
     if (this.editId !== null) {
-      this.moderatorService.updateModerator(this.editId, moderator).subscribe(() => {
+      this.moderatorService.updateModerator(this.editId, moderatorData).subscribe(() => {
         this.loadModerators();
         this.closeDialog();
       });
     } else {
-      // Note: Adding new moderators would require a separate API endpoint
-      // For now, we'll just close the dialog
-      this.closeDialog();
+      this.moderatorService.createModerator(moderatorData).subscribe(() => {
+        this.loadModerators();
+        this.closeDialog();
+      });
     }
   }
 

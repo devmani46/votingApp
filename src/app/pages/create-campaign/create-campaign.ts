@@ -80,6 +80,7 @@ export class CreateCampaign implements OnInit, OnDestroy {
           existing.candidates.forEach(c => {
             this.candidates.push(
               this.fb.group({
+                id: [c.id],
                 name: [c.name, Validators.required],
                 bio: [c.bio],
                 photo: [c.photo_url],
@@ -202,8 +203,20 @@ export class CreateCampaign implements OnInit, OnDestroy {
     this.closeDialog();
   }
 
-  deleteCandidate(index: number) {
-    if (index !== null && index >= 0 && index < this.candidates.length) {
+  async deleteCandidate(index: number) {
+    if (this.editMode && this.campaignId && index >= 0 && index < this.candidates.length) {
+      const candidate = this.candidates.at(index).value;
+      if (candidate.id) {
+        try {
+          await this.campaignService.deleteCandidate(this.campaignId, candidate.id).toPromise();
+          this.candidates.removeAt(index);
+        } catch (error) {
+          console.error('Failed to delete candidate:', error);
+        }
+      } else {
+        this.candidates.removeAt(index);
+      }
+    } else {
       this.candidates.removeAt(index);
     }
   }
@@ -230,6 +243,40 @@ export class CreateCampaign implements OnInit, OnDestroy {
       if (this.editMode && this.campaignId !== null) {
         console.log('Updating campaign:', this.campaignId);
         await this.campaignService.updateCampaign(this.campaignId, campaignData).toPromise();
+
+        // Update candidates
+        const existingCampaign = this.campaignService.getCampaignById(this.campaignId);
+        if (existingCampaign) {
+          const existingCandidates = existingCampaign.candidates || [];
+          const formCandidates = formValue.candidates || [];
+
+          // Delete removed candidates
+          for (const existingCandidate of existingCandidates) {
+            if (!formCandidates.find((c: any) => c.id === existingCandidate.id)) {
+              await this.campaignService.deleteCandidate(this.campaignId, existingCandidate.id).toPromise();
+            }
+          }
+
+          // Add or update candidates
+          for (const c of formCandidates) {
+            if (c.id) {
+              // Update existing candidate
+              await this.campaignService.updateCandidate(this.campaignId, c.id, {
+                name: c.name,
+                bio: c.bio || null,
+                photo_url: c.photo || null
+              }).toPromise();
+            } else {
+              // Add new candidate
+              await this.campaignService.addCandidate(this.campaignId, {
+                name: c.name,
+                bio: c.bio || null,
+                photo_url: c.photo || null
+              }).toPromise();
+            }
+          }
+        }
+
         console.log('Update successful, refreshing campaigns and navigating to campaign-status');
         this.campaignService.refreshCampaigns(); // refresh campaigns list
         this.router.navigate(['/campaign-status']);

@@ -106,6 +106,26 @@ export class CampaignService {
     );
   }
 
+  deleteCandidate(campaignId: string, candidateId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/campaigns/${campaignId}/candidates/${candidateId}`, { withCredentials: true });
+  }
+
+  updateCandidate(campaignId: string, candidateId: string, candidate: Partial<Candidate>): Observable<Candidate> {
+    return this.http.put<Candidate>(`${this.apiUrl}/campaigns/${campaignId}/candidates/${candidateId}`, candidate, { withCredentials: true }).pipe(
+      tap(updatedCandidate => {
+        this._campaigns.update(list =>
+          list.map(c => {
+            if (c.id === campaignId) {
+              c.candidates = c.candidates || [];
+              return { ...c, candidates: c.candidates.map(cd => cd.id === candidateId ? updatedCandidate : cd) };
+            }
+            return c;
+          })
+        );
+      })
+    );
+  }
+
   castVote(campaignId: string, candidateId: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/campaigns/${campaignId}/vote`, { candidate_id: candidateId }, { withCredentials: true }).pipe(
       tap(() => {

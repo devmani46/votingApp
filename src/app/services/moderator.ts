@@ -58,4 +58,13 @@ export class ModeratorService {
       })
     );
   }
+
+  createModerator(moderator: { first_name: string; last_name: string; username: string; email: string; password: string }): Observable<Moderator> {
+    return this.http.post<Moderator>(`${this.apiUrl}/users`, { ...moderator, role: 'moderator' }).pipe(
+      tap(newMod => {
+        const mods = [...this.moderatorsSignal(), newMod];
+        this.moderatorsSignal.set(mods);
+      })
+    );
+  }
 }

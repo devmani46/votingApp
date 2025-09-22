@@ -26,7 +26,10 @@ export class UserService {
 
   getAll(): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/users`).pipe(
-      tap(users => this.usersSignal.set(users))
+      tap(users => {
+        const filtered = users.filter(u => u.role === 'voter' || u.role === 'user');
+        this.usersSignal.set(filtered);
+      })
     );
   }
 
