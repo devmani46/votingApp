@@ -53,7 +53,6 @@ export class Login implements OnInit {
           if (!success) {
             alert('Invalid email or password');
           }
-          // Navigation is handled in the auth service
         },
         error: (err) => {
           console.error('Login failed:', err);

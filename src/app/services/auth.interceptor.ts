@@ -9,7 +9,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
   const router = inject(Router);
 
-  // Clone request with credentials to send HttpOnly cookies
   const authReq = req.clone({ withCredentials: true });
 
   return next(authReq).pipe(

@@ -35,8 +35,7 @@ export class Menu implements OnDestroy {
   };
 
   get totalUsers(): number {
-    // For now, return 0 since we don't have user count from backend
-    // TODO: Implement user count from backend
+    //left to implement total Users
     return 0;
   }
 

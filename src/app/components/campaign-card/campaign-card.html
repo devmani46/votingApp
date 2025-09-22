@@ -16,7 +16,8 @@
     </div>
   </div>
 
-  <div class="card-actions" *ngIf="deleted">
+  <div class="card-actions">
+    @if (deleted) {
     <button
       class="delete-btn"
       type="button"
@@ -25,5 +26,6 @@
     >
       <span class="material-symbols-outlined">delete</span>
     </button>
+    }
   </div>
 </div>

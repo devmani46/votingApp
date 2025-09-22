@@ -94,7 +94,6 @@ export class Register implements OnInit {
     if (this.form.valid) {
       this.auth.register(this.form.getRawValue()).subscribe({
         next: () => {
-          // Navigation is handled in the auth service
           console.log('Registration successful');
         },
         error: (err) => {

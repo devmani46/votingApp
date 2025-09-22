@@ -78,23 +78,6 @@
         <h3 class="candidate-name">{{ activeCandidate?.name }}</h3>
         <p class="candidate-bio">{{ activeCandidate?.bio }}</p>
 
-        <div class="properties-section">
-          <h4>Properties</h4>
-          @if (activeCandidate?.properties?.length ?? 0) {
-          <div class="props-grid">
-            @for (p of activeCandidate?.properties ?? []; let j = $index; track
-            j) {
-            <div class="prop-chip">
-              <span class="prop-icon">🔹</span>
-              <span class="prop-text">{{ p }}</span>
-            </div>
-            }
-          </div>
-          } @else {
-          <p class="no-props">No properties were added for this candidate.</p>
-          }
-        </div>
-
         <div class="popup-actions">
           <app-button
             appearance="primary"
@@ -108,9 +91,9 @@
           </app-button>
         </div>
 
-        <div class="big-vote-btn">
+        <!-- <div class="big-vote-btn">
           <button>VOTE!</button>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>

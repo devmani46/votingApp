@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   templateUrl: './campaign-card.html',
   styleUrls: ['./campaign-card.scss'],
-  imports: [CommonModule],
+  imports: [],
 })
 export class CampaignCard {
   @Input() id!: string;

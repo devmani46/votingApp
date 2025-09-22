@@ -31,7 +31,6 @@ export class VoteCandidate implements OnInit, OnDestroy {
   votePercent = 0;
 
   constructor() {
-    // Removed getVotedCampaigns call
     const currentUser = this.authService.getCurrentUser();
     this.currentUserEmail = currentUser?.email || '';
     const id = this.route.snapshot.paramMap.get('id');
@@ -60,7 +59,6 @@ export class VoteCandidate implements OnInit, OnDestroy {
         this.votedCampaigns[this.currentUserEmail] = [];
       }
       this.votedCampaigns[this.currentUserEmail].push(this.campaign!.id);
-      // Removed saveVotedCampaigns call
       this.campaign = this.campaignService.getCampaignById(this.campaign!.id) ?? undefined;
       this.refreshTotalVotes();
       if (this.candidatePopupOpen && this.activeIndex === candidateIndex) {
@@ -96,7 +94,6 @@ export class VoteCandidate implements OnInit, OnDestroy {
       bio: c.bio,
       photo: c.photo_url,
       votes: c.votes ?? 0,
-      properties: [], // Candidates don't have properties in the interface
     };
     this.activeIndex = index;
     this.refreshTotalVotes();

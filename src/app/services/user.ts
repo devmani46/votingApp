@@ -78,12 +78,10 @@ export class UserService {
     );
   }
 
-  // Update current user state and notify subscribers
   updateCurrentUserState(user: User) {
     this.currentUserSubject.next(user);
   }
 
-  // Get current user synchronously (for immediate access)
   getCurrentUserSync(): User | null {
     return this.currentUserSubject.value;
   }

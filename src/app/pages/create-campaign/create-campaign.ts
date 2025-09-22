@@ -48,15 +48,12 @@ export class CreateCampaign implements OnInit, OnDestroy {
   nameControl = new FormControl('', Validators.required);
   bioControl = new FormControl('');
 
-  // File size limit in bytes (5MB)
   private readonly MAX_FILE_SIZE = 5 * 1024 * 1024;
 
-  // Utility function to convert ISO date to YYYY-MM-DD format for HTML date inputs
   private formatDateForInput(isoDate: string): string {
     if (!isoDate) return '';
     try {
       const date = new Date(isoDate);
-      // Check if date is valid
       if (isNaN(date.getTime())) return '';
       return date.toISOString().split('T')[0];
     } catch (error) {
@@ -65,7 +62,6 @@ export class CreateCampaign implements OnInit, OnDestroy {
     }
   }
 
-  // Utility function to validate file size
   private validateFileSize(file: File): boolean {
     if (file.size > this.MAX_FILE_SIZE) {
       alert(`File size exceeds the maximum limit of ${this.MAX_FILE_SIZE / (1024 * 1024)}MB. Please choose a smaller file.`);
@@ -74,7 +70,6 @@ export class CreateCampaign implements OnInit, OnDestroy {
     return true;
   }
 
-  // Utility function to format file size for display
   private formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -139,7 +134,6 @@ export class CreateCampaign implements OnInit, OnDestroy {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
       if (!this.validateFileSize(file)) {
-        // Clear the file input
         (event.target as HTMLInputElement).value = '';
         return;
       }
@@ -193,7 +187,6 @@ export class CreateCampaign implements OnInit, OnDestroy {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
       if (!this.validateFileSize(file)) {
-        // Clear the file input
         (event.target as HTMLInputElement).value = '';
         return;
       }
@@ -223,10 +216,8 @@ export class CreateCampaign implements OnInit, OnDestroy {
 
     if (this.editIndex !== null) {
       this.candidates.at(this.editIndex).patchValue(candidate);
-      console.log('Updated candidate at index', this.editIndex, ':', this.candidates.at(this.editIndex).value);
     } else {
       this.candidates.push(this.fb.group(candidate));
-      console.log('Added new candidate:', candidate);
     }
 
     this.closeDialog();
@@ -261,7 +252,6 @@ export class CreateCampaign implements OnInit, OnDestroy {
       return;
     }
 
-    console.log('Submitting form...');
     const formValue = this.form.value;
     const campaignData = {
       title: formValue.title,
@@ -271,37 +261,30 @@ export class CreateCampaign implements OnInit, OnDestroy {
       end_date: formValue.endDate
     };
 
-    console.log('Campaign data:', campaignData);
 
     try {
       if (this.editMode && this.campaignId !== null) {
-        console.log('Updating campaign:', this.campaignId);
         await this.campaignService.updateCampaign(this.campaignId, campaignData).toPromise();
 
-        // Update candidates
         const existingCampaign = this.campaignService.getCampaignById(this.campaignId);
         if (existingCampaign) {
           const existingCandidates = existingCampaign.candidates || [];
           const formCandidates = formValue.candidates || [];
 
-          // Delete removed candidates
           for (const existingCandidate of existingCandidates) {
             if (!formCandidates.find((c: any) => c.id === existingCandidate.id)) {
               await this.campaignService.deleteCandidate(this.campaignId, existingCandidate.id).toPromise();
             }
           }
 
-          // Add or update candidates
           for (const c of formCandidates) {
             if (c.id) {
-              // Update existing candidate
               await this.campaignService.updateCandidate(this.campaignId, c.id, {
                 name: c.name,
                 bio: c.bio || null,
                 photo_url: c.photo || null
               }).toPromise();
             } else {
-              // Add new candidate
               await this.campaignService.addCandidate(this.campaignId, {
                 name: c.name,
                 bio: c.bio || null,
@@ -311,15 +294,11 @@ export class CreateCampaign implements OnInit, OnDestroy {
           }
         }
 
-        console.log('Update successful, refreshing campaigns and navigating to campaign-status');
-        this.campaignService.refreshCampaigns(); // refresh campaigns list
+        this.campaignService.refreshCampaigns();
         this.router.navigate(['/campaign-status']);
       } else {
-        console.log('Creating new campaign');
         const createdCampaign = await this.campaignService.addCampaign(campaignData).toPromise();
-        console.log('Campaign created:', createdCampaign);
 
-        // Add candidates after creating campaign
         if (!createdCampaign || !createdCampaign.id) {
           throw new Error('Created campaign is undefined or missing id');
         }
@@ -331,8 +310,7 @@ export class CreateCampaign implements OnInit, OnDestroy {
           }).toPromise();
         }
 
-        console.log('All candidates added, refreshing campaigns and navigating to campaign-status');
-        this.campaignService['loadCampaigns'](); // refresh campaigns list
+        this.campaignService['loadCampaigns']();
         this.router.navigate(['/campaign-status']);
       }
     } catch (err) {

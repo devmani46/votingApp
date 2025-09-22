@@ -73,7 +73,6 @@ export class NavBar implements OnInit, OnDestroy {
   }
 
   private handleUserProfileUpdate = (event: Event) => {
-    console.log('User profile updated event received:', event);
     this.loadUser();
   };
 

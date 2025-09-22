@@ -40,7 +40,6 @@ export class CampaignService {
       },
       error: error => {
         console.error('Failed to load campaigns:', error);
-        // Optionally, you can set an empty array or handle the error differently
         this._campaigns.set([]);
       }
     });

@@ -29,22 +29,18 @@ export class AuthService {
   login(email: string, password: string): Observable<boolean> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, { email, password }, { withCredentials: true }).pipe(
       tap(response => {
-        // Store basic user data in sessionStorage (cleared on browser close)
         sessionStorage.setItem(this.userKey, JSON.stringify(response.user));
         sessionStorage.setItem(this.roleKey, response.user.role);
       }),
-      // After successful login, fetch complete user profile from database
       switchMap(response => {
         return this.http.get(`${this.apiUrl}/users/me`, { withCredentials: true }).pipe(
           tap(completeUser => {
-            // Update sessionStorage with complete user data including profile fields
             sessionStorage.setItem(this.userKey, JSON.stringify(completeUser));
           }),
           map(() => true)
         );
       }),
       tap(() => {
-        // Navigate based on role after complete user data is fetched
         const currentUser = this.getCurrentUser();
         if (currentUser && (currentUser.role === 'admin' || currentUser.role === 'moderator')) {
           this.router.navigate(['/menu']);
@@ -65,17 +61,14 @@ export class AuthService {
   }
 
   logout(): void {
-    // Clear session storage
     sessionStorage.removeItem(this.userKey);
     sessionStorage.removeItem(this.roleKey);
 
-    // Call logout endpoint to clear cookies
     this.http.post(`${this.apiUrl}/auth/logout`, {}, { withCredentials: true }).subscribe({
       next: () => {
         this.router.navigate(['/login']);
       },
       error: () => {
-        // Even if logout endpoint fails, navigate to login
         this.router.navigate(['/login']);
       }
     });
@@ -92,14 +85,12 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    // Token is now handled by HttpOnly cookies, not accessible from JavaScript
     return null;
   }
 
   updateUser(updatedUser: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/users/me`, updatedUser, { withCredentials: true }).pipe(
       tap(response => {
-        // Update sessionStorage with the new user data
         sessionStorage.setItem(this.userKey, JSON.stringify(response));
       })
     );
