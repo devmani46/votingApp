@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, BehaviorSubject } from 'rxjs';
 
 export interface User {
   id: string;
@@ -21,6 +21,8 @@ export interface User {
 export class UserService {
   private apiUrl = 'http://localhost:4000/api';
   private usersSignal = signal<User[]>([]);
+  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -50,6 +52,23 @@ export class UserService {
     );
   }
 
+  updateCurrentUser(user: Partial<User>): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/users/me`, user, { withCredentials: true }).pipe(
+      tap(updated => {
+        const users = [...this.usersSignal()];
+        const index = users.findIndex(u => u.id === updated.id);
+        if (index > -1) {
+          users[index] = updated;
+          this.usersSignal.set(users);
+        }
+      })
+    );
+  }
+
+  getCurrentUser(): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/users/me`, { withCredentials: true });
+  }
+
   deleteUser(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/users/${id}`).pipe(
       tap(() => {
@@ -57,5 +76,15 @@ export class UserService {
         this.usersSignal.set(users);
       })
     );
+  }
+
+  // Update current user state and notify subscribers
+  updateCurrentUserState(user: User) {
+    this.currentUserSubject.next(user);
+  }
+
+  // Get current user synchronously (for immediate access)
+  getCurrentUserSync(): User | null {
+    return this.currentUserSubject.value;
   }
 }

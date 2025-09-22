@@ -1,6 +1,8 @@
-import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
+import { Component, HostListener, OnInit, OnDestroy, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth';
+import { UserService } from '../../services/user';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-nav-bar',
@@ -13,16 +15,29 @@ export class NavBar implements OnInit, OnDestroy {
   user: any = {};
   dropdownOpen = false;
   menuOpen = false;
+  private userSubscription?: Subscription;
 
-  constructor(private auth: AuthService) {}
+  private auth = inject(AuthService);
+  private userService = inject(UserService);
 
   ngOnInit() {
     this.loadUser();
     window.addEventListener('storage', this.syncUser);
+    window.addEventListener('userProfileUpdated', this.handleUserProfileUpdate);
+
+    this.userSubscription = this.userService.currentUser$.subscribe(user => {
+      if (user) {
+        this.updateUserDisplay(user);
+      }
+    });
   }
 
   ngOnDestroy() {
     window.removeEventListener('storage', this.syncUser);
+    window.removeEventListener('userProfileUpdated', this.handleUserProfileUpdate);
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
   private syncUser = (event: StorageEvent) => {
@@ -32,10 +47,38 @@ export class NavBar implements OnInit, OnDestroy {
   };
 
   private loadUser() {
-    this.user = this.auth.getCurrentUser() || {
-      username: 'Guest',
-      photo: '/assets/admin.png',
+    const currentUser = this.auth.getCurrentUser();
+    if (currentUser) {
+      this.user = {
+        ...currentUser,
+        firstName: currentUser.first_name || '',
+        lastName: currentUser.last_name || '',
+        photo: currentUser.photo_url || '/assets/admin.png'
+      };
+    } else {
+      this.user = {
+        username: 'Guest',
+        photo: '/assets/admin.png',
+      };
+    }
+  }
+
+  private updateUserDisplay(user: any) {
+    this.user = {
+      ...user,
+      firstName: user.first_name || '',
+      lastName: user.last_name || '',
+      photo: user.photo_url || '/assets/admin.png'
     };
+  }
+
+  private handleUserProfileUpdate = (event: Event) => {
+    console.log('User profile updated event received:', event);
+    this.loadUser();
+  };
+
+  refreshUser() {
+    this.loadUser();
   }
 
   toggleDropdown() {

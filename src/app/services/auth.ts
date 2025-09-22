@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { tap, map } from 'rxjs/operators';
+import { tap, map, switchMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
 interface LoginResponse {
@@ -29,18 +29,29 @@ export class AuthService {
   login(email: string, password: string): Observable<boolean> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, { email, password }, { withCredentials: true }).pipe(
       tap(response => {
-        // Store user data in sessionStorage (cleared on browser close)
+        // Store basic user data in sessionStorage (cleared on browser close)
         sessionStorage.setItem(this.userKey, JSON.stringify(response.user));
         sessionStorage.setItem(this.roleKey, response.user.role);
-
-        // Navigate based on role
-        if (response.user.role === 'admin' || response.user.role === 'moderator') {
+      }),
+      // After successful login, fetch complete user profile from database
+      switchMap(response => {
+        return this.http.get(`${this.apiUrl}/users/me`, { withCredentials: true }).pipe(
+          tap(completeUser => {
+            // Update sessionStorage with complete user data including profile fields
+            sessionStorage.setItem(this.userKey, JSON.stringify(completeUser));
+          }),
+          map(() => true)
+        );
+      }),
+      tap(() => {
+        // Navigate based on role after complete user data is fetched
+        const currentUser = this.getCurrentUser();
+        if (currentUser && (currentUser.role === 'admin' || currentUser.role === 'moderator')) {
           this.router.navigate(['/menu']);
         } else {
           this.router.navigate(['/user-page']);
         }
-      }),
-      map(() => true)
+      })
     );
   }
 
@@ -86,12 +97,15 @@ export class AuthService {
   }
 
   updateUser(updatedUser: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/users/me`, updatedUser, { withCredentials: true });
+    return this.http.put(`${this.apiUrl}/users/me`, updatedUser, { withCredentials: true }).pipe(
+      tap(response => {
+        // Update sessionStorage with the new user data
+        sessionStorage.setItem(this.userKey, JSON.stringify(response));
+      })
+    );
   }
 
   getAllUsers(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/users`, { withCredentials: true });
   }
 }
-
-

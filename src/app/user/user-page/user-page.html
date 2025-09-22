@@ -77,7 +77,7 @@
                 </div>
               </div>
             } @else {
-              <p><strong>It’s a draw between:</strong> {{ getDrawNames(selectedCampaign) }}</p>
+              <p><strong>It's a draw between:</strong> {{ getDrawNames(selectedCampaign) }}</p>
               <div class="draw-candidates">
                 @for (cand of winner.candidates; track cand.name) {
                   <div class="winner-card">
@@ -129,7 +129,13 @@
             </div>
             <div>
               <label>Date of Birth</label>
-              <input type="date" formControlName="dob" (change)="updateAge()" />
+              <input
+                formControlName="dob"
+                type="text"
+                class="date-input"
+                placeholder="YYYY-MM-DD"
+                (input)="updateAge()"
+              />
             </div>
             <div>
               <label>Email</label>
@@ -150,7 +156,7 @@
           </div>
           <div class="dialog-actions">
             <app-button appearance="secondary" (click)="closeDialog()">Cancel</app-button>
-            <app-button appearance="primary" (click)="saveProfile()">Save Changes</app-button>
+            <app-button appearance="primary" (click)="saveProfile($event)">Save Changes</app-button>
           </div>
         </form>
       </div>
