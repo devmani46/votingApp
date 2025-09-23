@@ -25,10 +25,9 @@ export class ModeratorService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Moderator[]> {
-    return this.http.get<Moderator[]>(`${this.apiUrl}/users`).pipe(
+    return this.http.get<Moderator[]>(`${this.apiUrl}/users?role=moderator`).pipe(
       tap(moderators => {
-        const mods = moderators.filter(m => m.role === 'moderator');
-        this.moderatorsSignal.set(mods);
+        this.moderatorsSignal.set(moderators);
       })
     );
   }

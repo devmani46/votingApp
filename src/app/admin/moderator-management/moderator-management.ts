@@ -143,9 +143,12 @@ export class ModeratorManagement implements OnInit, OnDestroy {
   }
 
   deleteModerator(id: string) {
-    this.moderatorService.deleteModerator(id).subscribe(() => {
-      this.loadModerators();
-    });
+    const confirmDelete = window.confirm('Are you sure you want to delete this moderator?');
+    if (confirmDelete) {
+      this.moderatorService.deleteModerator(id).subscribe(() => {
+        this.loadModerators();
+      });
+    }
   }
 
   applyFilters() {

@@ -1,4 +1,4 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject,HostListener, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CampaignService } from '../../services/campaign';
@@ -98,4 +98,9 @@ export class UserCampaign {
       }
       return '';
     }
+
+      @HostListener('document:keydown', ['$event'])
+      handleKeyboardEvent(event: KeyboardEvent) {
+        if (this.selectedCampaign && event.key === 'Escape') this.closeCampaignDialog();
+      }
 }

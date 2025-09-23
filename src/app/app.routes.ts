@@ -47,11 +47,11 @@ export const routes: Routes = [
       import('./pages/notifications/notifications').then(m => m.Notifications),
     canActivate: [adminOrModeratorGuard],
   },
-  {
-    path: 'reports',
-    loadComponent: () => import('./pages/reports/reports').then(m => m.Reports),
-    canActivate: [adminOrModeratorGuard],
-  },
+  // {
+  //   path: 'reports',
+  //   loadComponent: () => import('./pages/reports/reports').then(m => m.Reports),
+  //   canActivate: [adminOrModeratorGuard],
+  // },
 
   {
     path: 'user-management',
