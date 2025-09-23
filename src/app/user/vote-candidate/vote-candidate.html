@@ -18,9 +18,10 @@
     @for (candidate of campaign.candidates; let i = $index; track i) {
     <div
       class="candidate-wrapper"
-      (click)="openCandidatePopup(i)"
+      [class.disabled]="hasVoted(campaign.id)"
+      (click)="hasVoted(campaign.id) ? null : openCandidatePopup(i)"
       tabindex="0"
-      (keydown.enter)="openCandidatePopup(i)"
+      (keydown.enter)="hasVoted(campaign.id) ? null : openCandidatePopup(i)"
     >
       <app-campaign-card
         [id]="i.toString()"
@@ -28,6 +29,7 @@
         [description]="candidate.bio"
         [image]="candidate.photo_url || '/assets/default-user.png'"
         size="medium"
+        [disabled]="hasVoted(campaign.id)"
       >
       </app-campaign-card>
     </div>
@@ -82,7 +84,7 @@
           <app-button
             appearance="primary"
             (click)="vote(activeIndex!); $event.stopPropagation()"
-            [disabled]="hasVoted(campaign?.id!)"
+            [disabled]="!!(campaign && hasVoted(campaign.id))"
           >
             Vote
           </app-button>

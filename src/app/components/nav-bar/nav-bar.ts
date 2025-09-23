@@ -16,6 +16,7 @@ export class NavBar implements OnInit, OnDestroy {
   dropdownOpen = false;
   menuOpen = false;
   private userSubscription?: Subscription;
+  private authSubscription?: Subscription;
 
   private auth = inject(AuthService);
   private userService = inject(UserService);
@@ -25,9 +26,18 @@ export class NavBar implements OnInit, OnDestroy {
     window.addEventListener('storage', this.syncUser);
     window.addEventListener('userProfileUpdated', this.handleUserProfileUpdate);
 
+    // Subscribe to UserService for reactive updates
     this.userSubscription = this.userService.currentUser$.subscribe(user => {
+      console.log('NavBar received user update:', user);
       if (user) {
         this.updateUserDisplay(user);
+      }
+    });
+
+    // Subscribe to AuthService for sessionStorage updates
+    this.authSubscription = this.auth.userUpdate$.subscribe(user => {
+      if (user) {
+        this.userService.syncWithAuthService();
       }
     });
   }
@@ -38,23 +48,21 @@ export class NavBar implements OnInit, OnDestroy {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
   }
 
   private syncUser = (event: StorageEvent) => {
     if (event.key === 'currentUser') {
-      this.loadUser();
+      this.userService.syncWithAuthService();
     }
   };
 
   private loadUser() {
     const currentUser = this.auth.getCurrentUser();
     if (currentUser) {
-      this.user = {
-        ...currentUser,
-        firstName: currentUser.first_name || '',
-        lastName: currentUser.last_name || '',
-        photo: currentUser.photo_url || '/assets/admin.png'
-      };
+      this.userService.syncWithAuthService();
     } else {
       this.user = {
         username: 'Guest',
@@ -64,20 +72,29 @@ export class NavBar implements OnInit, OnDestroy {
   }
 
   private updateUserDisplay(user: any) {
+    const normalizedUser = this.userService.normalizeUserForFrontend(user);
     this.user = {
-      ...user,
-      firstName: user.first_name || '',
-      lastName: user.last_name || '',
-      photo: user.photo_url || '/assets/admin.png'
+      ...this.user, // Keep existing properties
+      ...normalizedUser,
+      firstName: normalizedUser.firstName || '',
+      lastName: normalizedUser.lastName || '',
+      photo: normalizedUser.photo || '/assets/admin.png',
+      username: normalizedUser.username || 'Guest',
+      // Ensure template can access properties
+      photo_url: normalizedUser.photo,
+      first_name: normalizedUser.firstName,
+      last_name: normalizedUser.lastName
     };
   }
 
   private handleUserProfileUpdate = (event: Event) => {
-    this.loadUser();
+    console.log('NavBar received userProfileUpdated event:', event);
+    // Custom event handler now syncs with UserService instead of reloading from AuthService
+    this.userService.syncWithAuthService();
   };
 
   refreshUser() {
-    this.loadUser();
+    this.userService.syncWithAuthService();
   }
 
   toggleDropdown() {
@@ -90,7 +107,11 @@ export class NavBar implements OnInit, OnDestroy {
 
   logout() {
     this.auth.logout();
-    this.loadUser();
+    this.userService.updateCurrentUserState(null);
+    this.user = {
+      username: 'Guest',
+      photo: '/assets/admin.png',
+    };
   }
 
   @HostListener('document:click', ['$event'])

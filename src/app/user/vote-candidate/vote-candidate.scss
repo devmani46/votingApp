@@ -114,6 +114,19 @@
         outline: 2px solid #2563eb;
         border-radius: 8px;
       }
+
+      &.disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+
+        &:focus {
+          outline: none;
+        }
+
+        app-campaign-card {
+          pointer-events: none;
+        }
+      }
     }
   }
 

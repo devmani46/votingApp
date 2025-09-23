@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, BehaviorSubject } from 'rxjs';
+import { AuthService } from './auth';
 
 export interface User {
   id: string;
@@ -24,7 +25,7 @@ export class UserService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   getAll(): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/users`).pipe(
@@ -78,11 +79,64 @@ export class UserService {
     );
   }
 
-  updateCurrentUserState(user: User) {
+  updateCurrentUserState(user: User | null) {
     this.currentUserSubject.next(user);
   }
 
   getCurrentUserSync(): User | null {
     return this.currentUserSubject.value;
+  }
+
+  // Synchronization methods
+  syncWithAuthService(): void {
+    const authUser = this.authService.getCurrentUser();
+    if (authUser) {
+      const normalizedUser = this.normalizeUserFromAuth(authUser);
+      this.currentUserSubject.next(normalizedUser);
+    }
+  }
+
+  updateUserInBothServices(userData: any): void {
+    console.log('UserService.updateUserInBothServices called with:', userData);
+
+    // Update AuthService (sessionStorage) - use local update for immediate sync
+    this.authService.updateUserLocally(userData);
+
+    // Update UserService BehaviorSubject
+    const currentUser = this.getCurrentUserSync();
+    console.log('Current user in UserService:', currentUser);
+
+    if (currentUser) {
+      const updatedUser = { ...currentUser, ...userData };
+      console.log('Updated user to be set:', updatedUser);
+      this.updateCurrentUserState(updatedUser);
+    } else {
+      console.log('No current user found in UserService');
+    }
+  }
+
+  // User object normalization utilities
+  private normalizeUserFromAuth(authUser: any): User {
+    return {
+      id: authUser.id,
+      first_name: authUser.first_name || authUser.firstName || '',
+      last_name: authUser.last_name || authUser.lastName || '',
+      username: authUser.username,
+      email: authUser.email,
+      role: authUser.role,
+      dob: authUser.dob,
+      bio: authUser.bio,
+      photo_url: authUser.photo_url || authUser.photo,
+      created_at: authUser.created_at || new Date().toISOString()
+    };
+  }
+
+  normalizeUserForFrontend(user: User): any {
+    return {
+      ...user,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      photo: user.photo_url || '/assets/admin.png'
+    };
   }
 }

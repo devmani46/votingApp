@@ -41,6 +41,7 @@
               [title]="c.value.name"
               [description]="c.value.bio"
               [image]="c.value.photo"
+              [deleted]="true"
               size="small"
               (edit)="openDialog(i)"
               (delete)="onCandidateDelete($event)"

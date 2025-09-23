@@ -40,6 +40,7 @@
             size="medium"
             [deleted]="true"
             (click)="openCampaignDetails(campaign)"
+            (delete)="deleteCampaign(campaign.id)"
           >
             <div class="card-meta">
               <div class="meta-row">

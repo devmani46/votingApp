@@ -139,6 +139,40 @@ export class UserPage implements OnInit {
   openCampaignDetails(campaign: any) {
     this.selectedCampaign = campaign;
     this.winner = campaign.winner || this.campaignService.getWinner(campaign);
+
+    // Debug: Log winner data to console
+    console.log('Winner data:', this.winner);
+    if (this.winner && this.winner.candidates && this.winner.candidates.length > 0) {
+      console.log('Winner candidate photo:', this.winner.candidates[0].photo_url);
+      console.log('Winner candidate photo type:', typeof this.winner.candidates[0].photo_url);
+      console.log('Winner candidate photo length:', this.winner.candidates[0].photo_url?.length);
+    }
+  }
+
+  getWinnerPhotoUrl(candidate: any): string {
+    if (!candidate || !candidate.photo_url) {
+      return '/assets/admin.png';
+    }
+
+    const photoUrl = candidate.photo_url.trim();
+
+    // If it's a base64 data URL, return it as is
+    if (photoUrl.startsWith('data:')) {
+      return photoUrl;
+    }
+
+    // If it's a regular URL, return it
+    if (photoUrl.startsWith('http://') || photoUrl.startsWith('https://')) {
+      return photoUrl;
+    }
+
+    // If it's a relative path, return it
+    if (photoUrl.startsWith('/')) {
+      return photoUrl;
+    }
+
+    // If it's just a filename, assume it's in assets
+    return `/assets/${photoUrl}`;
   }
 
   closeCampaignDialog(event?: MouseEvent) {
@@ -254,18 +288,17 @@ export class UserPage implements OnInit {
       userData.password = this.form.value.password;
     }
 
-    this.authService.updateUser({
-      ...this.user,
-      ...userData,
-      firstName: userData.first_name,
-      lastName: userData.last_name,
-      photo: userData.photo_url
-    });
-
     const currentUser = this.authService.getCurrentUser();
     if (currentUser && currentUser.id) {
       this.userService.updateCurrentUser(userData).subscribe({
         next: (updatedUser) => {
+          this.userService.updateUserInBothServices({
+            ...userData,
+            firstName: userData.first_name,
+            lastName: userData.last_name,
+            photo: userData.photo_url
+          });
+
           this.user = {
             ...this.user,
             ...updatedUser,
@@ -285,52 +318,46 @@ export class UserPage implements OnInit {
             confirmPassword: ''
           });
 
-          this.userService.updateCurrentUserState(updatedUser);
-
-          window.dispatchEvent(new CustomEvent('userProfileUpdated', {
+          // Dispatch custom event to notify other components
+          const customEvent = new CustomEvent('userProfileUpdated', {
             detail: { user: updatedUser }
-          }));
-
+          });
+          window.dispatchEvent(customEvent);
           this.closeDialog();
         },
         error: (error) => {
-          this.authService.updateUser(userData).subscribe({
-            next: (response) => {
-              this.user = {
-                ...this.user,
-                ...userData,
-                firstName: userData.first_name,
-                lastName: userData.last_name,
-                photo: userData.photo_url
-              };
-
-              this.form.patchValue({
-                firstName: this.user.firstName,
-                lastName: this.user.lastName,
-                username: this.user.username,
-                dob: this.formatDateForInput(this.user.dob),
-                email: this.user.email,
-                bio: this.user.bio,
-                password: '',
-                confirmPassword: ''
-              });
-
-              this.closeDialog();
-            },
-            error: (authError) => {
-              if (authError.status === 401) {
-                alert('Your session has expired. Please log in again.');
-                this.authService.logout();
-              } else if (authError.status === 403) {
-                alert('You do not have permission to update this profile.');
-              } else {
-                alert('Failed to update profile. Please check your connection and try again.');
-              }
-            }
+          // Fix: Error handling path now updates both services
+          this.userService.updateUserInBothServices({
+            ...userData,
+            firstName: userData.first_name,
+            lastName: userData.last_name,
+            photo: userData.photo_url
           });
+
+          this.user = {
+            ...this.user,
+            ...userData,
+            firstName: userData.first_name,
+            lastName: userData.last_name,
+            photo: userData.photo_url
+          };
+
+          this.form.patchValue({
+            firstName: this.user.firstName,
+            lastName: this.user.lastName,
+            username: this.user.username,
+            dob: this.formatDateForInput(this.user.dob),
+            email: this.user.email,
+            bio: this.user.bio,
+            password: '',
+            confirmPassword: ''
+          });
+
+          this.closeDialog();
         }
       });
     } else {
+      // Fallback for when no current user exists
       this.user = {
         ...this.user,
         ...this.form.value,

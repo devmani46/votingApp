@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CampaignService, Campaign } from '../../services/campaign';
 import { AuthService } from '../../services/auth';
+import { StorageService } from '../../services/storage';
 import { NavBar } from '../../components/nav-bar/nav-bar';
 import { Footer } from '../../components/footer/footer';
 import { CampaignCard } from '../../components/campaign-card/campaign-card';
@@ -19,6 +20,7 @@ export class VoteCandidate implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private campaignService = inject(CampaignService);
   private authService = inject(AuthService);
+  private storageService = inject(StorageService);
 
   campaign?: Campaign;
   showPopup = false;
@@ -42,6 +44,20 @@ export class VoteCandidate implements OnInit, OnDestroy {
   ngOnInit() {
     document.addEventListener('keydown', this.keyHandler);
     this.refreshTotalVotes();
+
+    // Load voted campaigns from localStorage and show popup if user has already voted
+    this.loadVotedCampaigns();
+    this.checkIfAlreadyVoted();
+  }
+
+  private loadVotedCampaigns() {
+    this.votedCampaigns = this.storageService.getVotedCampaigns();
+  }
+
+  private checkIfAlreadyVoted() {
+    if (this.campaign?.id && this.currentUserEmail && this.storageService.hasVotedForCampaign(this.currentUserEmail, this.campaign.id)) {
+      this.showPopup = true;
+    }
   }
 
   ngOnDestroy() {
@@ -55,10 +71,15 @@ export class VoteCandidate implements OnInit, OnDestroy {
       return;
     }
     this.campaignService.castVote(this.campaign.id, this.campaign.candidates[candidateIndex].id).subscribe(() => {
+      // Add vote to persistent storage
+      this.storageService.addVotedCampaign(this.currentUserEmail, this.campaign!.id);
+
+      // Update local voted campaigns for immediate UI feedback
       if (!this.votedCampaigns[this.currentUserEmail]) {
         this.votedCampaigns[this.currentUserEmail] = [];
       }
       this.votedCampaigns[this.currentUserEmail].push(this.campaign!.id);
+
       this.campaign = this.campaignService.getCampaignById(this.campaign!.id) ?? undefined;
       this.refreshTotalVotes();
       if (this.candidatePopupOpen && this.activeIndex === candidateIndex) {

@@ -36,7 +36,7 @@
               [id]="c.id"
               [title]="c.title"
               [description]="c.description"
-              [image]="c.banner_url || '/assets/default.png'"
+              [image]="c.banner_url || '/assets/admin.png'"
               size="small"
               (click)="openCampaignDetails(c)"
             >
@@ -69,7 +69,7 @@
           @if (winner) {
             @if (!winner.draw) {
               <div class="winner-card">
-                <img [src]="winner.candidates[0].photo || '/assets/default.png'" alt="Winner Photo" class="winner-photo" />
+                <img [src]="getWinnerPhotoUrl(winner.candidates[0])" alt="Winner Photo" class="winner-photo" />
                 <div class="winner-info">
                   <p><strong>Name:</strong> {{ winner.candidates[0].name }}</p>
                   <p><strong>Bio:</strong> {{ winner.candidates[0].bio || "No bio available." }}</p>
@@ -81,7 +81,7 @@
               <div class="draw-candidates">
                 @for (cand of winner.candidates; track cand.name) {
                   <div class="winner-card">
-                    <img [src]="cand.photo || '/assets/default.png'" alt="Candidate Photo" class="winner-photo" />
+                    <img [src]="getWinnerPhotoUrl(cand)" alt="Candidate Photo" class="winner-photo" />
                     <div class="winner-info">
                       <p><strong>Name:</strong> {{ cand.name }}</p>
                       <p><strong>Bio:</strong> {{ cand.bio || "No bio available." }}</p>

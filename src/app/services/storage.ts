@@ -7,10 +7,12 @@ export class StorageService {
   private tokenKey = 'accessToken';
   private userKey = 'currentUser';
   private roleKey = 'role';
+  private votedCampaignsKey = 'votedCampaigns';
 
   private tokenSignal = signal<string | null>(localStorage.getItem(this.tokenKey));
   private userSignal = signal<any | null>(this.parseUser(localStorage.getItem(this.userKey)));
   private roleSignal = signal<string | null>(localStorage.getItem(this.roleKey));
+  private votedCampaignsSignal = signal<Record<string, string[]>>(this.parseVotedCampaigns(localStorage.getItem(this.votedCampaignsKey)));
 
   private parseUser(userStr: string | null): any | null {
     if (!userStr) return null;
@@ -67,5 +69,44 @@ export class StorageService {
     this.tokenSignal.set(null);
     this.userSignal.set(null);
     this.roleSignal.set(null);
+  }
+
+  private parseVotedCampaigns(votedCampaignsStr: string | null): Record<string, string[]> {
+    if (!votedCampaignsStr) return {};
+    try {
+      return JSON.parse(votedCampaignsStr);
+    } catch {
+      return {};
+    }
+  }
+
+  getVotedCampaigns(): Record<string, string[]> {
+    return this.votedCampaignsSignal();
+  }
+
+  addVotedCampaign(userEmail: string, campaignId: string) {
+    const votedCampaigns = this.getVotedCampaigns();
+    if (!votedCampaigns[userEmail]) {
+      votedCampaigns[userEmail] = [];
+    }
+    if (!votedCampaigns[userEmail].includes(campaignId)) {
+      votedCampaigns[userEmail].push(campaignId);
+      localStorage.setItem(this.votedCampaignsKey, JSON.stringify(votedCampaigns));
+      this.votedCampaignsSignal.set(votedCampaigns);
+    }
+  }
+
+  hasVotedForCampaign(userEmail: string, campaignId: string): boolean {
+    const votedCampaigns = this.getVotedCampaigns();
+    return votedCampaigns[userEmail]?.includes(campaignId) ?? false;
+  }
+
+  removeVotedCampaign(userEmail: string, campaignId: string) {
+    const votedCampaigns = this.getVotedCampaigns();
+    if (votedCampaigns[userEmail]) {
+      votedCampaigns[userEmail] = votedCampaigns[userEmail].filter(id => id !== campaignId);
+      localStorage.setItem(this.votedCampaignsKey, JSON.stringify(votedCampaigns));
+      this.votedCampaignsSignal.set(votedCampaigns);
+    }
   }
 }

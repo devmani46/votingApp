@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { tap, map, switchMap } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { Observable, of, BehaviorSubject } from 'rxjs';
 
 interface LoginResponse {
   user: {
@@ -23,6 +23,8 @@ export class AuthService {
   private apiUrl = 'http://localhost:4000/api';
   private userKey = 'currentUser';
   private roleKey = 'role';
+  private userUpdateSubject = new BehaviorSubject<any>(null);
+  public userUpdate$ = this.userUpdateSubject.asObservable();
 
   constructor(private router: Router, private http: HttpClient) {}
 
@@ -92,8 +94,18 @@ export class AuthService {
     return this.http.put(`${this.apiUrl}/users/me`, updatedUser, { withCredentials: true }).pipe(
       tap(response => {
         sessionStorage.setItem(this.userKey, JSON.stringify(response));
+        this.userUpdateSubject.next(response);
       })
     );
+  }
+
+  updateUserLocally(userData: any): void {
+    const currentUser = this.getCurrentUser();
+    if (currentUser) {
+      const updatedUser = { ...currentUser, ...userData };
+      sessionStorage.setItem(this.userKey, JSON.stringify(updatedUser));
+      this.userUpdateSubject.next(updatedUser);
+    }
   }
 
   getAllUsers(): Observable<any[]> {
