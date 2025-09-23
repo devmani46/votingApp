@@ -32,6 +32,43 @@
   --colorNeutralBackground1: var(--bg-300);
   --colorNeutralForeground1: var(--text-100);
 
+  .back-button-container {
+    padding: 1rem 5rem;
+    margin-bottom: 1rem;
+
+    app-button {
+      min-width: 160px;
+    }
+  }
+
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5rem;
+    font-size: 1.1rem;
+    color: var(--text-200);
+  }
+
+  .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem;
+    gap: 2rem;
+
+    .not-found {
+      font-size: 1.5rem;
+      color: #a00;
+      margin: 0;
+    }
+
+    app-button {
+      min-width: 200px;
+    }
+  }
+
   .banner-container {
     padding: 1rem;
     display: flex;

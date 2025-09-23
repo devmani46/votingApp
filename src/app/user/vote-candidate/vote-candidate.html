@@ -1,7 +1,24 @@
 <app-nav-bar></app-nav-bar>
 
 <div class="vote-candidate-page">
-  @if (campaign) {
+  <div class="back-button-container">
+    <app-button appearance="secondary" (click)="goBack()">
+      ← Back to Campaigns
+    </app-button>
+  </div>
+
+  @if (isLoading) {
+    <div class="loading-container">
+      <!-- <p>Loading campaign...</p> -->
+    </div>
+  } @else if (campaignNotFound) {
+    <div class="error-container">
+      <p class="not-found">Campaign not found.</p>
+      <app-button appearance="primary" (click)="goBack()">
+        Back to Campaigns
+      </app-button>
+    </div>
+  } @else if (campaign) {
   <div class="banner-container">
     <img
       class="banner-image"

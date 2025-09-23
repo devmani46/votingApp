@@ -1,5 +1,5 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CampaignService, Campaign } from '../../services/campaign';
 import { AuthService } from '../../services/auth';
@@ -18,6 +18,7 @@ import { Button } from '../../components/button/button';
 })
 export class VoteCandidate implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private campaignService = inject(CampaignService);
   private authService = inject(AuthService);
   private storageService = inject(StorageService);
@@ -31,23 +32,59 @@ export class VoteCandidate implements OnInit, OnDestroy {
   activeCandidate: any = null;
   totalVotes = 0;
   votePercent = 0;
+  isLoading = true;
+  campaignNotFound = false;
 
   constructor() {
     const currentUser = this.authService.getCurrentUser();
     this.currentUserEmail = currentUser?.email || '';
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.campaign = this.campaignService.getCampaignById(id) ?? undefined;
-    }
   }
 
   ngOnInit() {
     document.addEventListener('keydown', this.keyHandler);
-    this.refreshTotalVotes();
+    this.loadCampaign();
+  }
 
-    // Load voted campaigns from localStorage and show popup if user has already voted
-    this.loadVotedCampaigns();
-    this.checkIfAlreadyVoted();
+  private async loadCampaign() {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (!id) {
+      this.isLoading = false;
+      this.campaignNotFound = true;
+      return;
+    }
+
+    // Wait for campaigns to load from the API
+    // Use effect to watch for changes in campaigns signal
+    const campaigns = this.campaignService.campaigns;
+    if (campaigns.length > 0) {
+      // Campaigns have loaded, now find the specific campaign
+      this.campaign = this.campaignService.getCampaignById(id) ?? undefined;
+      this.isLoading = false;
+
+      if (!this.campaign) {
+        this.campaignNotFound = true;
+      } else {
+        this.campaignNotFound = false;
+        this.refreshTotalVotes();
+        this.loadVotedCampaigns();
+        this.checkIfAlreadyVoted();
+      }
+    } else {
+      // If no campaigns loaded yet, wait a bit and try again
+      setTimeout(() => {
+        this.campaign = this.campaignService.getCampaignById(id) ?? undefined;
+        this.isLoading = false;
+
+        if (!this.campaign) {
+          this.campaignNotFound = true;
+        } else {
+          this.campaignNotFound = false;
+          this.refreshTotalVotes();
+          this.loadVotedCampaigns();
+          this.checkIfAlreadyVoted();
+        }
+      }, 1000);
+    }
   }
 
   private loadVotedCampaigns() {
@@ -177,5 +214,9 @@ export class VoteCandidate implements OnInit, OnDestroy {
     } else {
       this.votePercent = Math.round((votes / Math.max(1, this.totalVotes)) * 100);
     }
+  }
+
+  goBack() {
+    this.router.navigate(['/user-campaign']);
   }
 }
