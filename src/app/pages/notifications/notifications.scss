@@ -1,5 +1,16 @@
 .notifications-page {
+  font-family: Manrope;
   background: var(--bg-200);
   min-height: 100vh;
   display: flex;
+}
+
+.notification-section {
+  padding: 4rem;
+  h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 4rem;
+  }
 }

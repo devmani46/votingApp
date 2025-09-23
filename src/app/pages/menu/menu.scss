@@ -1,4 +1,5 @@
 .menu-page {
+  font-family: Manrope;
   display: flex;
   min-height: 100vh;
   background-color: var(--bg-200);
@@ -7,8 +8,6 @@
 app-burger-menu {
   flex: 0 0 250px; // sidebar width
   min-height: 100vh;
-  background: #fff;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
 }
@@ -21,7 +20,8 @@ app-burger-menu {
 
 .dashboard-title {
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -1.5px;
   color: var(--text-100);
 }
 

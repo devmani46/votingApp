@@ -1,4 +1,10 @@
 <div class="notifications-page">
   <app-burger-menu></app-burger-menu>
-  <h2>Notifications</h2>
+
+  <div class="notifications">
+    <h3>Notifications</h3>
+    <ul>
+      <li *ngFor="let n of notifications">{{ n.message }}</li>
+    </ul>
+  </div>
 </div>

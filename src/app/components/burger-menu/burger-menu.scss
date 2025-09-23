@@ -107,11 +107,7 @@
           min-width: 16rem;
         }
         &:hover {
-          background: linear-gradient(
-            129deg,
-            var(--primary-100) 35%,
-            var(--primary-200) 100%
-          );
+          background: var(--primary-100);
           color: var(--primary-300);
           padding-left: 1.5rem;
 
@@ -121,11 +117,7 @@
         }
         &.active {
           background: #8b5d33;
-          background: linear-gradient(
-            160deg,
-            var(--primary-100) 35%,
-            var(--primary-200) 100%
-          );
+          background: var(--primary-100);
           padding-left: 1.5rem;
           color: var(--primary-300);
 
