@@ -28,7 +28,7 @@ export class NavBar implements OnInit, OnDestroy {
 
     // Subscribe to UserService for reactive updates
     this.userSubscription = this.userService.currentUser$.subscribe(user => {
-      console.log('NavBar received user update:', user);
+      // console.log('NavBar received user update:', user);
       if (user) {
         this.updateUserDisplay(user);
       }
@@ -88,7 +88,7 @@ export class NavBar implements OnInit, OnDestroy {
   }
 
   private handleUserProfileUpdate = (event: Event) => {
-    console.log('NavBar received userProfileUpdated event:', event);
+    // console.log('NavBar received userProfileUpdated event:', event);
     // Custom event handler now syncs with UserService instead of reloading from AuthService
     this.userService.syncWithAuthService();
   };
