@@ -1,10 +1,17 @@
 <div class="notifications-page">
   <app-burger-menu></app-burger-menu>
 
-  <div class="notifications">
-    <h3>Notifications</h3>
-    <ul>
-      <li *ngFor="let n of notifications">{{ n.campaign_title }}</li>
+  <div class="notification-section">
+    <h2>Notifications</h2>
+    <ul class="notification-list">
+      @if (notifications.length > 0) { @for (n of notifications; track n.id) {
+      <app-notification-block
+        [campaign_title]="n.campaign_title"
+        [created_by]="n.created_by"
+        [start_date]="n.start_date"
+        [end_date]="n.end_date"
+      />
+      } }
     </ul>
   </div>
 </div>

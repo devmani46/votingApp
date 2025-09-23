@@ -3,11 +3,12 @@ import { BurgerMenu } from '../../components/burger-menu/burger-menu';
 
 import { NotificationService, Notification } from '../../services/notification';
 import { CommonModule } from '@angular/common';
+import { NotificationBlock } from '../../components/notification-block/notification-block';
 
 @Component({
   selector: 'app-notifications',
   standalone: true,
-  imports: [BurgerMenu, CommonModule],
+  imports: [BurgerMenu, CommonModule, NotificationBlock],
   templateUrl: './notifications.html',
   styleUrl: './notifications.scss',
 })

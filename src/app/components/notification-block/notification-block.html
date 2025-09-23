@@ -1,0 +1,14 @@
+<div class="notification-container">
+  <h2>Campaign Created</h2>
+
+  @if(campaign_title) {
+  <h3>Title: {{ campaign_title }}</h3>
+  <div class="span-containers">
+    <span>
+      Created by: {{ created_by }} | Start Date {{ start_date }} | End Date:
+      {{ end_date }}
+    </span>
+    <span>{{ created_date }}</span>
+  </div>
+  }
+</div>

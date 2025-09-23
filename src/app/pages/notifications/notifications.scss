@@ -3,6 +3,7 @@
   background: var(--bg-200);
   min-height: 100vh;
   display: flex;
+  color: var(--accent-800);
 }
 
 .notification-section {
@@ -12,5 +13,11 @@
     font-weight: 800;
     letter-spacing: -1px;
     margin-bottom: 4rem;
+  }
+
+  .notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 }
