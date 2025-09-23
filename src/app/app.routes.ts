@@ -21,7 +21,7 @@ export const routes: Routes = [
   {
     path: 'menu',
     loadComponent: () => import('./pages/menu/menu').then((m) => m.Menu),
-    canActivate: [adminGuard],
+    canActivate: [adminOrModeratorGuard],
   },
 
   {

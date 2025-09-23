@@ -25,7 +25,7 @@ export class ModeratorService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Moderator[]> {
-    return this.http.get<Moderator[]>(`${this.apiUrl}/users?role=moderator`).pipe(
+    return this.http.get<Moderator[]>(`${this.apiUrl}/users?role=moderator`, { withCredentials: true }).pipe(
       tap(moderators => {
         this.moderatorsSignal.set(moderators);
       })
@@ -37,7 +37,7 @@ export class ModeratorService {
   }
 
   updateModerator(id: string, moderator: Partial<Moderator>): Observable<Moderator> {
-    return this.http.put<Moderator>(`${this.apiUrl}/users/${id}`, moderator).pipe(
+    return this.http.put<Moderator>(`${this.apiUrl}/users/${id}`, moderator, { withCredentials: true }).pipe(
       tap(updated => {
         const mods = [...this.moderatorsSignal()];
         const index = mods.findIndex(m => m.id === id);
@@ -50,7 +50,7 @@ export class ModeratorService {
   }
 
   deleteModerator(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/users/${id}`).pipe(
+    return this.http.delete<void>(`${this.apiUrl}/users/${id}`, { withCredentials: true }).pipe(
       tap(() => {
         const mods = this.moderatorsSignal().filter(m => m.id !== id);
         this.moderatorsSignal.set(mods);
@@ -59,7 +59,7 @@ export class ModeratorService {
   }
 
   createModerator(moderator: { first_name: string; last_name: string; username: string; email: string; password: string }): Observable<Moderator> {
-    return this.http.post<Moderator>(`${this.apiUrl}/users`, { ...moderator, role: 'moderator' }).pipe(
+    return this.http.post<Moderator>(`${this.apiUrl}/users`, { ...moderator, role: 'moderator' }, { withCredentials: true }).pipe(
       tap(newMod => {
         const mods = [...this.moderatorsSignal(), newMod];
         this.moderatorsSignal.set(mods);

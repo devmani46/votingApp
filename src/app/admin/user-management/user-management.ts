@@ -88,12 +88,14 @@ export class UserManagement implements OnInit, OnDestroy {
         this.lastNameControl.setValue(user.last_name);
         this.usernameControl.setValue(user.username);
         this.emailControl.setValue(user.email);
+        this.passwordControl.reset(''); // Don't populate password when editing
       }
     } else {
       this.firstNameControl.reset('');
       this.lastNameControl.reset('');
       this.usernameControl.reset('');
       this.emailControl.reset('');
+      this.passwordControl.reset('');
     }
   }
 
@@ -104,6 +106,7 @@ export class UserManagement implements OnInit, OnDestroy {
     this.lastNameControl.reset('');
     this.usernameControl.reset('');
     this.emailControl.reset('');
+    this.passwordControl.reset('');
   }
 
   handleEsc = (event: KeyboardEvent) => {

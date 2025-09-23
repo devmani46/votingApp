@@ -13,14 +13,13 @@
 
   <nav>
     <ul>
-      <li routerLink="/menu" routerLinkActive="active" (click)="closeMenu()">
+      <li routerLink="/menu" routerLinkActive="active" >
         <span class="material-symbols-outlined">team_dashboard</span>
         Dashboard
       </li>
       <li
         routerLink="/campaign-status"
         routerLinkActive="active"
-        (click)="closeMenu()"
       >
         <span class="material-symbols-outlined">apps</span>
         Campaigns
@@ -28,7 +27,6 @@
       <li
         routerLink="/create-campaign"
         routerLinkActive="active"
-        (click)="closeMenu()"
       >
         <span class="material-symbols-outlined">add_circle</span>
         Create Campaign
@@ -36,20 +34,15 @@
       <li
         routerLink="/notifications"
         routerLinkActive="active"
-        (click)="closeMenu()"
       >
         <span class="material-symbols-outlined">notifications</span>
         Notifications
-      </li>
-      <li routerLink="/reports" routerLinkActive="active" (click)="closeMenu()">
-        <span class="material-symbols-outlined">report</span> Reports
       </li>
 
       @if (role === 'admin') {
       <li
         routerLink="/user-management"
         routerLinkActive="active"
-        (click)="closeMenu()"
       >
         <span class="material-symbols-outlined">manage_accounts</span>
         User Management
@@ -57,7 +50,6 @@
       <li
         routerLink="/moderator-management"
         routerLinkActive="active"
-        (click)="closeMenu()"
       >
         <span class="material-symbols-outlined">account_box</span>
         Moderator Management
