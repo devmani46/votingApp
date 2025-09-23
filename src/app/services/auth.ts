@@ -45,10 +45,8 @@ export class AuthService {
       tap(() => {
         const currentUser = this.getCurrentUser();
         if (currentUser) {
-          if (currentUser.role === 'admin') {
+          if (currentUser.role === 'admin' || currentUser.role === 'moderator') {
             this.router.navigate(['/menu']);
-          } else if (currentUser.role === 'moderator') {
-            this.router.navigate(['/campaign-status']);
           } else {
             this.router.navigate(['/user-page']);
           }

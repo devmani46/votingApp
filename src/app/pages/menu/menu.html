@@ -2,7 +2,7 @@
   <app-burger-menu></app-burger-menu>
 
   <div class="campaign-list">
-    <h2 class="dashboard-title">Admin Dashboard</h2>
+    <h2 class="dashboard-title">Dashboard</h2>
 
     <div class="details-section">
       <div class="details-row large-cards">
@@ -42,6 +42,15 @@
           [number]="totalUsers"
           description="Registered users in the system"
           icon="group"
+        >
+        </app-detail-cards>
+
+        <app-detail-cards
+          size="medium"
+          title="Total Moderators"
+          [number]="totalModerators"
+          description="Moderators managing the system"
+          icon="admin_panel_settings"
         >
         </app-detail-cards>
 

@@ -6,7 +6,7 @@
 }
 
 app-burger-menu {
-  flex: 0 0 250px; // sidebar width
+  flex: 0 0 250px;
   min-height: 100vh;
   position: sticky;
   top: 0;
@@ -14,8 +14,9 @@ app-burger-menu {
 
 .campaign-list {
   flex: 1;
-  padding: 4rem;
+  padding: 3rem;
   overflow-y: auto;
+  max-width: calc(100vw - 250px);
 }
 
 .dashboard-title {
@@ -23,16 +24,130 @@ app-burger-menu {
   font-weight: 800;
   letter-spacing: -1.5px;
   color: var(--text-100);
+  margin-bottom: 2rem;
 }
 
 .details-section {
-  padding-top: 3rem;
+  padding-top: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 3rem;
 }
 
 .details-row {
   display: flex;
-  gap: 2rem;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.large-cards {
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.large-cards .details-row {
+  justify-content: center;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.small-cards {
+  justify-content: space-between;
+}
+
+.small-cards .details-row {
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.large-cards app-detail-cards {
+  flex: 0 0 calc(33.333% - 1rem);
+  min-width: 280px;
+  max-width: 320px;
+}
+
+.small-cards app-detail-cards {
+  flex: 0 0 calc(25% - 1rem);
+  min-width: 220px;
+  max-width: 280px;
+}
+
+@media (max-width: 1200px) {
+  .small-cards app-detail-cards {
+    flex: 0 0 calc(33.333% - 1rem);
+    min-width: 250px;
+  }
+}
+
+@media (max-width: 900px) {
+  .large-cards app-detail-cards,
+  .small-cards app-detail-cards {
+    flex: 0 0 calc(50% - 1rem);
+    min-width: 250px;
+  }
+
+  .large-cards .details-row,
+  .small-cards .details-row {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .menu-page {
+    flex-direction: column;
+  }
+
+  app-burger-menu {
+    flex: none;
+    position: relative;
+  }
+
+  .campaign-list {
+    padding: 2rem;
+    max-width: 100%;
+  }
+
+  .dashboard-title {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  .details-section {
+    gap: 2.5rem;
+  }
+
+  .details-row {
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+  }
+
+  .large-cards app-detail-cards,
+  .small-cards app-detail-cards {
+    flex: none;
+    min-width: 280px;
+    max-width: 350px;
+  }
+}
+
+@media (max-width: 480px) {
+  .campaign-list {
+    padding: 1.5rem;
+  }
+
+  .dashboard-title {
+    font-size: 1.5rem;
+  }
+
+  .details-section {
+    gap: 2rem;
+  }
+
+  .large-cards app-detail-cards,
+  .small-cards app-detail-cards {
+    min-width: 250px;
+    max-width: 300px;
+  }
 }
