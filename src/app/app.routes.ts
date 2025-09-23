@@ -56,12 +56,11 @@ export const routes: Routes = [
       ),
     canActivate: [adminOrModeratorGuard],
   },
-  {
-    path: 'reports',
-    loadComponent: () =>
-      import('./pages/reports/reports').then((m) => m.Reports),
-    canActivate: [adminOrModeratorGuard],
-  },
+  // {
+  //   path: 'reports',
+  //   loadComponent: () => import('./pages/reports/reports').then(m => m.Reports),
+  //   canActivate: [adminOrModeratorGuard],
+  // },
 
   {
     path: 'user-management',

@@ -124,13 +124,15 @@ export class UserManagement implements OnInit, OnDestroy {
       last_name: this.lastNameControl.value ?? '',
       username: this.usernameControl.value ?? '',
       email: this.emailControl.value ?? '',
+      password: this.passwordControl.value ?? '',
     };
 
     if (
       !user.first_name ||
       !user.last_name ||
       !user.username ||
-      !user.email
+      !user.email ||
+      !user.password
     )
       return;
 
@@ -147,9 +149,12 @@ export class UserManagement implements OnInit, OnDestroy {
   }
 
   deleteUser(id: string) {
-    this.userService.deleteUser(id).subscribe(() => {
-      this.loadUsers();
-    });
+    const confirmDelete = window.confirm('Are you sure you want to delete this user?');
+    if (confirmDelete) {
+      this.userService.deleteUser(id).subscribe(() => {
+        this.loadUsers();
+      });
+    }
   }
 
   applyFilters() {

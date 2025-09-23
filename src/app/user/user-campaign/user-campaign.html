@@ -4,7 +4,7 @@
   <div class="past-campaigns">
     <h2>Past Campaigns</h2>
     @if (pastCampaigns().length === 0) {
-      <p>You have not participated in any campaigns yet.</p>
+      <p>There are no past campaigns yet.</p>
     } @else {
       <div class="campaign-list">
         @for (c of pastCampaigns(); track c.id) {

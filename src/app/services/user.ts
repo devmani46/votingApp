@@ -10,6 +10,7 @@ export interface User {
   username: string;
   email: string;
   role: string;
+  password?: string;
   dob?: string;
   bio?: string;
   photo_url?: string;
@@ -28,10 +29,9 @@ export class UserService {
   constructor(private http: HttpClient, private authService: AuthService) {}
 
   getAll(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}/users`).pipe(
+    return this.http.get<User[]>(`${this.apiUrl}/users?role=voter`).pipe(
       tap(users => {
-        const filtered = users.filter(u => u.role === 'voter' || u.role === 'user');
-        this.usersSignal.set(filtered);
+        this.usersSignal.set(users);
       })
     );
   }
