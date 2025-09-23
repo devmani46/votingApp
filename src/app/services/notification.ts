@@ -3,9 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, timer } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 export interface Notification {
-  id: string; // matches DB uuid
+  id: string;
+  user_id: string;
   message: string;
-  created_at: string;
+  campaign_title?: string;
+  created_by?: string;
+  start_date?: string;
+  end_date?: string;
 }
 
 @Injectable({
