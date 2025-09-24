@@ -81,6 +81,13 @@
         </div>
       </div>
 
+      <!-- Drawer Backdrop -->
+      <div
+        class="drawer-backdrop"
+        [class.visible]="selectedCampaign"
+        (click)="closeCampaignDetails()"
+      ></div>
+
       <!-- Side Drawer -->
       <div class="side-drawer" [class.open]="selectedCampaign">
         <ng-container *ngIf="selectedCampaign as sc">
@@ -122,7 +129,7 @@
               <div class="drawer-chart">
                 <div
                   echarts
-                  [options]="getChartOptions(sc)"
+                  [options]="getChartOptions(sc, 'pie')"
                   class="echart"
                 ></div>
               </div>
@@ -153,15 +160,36 @@
       <!-- Charts View -->
       <div *ngIf="viewMode === 'charts'" class="chart-view">
         <div
-          *ngFor="let campaign of filteredCampaigns(); trackBy: trackByCampaignId"
-          class="chart-card"
+          *ngFor="let campaign of filteredCampaigns(); let i = index; trackBy: trackByCampaignId"
+          class="campaign-charts-container"
         >
-          <h3>{{ campaign.title }}</h3>
-          <div
-            echarts
-            [options]="getChartOptions(campaign)"
-            class="echart"
-          ></div>
+          <h3 class="campaign-title">{{ campaign.title }}</h3>
+          <div class="charts-grid">
+            <div class="chart-item">
+              <h4 class="chart-label">Pie Chart</h4>
+              <div
+                echarts
+                [options]="getChartOptions(campaign, 'pie')"
+                class="echart"
+              ></div>
+            </div>
+            <div class="chart-item">
+              <h4 class="chart-label">Bar Chart</h4>
+              <div
+                echarts
+                [options]="getChartOptions(campaign, 'bar')"
+                class="echart"
+              ></div>
+            </div>
+            <div class="chart-item">
+              <h4 class="chart-label">Line Chart</h4>
+              <div
+                echarts
+                [options]="getChartOptions(campaign, 'line')"
+                class="echart"
+              ></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

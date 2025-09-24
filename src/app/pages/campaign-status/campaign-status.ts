@@ -83,12 +83,26 @@ export class CampaignStatus implements OnDestroy {
     return n + (s[(v - 20) % 10] || s[v] || s[0]);
   }
 
-  getChartOptions(campaign: Campaign | null) {
+  getChartOptions(campaign: Campaign | null, chartType: string = 'pie') {
     if (!campaign) return { tooltip: { show: false }, series: [] };
     const data = campaign.candidates.map(c => ({
       name: c.name,
       value: c.votes ?? 0
     }));
+
+    switch (chartType) {
+      case 'pie':
+        return this.getPieChartOptions(campaign, data);
+      case 'bar':
+        return this.getBarChartOptions(campaign, data);
+      case 'line':
+        return this.getLineChartOptions(campaign, data);
+      default:
+        return this.getPieChartOptions(campaign, data);
+    }
+  }
+
+  private getPieChartOptions(campaign: Campaign, data: any[]) {
     return {
       tooltip: { trigger: 'item' },
       legend: { bottom: 0, left: 'center' },
@@ -104,6 +118,55 @@ export class CampaignStatus implements OnDestroy {
         }
       ]
     };
+  }
+
+
+
+  private getBarChartOptions(campaign: Campaign, data: any[]) {
+    return {
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+      legend: { bottom: 0, left: 'center' },
+      grid: { left: '3%', right: '4%', bottom: '15%', top: '10%', containLabel: true },
+      xAxis: { type: 'category', data: data.map(d => d.name) },
+      yAxis: { type: 'value' },
+      series: [
+        {
+          name: 'Votes',
+          type: 'bar',
+          data: data.map(d => d.value),
+          itemStyle: { color: '#76affb' },
+          emphasis: { itemStyle: { color: '#4a90e2' } }
+        }
+      ]
+    };
+  }
+
+  private getLineChartOptions(campaign: Campaign, data: any[]) {
+    return {
+      tooltip: { trigger: 'axis' },
+      legend: { bottom: 0, left: 'center' },
+      grid: { left: '3%', right: '4%', bottom: '15%', top: '10%', containLabel: true },
+      xAxis: { type: 'category', boundaryGap: false, data: data.map(d => d.name) },
+      yAxis: { type: 'value' },
+      series: [
+        {
+          name: 'Votes',
+          type: 'line',
+          smooth: true,
+          data: data.map(d => d.value),
+          itemStyle: { color: '#76affb' },
+          areaStyle: { color: 'rgba(118, 175, 251, 0.1)' },
+          emphasis: { focus: 'series' }
+        }
+      ]
+    };
+  }
+
+
+
+  getChartTypeForIndex(index: number): string {
+    const chartTypes = ['pie', 'bar', 'line'];
+    return chartTypes[index % chartTypes.length];
   }
 
   openCampaignDetails(campaign: Campaign) {
