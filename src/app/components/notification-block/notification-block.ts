@@ -1,8 +1,9 @@
 import { Component, Input } from '@angular/core';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-notification-block',
-  imports: [],
+  imports: [DatePipe],
   templateUrl: './notification-block.html',
   styleUrl: './notification-block.scss',
 })

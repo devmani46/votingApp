@@ -16,8 +16,11 @@
   }
 
   .notification-list {
+    background-color: var(--bg-100);
+    border-radius: 1rem;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
   }
 }

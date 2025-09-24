@@ -42,7 +42,6 @@ app-burger-menu {
 }
 
 .large-cards {
-  justify-content: center;
   margin-bottom: 1rem;
 }
 
@@ -63,13 +62,11 @@ app-burger-menu {
 }
 
 .large-cards app-detail-cards {
-  flex: 0 0 calc(33.333% - 1rem);
   min-width: 280px;
   max-width: 320px;
 }
 
 .small-cards app-detail-cards {
-  flex: 0 0 calc(25% - 1rem);
   min-width: 220px;
   max-width: 280px;
 }
