@@ -5,11 +5,9 @@ import { switchMap, tap } from 'rxjs/operators';
 export interface Notification {
   id: string;
   user_id: string;
-  message: string;
-  campaign_title?: string;
-  created_by?: string;
-  start_date?: string;
-  end_date?: string;
+  type: string;
+  metadata: Record<string, any>;
+  created_at: string;
 }
 
 @Injectable({

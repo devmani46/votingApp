@@ -6,10 +6,9 @@
     <ul class="notification-list">
       @if (notifications.length > 0) { @for (n of notifications; track n.id) {
       <app-notification-block
-        [campaign_title]="n.campaign_title"
-        [created_by]="n.created_by"
-        [start_date]="n.start_date"
-        [end_date]="n.end_date"
+        [type]="n.type"
+        [created_date]="n.created_at"
+        [metadata]="n.metadata"
       />
       } }
     </ul>

@@ -1,13 +1,24 @@
 <div class="notification-container">
-  <h2>Campaign Created</h2>
+  <h2>{{ type }}</h2>
 
-  @if(campaign_title) {
-  <h3>Title: {{ campaign_title }}</h3>
+  @if(type === 'campaign_created') {
+
+  <h3>Title: {{ metadata?.['campaign_title'] }}</h3>
   <div class="span-containers">
-    <span> Created by: {{ created_by }}</span>
-    <span>Start Date: {{ start_date | date : "MM/dd/yyyy" }}</span>
-    <span>End Date: {{ end_date | date : "MM/dd/yyyy" }}</span>
-    <span>{{ created_date }}</span>
+    <span> Created by: {{ metadata?.['created_by'] }}</span>
+    <span
+      >Start Date: {{ metadata?.['start_date'] | date : "MM/dd/yyyy" }}</span
+    >
+    <span>End Date: {{ metadata?.['end_date'] | date : "MM/dd/yyyy" }}</span>
+    <span>{{ created_date | date : "shortDate" }}</span>
+  </div>
+
+  } @else if (type === 'user_created') {
+
+  <h3>User: {{ metadata?.['username'] }}</h3>
+  <div class="span-containers">
+    <span>Email: {{ metadata?.['email'] }}</span>
+    <span>{{ created_date | date : "shortDate" }}</span>
   </div>
   }
 </div>
