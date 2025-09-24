@@ -20,6 +20,25 @@ export class UserCampaign {
 
   selectedCampaign: any = null;
   winner: any = null;
+
+  // View More/Less state
+  readonly INITIAL_DISPLAY_COUNT = 3;
+  showAllPast = false;
+  showAllAvailable = false;
+  showAllUpcoming = false;
+
+  // Toggle methods
+  togglePast() {
+    this.showAllPast = !this.showAllPast;
+  }
+
+  toggleAvailable() {
+    this.showAllAvailable = !this.showAllAvailable;
+  }
+
+  toggleUpcoming() {
+    this.showAllUpcoming = !this.showAllUpcoming;
+  }
   campaigns = computed(() => {
     const all = this.campaignService.campaigns();
     const today = new Date();

@@ -40,6 +40,16 @@
     }
   }
 
+  .view-toggle {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+
+    app-button {
+      min-width: 120px;
+    }
+  }
+
   // Modal Dialog Styles
   .dialog-backdrop {
     position: fixed;
