@@ -1,7 +1,8 @@
 <div class="notification-container">
   <h2>{{ type }}</h2>
 
-  @if(type === 'campaign_created') {
+  @if(type === 'campaign_created' || type === 'campaign_updated' || type ===
+  'campaign_deleted') {
 
   <h3>Title: {{ metadata?.['campaign_title'] }}</h3>
   <div class="span-containers">
