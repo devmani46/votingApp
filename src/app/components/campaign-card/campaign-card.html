@@ -4,6 +4,7 @@
   [class.card-large]="size === 'large'"
   [attr.data-disabled]="disabled ? 'true' : null"
   [attr.data-deleted]="disabled ? 'true' : null"
+  (click)="closeKebabMenu()"
 >
   <div class="card-clickable" (click)="onCardClick()">
     <div class="card-image">
@@ -17,15 +18,45 @@
   </div>
 
   <div class="card-actions">
-    @if (deleted) {
-    <button
-      class="delete-btn"
-      type="button"
-      (click)="onDeleteClick($event)"
-      title="Delete candidate"
-    >
-      <span class="material-symbols-outlined">delete</span>
-    </button>
+    @if (showKebabMenu) {
+    <div class="kebab-menu-container">
+      <button
+        class="kebab-btn"
+        type="button"
+        (click)="toggleKebabMenu($event)"
+        [class.active]="isKebabMenuOpen"
+        title="More options"
+      >
+        <span class="material-symbols-outlined">more_vert</span>
+      </button>
+
+      @if (isKebabMenuOpen) {
+      <div class="kebab-dropdown" (click)="$event.stopPropagation()">
+        @if (showEditOption) {
+        <button
+          class="kebab-option"
+          type="button"
+          (click)="onEditClick($event)"
+          title="Edit"
+        >
+          <span class="material-symbols-outlined">edit</span>
+          Edit
+        </button>
+        }
+        @if (showDeleteOption) {
+        <button
+          class="kebab-option"
+          type="button"
+          (click)="onDeleteFromMenu($event)"
+          title="Delete"
+        >
+          <span class="material-symbols-outlined">delete</span>
+          Delete
+        </button>
+        }
+      </div>
+      }
+    </div>
     }
   </div>
 </div>

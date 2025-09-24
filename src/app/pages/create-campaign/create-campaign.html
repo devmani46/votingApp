@@ -43,8 +43,11 @@
               [image]="c.value.photo"
               [deleted]="true"
               size="small"
+              [showKebabMenu]="true"
+              [showEditOption]="true"
+              [showDeleteOption]="true"
               (edit)="openDialog(i)"
-              (delete)="onCandidateDelete($event)"
+              (delete)="onCandidateDelete(i.toString())"
             >
             </app-campaign-card>
           </ng-container>

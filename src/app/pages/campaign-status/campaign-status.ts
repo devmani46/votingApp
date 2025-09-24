@@ -215,6 +215,12 @@ export class CampaignStatus implements OnDestroy {
     if (!entity) return '/assets/default-user.png';
     return (entity.banner_url ?? entity.photo_url ?? entity.logo ?? entity.photo ?? '/assets/default-user.png') as string;
   }
+
+  closeAllKebabMenus() {
+    // This method will be called when clicking outside kebab menus
+    // The actual closing logic will be handled by the campaign cards themselves
+    // through their closeKebabMenu() method when they detect clicks outside
+  }
 }
 
 

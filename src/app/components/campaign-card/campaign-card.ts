@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   templateUrl: './campaign-card.html',
   styleUrls: ['./campaign-card.scss'],
-  imports: [],
+  imports: [CommonModule],
 })
 export class CampaignCard {
   @Input() id!: string;
@@ -17,15 +17,47 @@ export class CampaignCard {
   @Input() disabled = false;
   @Input() deleted = false;
 
+  @Input() showKebabMenu = false;
+  @Input() showEditOption = false;
+  @Input() showDeleteOption = false;
+
   @Output() edit = new EventEmitter<string>();
   @Output() delete = new EventEmitter<string>();
+  @Output() cardClick = new EventEmitter<string>();
+
+  isKebabMenuOpen = false;
 
   onCardClick() {
-    this.edit.emit(this.id);
+    if (!this.isKebabMenuOpen) {
+      this.cardClick.emit(this.id);
+    }
   }
 
   onDeleteClick(event: Event) {
     event.stopPropagation();
     this.delete.emit(this.id);
+  }
+
+  // Kebab menu methods
+  toggleKebabMenu(event: Event) {
+    event.stopPropagation();
+    this.isKebabMenuOpen = !this.isKebabMenuOpen;
+  }
+
+  onEditClick(event: Event) {
+    event.stopPropagation();
+    this.edit.emit(this.id);
+    this.isKebabMenuOpen = false;
+  }
+
+  onDeleteFromMenu(event: Event) {
+    event.stopPropagation();
+    this.delete.emit(this.id);
+    this.isKebabMenuOpen = false;
+  }
+
+  // Close kebab menu when clicking outside
+  closeKebabMenu() {
+    this.isKebabMenuOpen = false;
   }
 }

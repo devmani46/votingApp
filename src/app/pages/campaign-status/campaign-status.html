@@ -38,8 +38,11 @@
             [description]="'Votes: ' + getTotalVotes(campaign)"
             [image]="getImage(campaign)"
             size="medium"
-            [deleted]="true"
-            (click)="openCampaignDetails(campaign)"
+            [showKebabMenu]="true"
+            [showEditOption]="true"
+            [showDeleteOption]="true"
+            (cardClick)="openCampaignDetails(campaign)"
+            (edit)="editCampaign(campaign.id)"
             (delete)="deleteCampaign(campaign.id)"
           >
             <div class="card-meta">
@@ -59,25 +62,6 @@
               </div>
             </div>
           </app-campaign-card>
-
-          <div class="manipulation-btns">
-            <app-button
-              class="edit-btn"
-              appearance="primary"
-              (click)="editCampaign(campaign.id)"
-            >
-              <span class="material-symbols-outlined">edit</span>
-              Edit Campaign
-            </app-button>
-            <!-- <app-button
-              class="delete-btn"
-              appearance="primary"
-              (click)="deleteCampaign(campaign.id)"
-            >
-              <span class="material-symbols-outlined">delete</span>
-              Delete Campaign
-            </app-button> -->
-          </div>
         </div>
       </div>
 
