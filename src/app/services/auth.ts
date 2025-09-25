@@ -31,13 +31,13 @@ export class AuthService {
   login(email: string, password: string, rememberMe: boolean = false): Observable<boolean> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, { email, password, rememberMe }, { withCredentials: true }).pipe(
       tap(response => {
-        sessionStorage.setItem(this.userKey, JSON.stringify(response.user));
-        sessionStorage.setItem(this.roleKey, response.user.role);
+        localStorage.setItem(this.userKey, JSON.stringify(response.user));
+        localStorage.setItem(this.roleKey, response.user.role);
       }),
       switchMap(response => {
         return this.http.get(`${this.apiUrl}/users/me`, { withCredentials: true }).pipe(
           tap(completeUser => {
-            sessionStorage.setItem(this.userKey, JSON.stringify(completeUser));
+            localStorage.setItem(this.userKey, JSON.stringify(completeUser));
           }),
           map(() => true)
         );
@@ -65,8 +65,8 @@ export class AuthService {
   }
 
   logout(): void {
-    sessionStorage.removeItem(this.userKey);
-    sessionStorage.removeItem(this.roleKey);
+    localStorage.removeItem(this.userKey);
+    localStorage.removeItem(this.roleKey);
 
     this.http.post(`${this.apiUrl}/auth/logout`, {}, { withCredentials: true }).subscribe({
       next: () => {
@@ -79,12 +79,12 @@ export class AuthService {
   }
 
   getCurrentUser(): any {
-    const stored = sessionStorage.getItem(this.userKey);
+    const stored = localStorage.getItem(this.userKey);
     return stored ? JSON.parse(stored) : null;
   }
 
   getRole(): string | null {
-    const role = sessionStorage.getItem(this.roleKey);
+    const role = localStorage.getItem(this.roleKey);
     return role;
   }
 
@@ -95,7 +95,7 @@ export class AuthService {
   updateUser(updatedUser: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/users/me`, updatedUser, { withCredentials: true }).pipe(
       tap(response => {
-        sessionStorage.setItem(this.userKey, JSON.stringify(response));
+        localStorage.setItem(this.userKey, JSON.stringify(response));
         this.userUpdateSubject.next(response);
       })
     );
@@ -105,7 +105,7 @@ export class AuthService {
     const currentUser = this.getCurrentUser();
     if (currentUser) {
       const updatedUser = { ...currentUser, ...userData };
-      sessionStorage.setItem(this.userKey, JSON.stringify(updatedUser));
+      localStorage.setItem(this.userKey, JSON.stringify(updatedUser));
       this.userUpdateSubject.next(updatedUser);
     }
   }
@@ -114,3 +114,5 @@ export class AuthService {
     return this.http.get<any[]>(`${this.apiUrl}/users`, { withCredentials: true });
   }
 }
+
+
