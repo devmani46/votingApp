@@ -28,8 +28,8 @@ export class AuthService {
 
   constructor(private router: Router, private http: HttpClient) {}
 
-  login(email: string, password: string): Observable<boolean> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, { email, password }, { withCredentials: true }).pipe(
+  login(email: string, password: string, rememberMe: boolean = false): Observable<boolean> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, { email, password, rememberMe }, { withCredentials: true }).pipe(
       tap(response => {
         sessionStorage.setItem(this.userKey, JSON.stringify(response.user));
         sessionStorage.setItem(this.roleKey, response.user.role);

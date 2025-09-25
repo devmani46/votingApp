@@ -15,6 +15,7 @@ import { AuthService } from '../../services/auth';
 type LoginForm = {
   email: FormControl<string>;
   password: FormControl<string>;
+  rememberMe?: FormControl<boolean>;
 };
 
 @Component({
@@ -38,6 +39,7 @@ export class Login implements OnInit {
         validators: [Validators.required, Validators.email],
       }),
       password: this.fb.control('', { validators: [Validators.required] }),
+      rememberMe: this.fb.control(false),
     });
   }
 
@@ -47,11 +49,18 @@ export class Login implements OnInit {
     this.submitted = true;
 
     if (this.form.valid) {
-      const { email, password } = this.form.getRawValue();
-      this.auth.login(email, password).subscribe({
+      const { email, password, rememberMe } = this.form.getRawValue();
+      this.auth.login(email, password, rememberMe).subscribe({
         next: (success) => {
           if (!success) {
             alert('Invalid email or password');
+          } else {
+            if (rememberMe) {
+              // Extend session timeout by setting a longer expiration cookie or localStorage flag
+              localStorage.setItem('rememberMe', 'true');
+            } else {
+              localStorage.removeItem('rememberMe');
+            }
           }
         },
         error: (err) => {
