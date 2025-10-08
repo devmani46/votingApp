@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CampaignService, Campaign } from '../../services/campaign';
@@ -41,8 +41,36 @@ export class VoteCandidate implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    document.addEventListener('keydown', this.keyHandler);
     this.loadCampaign();
+  }
+
+  ngOnDestroy() {}
+
+  @HostListener('window:keydown', ['$event'])
+  handleKeyEvent(event: KeyboardEvent) {
+    if (!this.candidatePopupOpen) return;
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.closeCandidatePopup();
+      return;
+    }
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      this.navigateActive(-1);
+      return;
+    }
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      this.navigateActive(1);
+      return;
+    }
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      if (this.activeIndex !== null && this.campaign?.id && !this.hasVoted(this.campaign.id)) {
+        this.vote(this.activeIndex);
+      }
+    }
   }
 
   private async loadCampaign() {
@@ -53,14 +81,10 @@ export class VoteCandidate implements OnInit, OnDestroy {
       return;
     }
 
-    // Wait for campaigns to load from the API
-    // Use effect to watch for changes in campaigns signal
     const campaigns = this.campaignService.campaigns;
     if (campaigns.length > 0) {
-      // Campaigns have loaded, now find the specific campaign
       this.campaign = this.campaignService.getCampaignById(id) ?? undefined;
       this.isLoading = false;
-
       if (!this.campaign) {
         this.campaignNotFound = true;
       } else {
@@ -70,11 +94,9 @@ export class VoteCandidate implements OnInit, OnDestroy {
         this.checkIfAlreadyVoted();
       }
     } else {
-      // If no campaigns loaded yet, wait a bit and try again
       setTimeout(() => {
         this.campaign = this.campaignService.getCampaignById(id) ?? undefined;
         this.isLoading = false;
-
         if (!this.campaign) {
           this.campaignNotFound = true;
         } else {
@@ -92,13 +114,13 @@ export class VoteCandidate implements OnInit, OnDestroy {
   }
 
   private checkIfAlreadyVoted() {
-    if (this.campaign?.id && this.currentUserEmail && this.storageService.hasVotedForCampaign(this.currentUserEmail, this.campaign.id)) {
+    if (
+      this.campaign?.id &&
+      this.currentUserEmail &&
+      this.storageService.hasVotedForCampaign(this.currentUserEmail, this.campaign.id)
+    ) {
       this.showPopup = true;
     }
-  }
-
-  ngOnDestroy() {
-    document.removeEventListener('keydown', this.keyHandler);
   }
 
   vote(candidateIndex: number) {
@@ -107,22 +129,22 @@ export class VoteCandidate implements OnInit, OnDestroy {
       this.showPopup = true;
       return;
     }
-    this.campaignService.castVote(this.campaign.id, this.campaign.candidates[candidateIndex].id).subscribe(() => {
-      // Add vote to persistent storage
-      this.storageService.addVotedCampaign(this.currentUserEmail, this.campaign!.id);
+    this.campaignService
+      .castVote(this.campaign.id, this.campaign.candidates[candidateIndex].id)
+      .subscribe(() => {
+        this.storageService.addVotedCampaign(this.currentUserEmail, this.campaign!.id);
 
-      // Update local voted campaigns for immediate UI feedback
-      if (!this.votedCampaigns[this.currentUserEmail]) {
-        this.votedCampaigns[this.currentUserEmail] = [];
-      }
-      this.votedCampaigns[this.currentUserEmail].push(this.campaign!.id);
+        if (!this.votedCampaigns[this.currentUserEmail]) {
+          this.votedCampaigns[this.currentUserEmail] = [];
+        }
+        this.votedCampaigns[this.currentUserEmail].push(this.campaign!.id);
 
-      this.campaign = this.campaignService.getCampaignById(this.campaign!.id) ?? undefined;
-      this.refreshTotalVotes();
-      if (this.candidatePopupOpen && this.activeIndex === candidateIndex) {
-        this.setActiveCandidate(candidateIndex);
-      }
-    });
+        this.campaign = this.campaignService.getCampaignById(this.campaign!.id) ?? undefined;
+        this.refreshTotalVotes();
+        if (this.candidatePopupOpen && this.activeIndex === candidateIndex) {
+          this.setActiveCandidate(candidateIndex);
+        }
+      });
   }
 
   hasVoted(campaignId?: string): boolean {
@@ -164,32 +186,6 @@ export class VoteCandidate implements OnInit, OnDestroy {
     this.activeIndex = null;
     this.votePercent = 0;
   }
-
-  keyHandler = (event: KeyboardEvent) => {
-    if (!this.candidatePopupOpen) return;
-    if (event.key === 'Escape') {
-      event.preventDefault();
-      this.closeCandidatePopup();
-      return;
-    }
-    if (event.key === 'ArrowLeft') {
-      event.preventDefault();
-      this.navigateActive(-1);
-      return;
-    }
-    if (event.key === 'ArrowRight') {
-      event.preventDefault();
-      this.navigateActive(1);
-      return;
-    }
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      if (this.activeIndex !== null && this.campaign?.id && !this.hasVoted(this.campaign.id)) {
-        this.vote(this.activeIndex);
-      }
-      return;
-    }
-  };
 
   navigateActive(offset: number) {
     if (!this.campaign || this.activeIndex === null) return;

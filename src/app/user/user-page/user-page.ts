@@ -61,22 +61,15 @@ export class UserPage implements OnInit {
   photoPreview: string | null = null;
   selectedCampaign: any = null;
   winner: any = null;
-
   notifications: Notification[] = [];
 
   constructor(private notificationService: NotificationService) {}
 
   ngOnInit() {
-    console.log('[Component] NotificationsComponent init');
     this.notificationService.getNotifications().subscribe({
-      next: (data) => {
-        console.log('[Component] Notifications data:', data);
-        this.notifications = data;
-      },
-      error: (err) =>
-        console.error('[Component] Error fetching notifications:', err),
+      next: (data) => (this.notifications = data),
+      error: (err) => console.error('[Notifications Error]', err),
     });
-
     this.refreshUserData();
   }
 
@@ -92,105 +85,51 @@ export class UserPage implements OnInit {
             lastName: freshUserData.last_name || '',
             photo: freshUserData.photo_url || '/assets/admin.png',
           };
-
-          if (this.user.dob) {
-            this.user.age = this.calculateAge(this.user.dob);
-          }
-
+          if (this.user.dob) this.user.age = this.calculateAge(this.user.dob);
           this.authService.updateUser(this.user);
-
-          this.form = this.fb.group({
-            firstName: [this.user.firstName || '', Validators.required],
-            lastName: [this.user.lastName || '', Validators.required],
-            username: [this.user.username || '', Validators.required],
-            dob: [
-              this.formatDateForInput(this.user.dob) || '',
-              Validators.required,
-            ],
-            email: [
-              this.user.email || '',
-              [Validators.required, Validators.email],
-            ],
-            bio: [this.user.bio || ''],
-            password: [''],
-            confirmPassword: [''],
-          });
-
+          this.initForm();
           this.photoPreview = this.user.photo;
         },
-        error: (error) => {
-          if (currentUser) {
-            this.user = {
-              ...this.user,
-              ...currentUser,
-              firstName: currentUser.first_name || currentUser.firstName || '',
-              lastName: currentUser.last_name || currentUser.lastName || '',
-              photo:
-                currentUser.photo_url ||
-                currentUser.photo ||
-                '/assets/admin.png',
-            };
-
-            if (this.user.dob) {
-              this.user.age = this.calculateAge(this.user.dob);
-            }
-
-            this.form = this.fb.group({
-              firstName: [this.user.firstName || '', Validators.required],
-              lastName: [this.user.lastName || '', Validators.required],
-              username: [this.user.username || '', Validators.required],
-              dob: [
-                this.formatDateForInput(this.user.dob) || '',
-                Validators.required,
-              ],
-              email: [
-                this.user.email || '',
-                [Validators.required, Validators.email],
-              ],
-              bio: [this.user.bio || ''],
-              password: [''],
-              confirmPassword: [''],
-            });
-
-            this.photoPreview = this.user.photo;
-          }
+        error: () => {
+          this.user = {
+            ...this.user,
+            ...currentUser,
+            firstName: currentUser.first_name || currentUser.firstName || '',
+            lastName: currentUser.last_name || currentUser.lastName || '',
+            photo:
+              currentUser.photo_url || currentUser.photo || '/assets/admin.png',
+          };
+          if (this.user.dob) this.user.age = this.calculateAge(this.user.dob);
+          this.initForm();
+          this.photoPreview = this.user.photo;
         },
       });
-    } else {
-      if (currentUser) {
-        this.user = {
-          ...this.user,
-          ...currentUser,
-          firstName: currentUser.first_name || currentUser.firstName || '',
-          lastName: currentUser.last_name || currentUser.lastName || '',
-          photo:
-            currentUser.photo_url || currentUser.photo || '/assets/admin.png',
-        };
-
-        if (this.user.dob) {
-          this.user.age = this.calculateAge(this.user.dob);
-        }
-
-        this.form = this.fb.group({
-          firstName: [this.user.firstName || '', Validators.required],
-          lastName: [this.user.lastName || '', Validators.required],
-          username: [this.user.username || '', Validators.required],
-          dob: [
-            this.formatDateForInput(this.user.dob) || '',
-            Validators.required,
-          ],
-          email: [
-            this.user.email || '',
-            [Validators.required, Validators.email],
-          ],
-          bio: [this.user.bio || ''],
-          password: [''],
-          confirmPassword: [''],
-        });
-
-        this.photoPreview = this.user.photo;
-      }
+    } else if (currentUser) {
+      this.user = {
+        ...this.user,
+        ...currentUser,
+        firstName: currentUser.first_name || currentUser.firstName || '',
+        lastName: currentUser.last_name || currentUser.lastName || '',
+        photo:
+          currentUser.photo_url || currentUser.photo || '/assets/admin.png',
+      };
+      if (this.user.dob) this.user.age = this.calculateAge(this.user.dob);
+      this.initForm();
+      this.photoPreview = this.user.photo;
     }
+  }
+
+  initForm() {
+    this.form = this.fb.group({
+      firstName: [this.user.firstName || '', Validators.required],
+      lastName: [this.user.lastName || '', Validators.required],
+      username: [this.user.username || '', Validators.required],
+      dob: [this.formatDateForInput(this.user.dob) || '', Validators.required],
+      email: [this.user.email || '', [Validators.required, Validators.email]],
+      bio: [this.user.bio || ''],
+      password: [''],
+      confirmPassword: [''],
+    });
   }
 
   pastCampaigns = computed(() => {
@@ -198,13 +137,7 @@ export class UserPage implements OnInit {
     const today = new Date();
     const currentUser = this.authService.getCurrentUser();
     const userEmail = currentUser?.email;
-
-    // If no user is logged in, return empty array
-    if (!userEmail) {
-      return [];
-    }
-
-    // Filter campaigns to only show past campaigns where user has participated
+    if (!userEmail) return [];
     return campaigns
       .filter((c) => {
         const endDate = new Date(c.end_date);
@@ -224,40 +157,6 @@ export class UserPage implements OnInit {
   openCampaignDetails(campaign: any) {
     this.selectedCampaign = campaign;
     this.winner = campaign.winner || this.campaignService.getWinner(campaign);
-
-    // Debug: Log winner data to console
-    // console.log('Winner data:', this.winner);
-    // if (this.winner && this.winner.candidates && this.winner.candidates.length > 0) {
-    //   console.log('Winner candidate photo:', this.winner.candidates[0].photo_url);
-    //   console.log('Winner candidate photo type:', typeof this.winner.candidates[0].photo_url);
-    //   console.log('Winner candidate photo length:', this.winner.candidates[0].photo_url?.length);
-    // }
-  }
-
-  getWinnerPhotoUrl(candidate: any): string {
-    if (!candidate || !candidate.photo_url) {
-      return '/assets/admin.png';
-    }
-
-    const photoUrl = candidate.photo_url.trim();
-
-    // If it's a base64 data URL, return it as is
-    if (photoUrl.startsWith('data:')) {
-      return photoUrl;
-    }
-
-    // If it's a regular URL, return it
-    if (photoUrl.startsWith('http://') || photoUrl.startsWith('https://')) {
-      return photoUrl;
-    }
-
-    // If it's a relative path, return it
-    if (photoUrl.startsWith('/')) {
-      return photoUrl;
-    }
-
-    // If it's just a filename, assume it's in assets
-    return `/assets/${photoUrl}`;
   }
 
   closeCampaignDialog(event?: MouseEvent) {
@@ -266,12 +165,20 @@ export class UserPage implements OnInit {
     this.winner = null;
   }
 
+  getWinnerPhotoUrl(candidate: any): string {
+    if (!candidate || !candidate.photo_url) return '/assets/admin.png';
+    const url = candidate.photo_url.trim();
+    if (url.startsWith('data:')) return url;
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    if (url.startsWith('/')) return url;
+    return `/assets/${url}`;
+  }
+
   getDrawNames(campaign: any): string {
     const winner = this.campaignService.getWinner(campaign);
-    if (winner && winner.draw) {
-      return winner.candidates.map((c: any) => c.name).join(', ');
-    }
-    return '';
+    return winner && winner.draw
+      ? winner.candidates.map((c: any) => c.name).join(', ')
+      : '';
   }
 
   openDialog() {
@@ -288,83 +195,53 @@ export class UserPage implements OnInit {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = () => {
-        this.photoPreview = reader.result as string;
-      };
+      reader.onload = () => (this.photoPreview = reader.result as string);
       reader.readAsDataURL(file);
     }
   }
 
   updateAge() {
     const dob = this.form.value.dob;
-
     if (dob) {
-      const age = this.calculateAge(dob);
-      this.user.age = age;
-      this.form.patchValue({ dob: dob });
+      this.user.age = this.calculateAge(dob);
+      this.form.patchValue({ dob });
     }
   }
 
   calculateAge(dob: string): number {
     if (!dob) return 0;
-
-    try {
-      const birthDate = new Date(dob);
-      const today = new Date();
-
-      if (isNaN(birthDate.getTime())) return 0;
-
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const monthDiff = today.getMonth() - birthDate.getMonth();
-
-      if (
-        monthDiff < 0 ||
-        (monthDiff === 0 && today.getDate() < birthDate.getDate())
-      ) {
-        age--;
-      }
-
-      return Math.max(0, age);
-    } catch (error) {
-      return 0;
-    }
+    const birthDate = new Date(dob);
+    if (isNaN(birthDate.getTime())) return 0;
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    )
+      age--;
+    return Math.max(0, age);
   }
 
   formatDateForInput(isoDate: string | null | undefined): string {
     if (!isoDate) return '';
-
-    try {
-      const date = new Date(isoDate);
-      if (isNaN(date.getTime())) return '';
-      return date.toISOString().split('T')[0];
-    } catch (error) {
-      return '';
-    }
+    const date = new Date(isoDate);
+    return isNaN(date.getTime()) ? '' : date.toISOString().split('T')[0];
   }
 
   formatDateForBackend(dateString: string | null | undefined): string | null {
     if (!dateString) return null;
-
-    try {
-      const date = new Date(dateString + 'T00:00:00.000Z');
-      if (isNaN(date.getTime())) return null;
-      return date.toISOString();
-    } catch (error) {
-      return null;
-    }
+    const date = new Date(dateString + 'T00:00:00.000Z');
+    return isNaN(date.getTime()) ? null : date.toISOString();
   }
 
   saveProfile(event?: MouseEvent) {
-    if (event) {
-      event.stopPropagation();
-    }
-
+    if (event) event.stopPropagation();
     if (this.form.invalid) {
       alert('Please fill in all required fields correctly');
       return;
     }
-
-    if (this.form.value.password || this.form.value.confirmPassword) {
+    if (this.form.value.password && this.form.value.confirmPassword) {
       if (this.form.value.password !== this.form.value.confirmPassword) {
         alert('Passwords do not match');
         return;
@@ -380,10 +257,8 @@ export class UserPage implements OnInit {
       bio: this.form.value.bio,
       photo_url: this.photoPreview || this.user.photo_url,
     };
-
-    if (this.form.value.password) {
+    if (this.form.value.password)
       userData.password = this.form.value.password;
-    }
 
     const currentUser = this.authService.getCurrentUser();
     if (currentUser && currentUser.id) {
@@ -395,7 +270,6 @@ export class UserPage implements OnInit {
             lastName: userData.last_name,
             photo: userData.photo_url,
           });
-
           this.user = {
             ...this.user,
             ...updatedUser,
@@ -403,34 +277,21 @@ export class UserPage implements OnInit {
             lastName: updatedUser.last_name || '',
             photo: updatedUser.photo_url || '/assets/admin.png',
           };
-
-          this.form.patchValue({
-            firstName: this.user.firstName,
-            lastName: this.user.lastName,
-            username: this.user.username,
-            dob: this.formatDateForInput(this.user.dob),
-            email: this.user.email,
-            bio: this.user.bio,
-            password: '',
-            confirmPassword: '',
-          });
-
-          // Dispatch custom event to notify other components
-          const customEvent = new CustomEvent('userProfileUpdated', {
-            detail: { user: updatedUser },
-          });
-          window.dispatchEvent(customEvent);
+          this.initForm();
+          window.dispatchEvent(
+            new CustomEvent('userProfileUpdated', {
+              detail: { user: updatedUser },
+            })
+          );
           this.closeDialog();
         },
-        error: (error) => {
-          // Fix: Error handling path now updates both services
+        error: () => {
           this.userService.updateUserInBothServices({
             ...userData,
             firstName: userData.first_name,
             lastName: userData.last_name,
             photo: userData.photo_url,
           });
-
           this.user = {
             ...this.user,
             ...userData,
@@ -438,43 +299,20 @@ export class UserPage implements OnInit {
             lastName: userData.last_name,
             photo: userData.photo_url,
           };
-
-          this.form.patchValue({
-            firstName: this.user.firstName,
-            lastName: this.user.lastName,
-            username: this.user.username,
-            dob: this.formatDateForInput(this.user.dob),
-            email: this.user.email,
-            bio: this.user.bio,
-            password: '',
-            confirmPassword: '',
-          });
-
+          this.initForm();
           this.closeDialog();
         },
       });
     } else {
-      // Fallback for when no current user exists
       this.user = {
         ...this.user,
         ...this.form.value,
         photo_url: this.photoPreview || this.user.photo_url,
         age: this.user.age,
-        password: this.form.value.password
-          ? this.form.value.password
-          : this.user.password,
+        password: this.form.value.password || this.user.password,
       };
       this.authService.updateUser(this.user);
-      this.form.patchValue({
-        firstName: this.user.firstName,
-        lastName: this.user.lastName,
-        username: this.user.username,
-        dob: this.formatDateForInput(this.user.dob),
-        email: this.user.email,
-        bio: this.user.bio,
-        password: '',
-        confirmPassword: '',
-      });
+      this.initForm();
       this.closeDialog();
     }
   }
