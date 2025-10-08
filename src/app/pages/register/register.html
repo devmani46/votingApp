@@ -1,16 +1,9 @@
 <div class="register-page">
   <div class="auth-container">
-    <form class="register-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form class="register-form" [formGroup]="form()" (ngSubmit)="onSubmit()">
       <h2>Create an account</h2>
       <div class="names" style="display: flex; gap: 1rem">
-        <app-fui-field
-          label="First Name"
-          [errorMessage]="
-            submitted && firstName.hasError('required')
-              ? 'First name is required'
-              : ''
-          "
-        >
+        <app-fui-field label="First Name" [errorMessage]="firstNameError()">
           <app-fui-input
             size="large"
             placeholder="Enter first name"
@@ -20,14 +13,7 @@
           ></app-fui-input>
         </app-fui-field>
 
-        <app-fui-field
-          label="Last Name"
-          [errorMessage]="
-            submitted && lastName.hasError('required')
-              ? 'Last name is required'
-              : ''
-          "
-        >
+        <app-fui-field label="Last Name" [errorMessage]="lastNameError()">
           <app-fui-input
             size="large"
             placeholder="Enter last name"
@@ -38,14 +24,7 @@
         </app-fui-field>
       </div>
 
-      <app-fui-field
-        label="Username"
-        [errorMessage]="
-          submitted && username.hasError('required')
-            ? 'Username is required'
-            : ''
-        "
-      >
+      <app-fui-field label="Username" [errorMessage]="usernameError()">
         <app-fui-input
           size="large"
           placeholder="Choose a username"
@@ -55,16 +34,7 @@
         ></app-fui-input>
       </app-fui-field>
 
-      <app-fui-field
-        label="Email"
-        [errorMessage]="
-          submitted && email.hasError('required')
-            ? 'Email is required'
-            : submitted && email.hasError('email')
-            ? 'Invalid email'
-            : ''
-        "
-      >
+      <app-fui-field label="Email" [errorMessage]="emailError()">
         <app-fui-input
           size="large"
           placeholder="Enter your email"
@@ -74,14 +44,7 @@
         ></app-fui-input>
       </app-fui-field>
 
-      <app-fui-field
-        label="Password"
-        [errorMessage]="
-          submitted && password.hasError('required')
-            ? 'Password is required'
-            : ''
-        "
-      >
+      <app-fui-field label="Password" [errorMessage]="passwordError()">
         <app-fui-input
           size="large"
           placeholder="Enter password"
@@ -91,16 +54,7 @@
         ></app-fui-input>
       </app-fui-field>
 
-      <app-fui-field
-        label="Confirm Password"
-        [errorMessage]="
-          submitted && confirmPassword.hasError('required')
-            ? 'Confirm password is required'
-            : submitted && confirmPassword.hasError('mismatch')
-            ? 'Passwords do not match'
-            : ''
-        "
-      >
+      <app-fui-field label="Confirm Password" [errorMessage]="confirmPasswordError()">
         <app-fui-input
           size="large"
           placeholder="Confirm password"
@@ -113,12 +67,7 @@
       </app-fui-field>
 
       <div class="btn-group">
-        <app-button
-          appearance="primary"
-          size="large"
-          type="button"
-          (click)="onSubmit()"
-        >
+        <app-button appearance="primary" size="large" type="button" (click)="onSubmit()">
           Register
         </app-button>
       </div>
