@@ -53,7 +53,7 @@ export class ModeratorManagement {
     'username',
     'email',
     'joinDate',
-    'session',
+    // 'session',
     'actions',
   ];
 

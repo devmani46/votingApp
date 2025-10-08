@@ -53,7 +53,7 @@ export class UserManagement {
     'username',
     'email',
     'joinDate',
-    'session',
+    // 'session',
     'actions',
   ];
 
