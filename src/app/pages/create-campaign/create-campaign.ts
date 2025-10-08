@@ -226,11 +226,11 @@ export class CreateCampaign {
 
     const formValue = this.form.value;
     const campaignData = {
-      title: formValue.title,
-      description: formValue.description,
-      banner_url: formValue.logo || null,
-      start_date: formValue.startDate,
-      end_date: formValue.endDate
+      title: formValue.title as string,
+      description: formValue.description as string,
+      banner_url: formValue.logo as string | null,
+      start_date: formValue.startDate as string,
+      end_date: formValue.endDate as string
     };
 
     try {
@@ -240,10 +240,10 @@ export class CreateCampaign {
         const existingCampaign = this.campaignService.getCampaignById(this.campaignId()!);
         if (existingCampaign) {
           const existingCandidates = existingCampaign.candidates || [];
-          const formCandidates = formValue.candidates || [];
+          const formCandidates = (formValue.candidates || []) as { id?: string; name: string; bio?: string; photo?: string }[];
 
           for (const existingCandidate of existingCandidates) {
-            if (!formCandidates.find((c: any) => c.id === existingCandidate.id)) {
+            if (!formCandidates.find((c) => c.id === existingCandidate.id)) {
               await this.campaignService.deleteCandidate(this.campaignId()!, existingCandidate.id).toPromise();
             }
           }
@@ -252,14 +252,14 @@ export class CreateCampaign {
             if (c.id) {
               await this.campaignService.updateCandidate(this.campaignId()!, c.id, {
                 name: c.name,
-                bio: c.bio || null,
-                photo_url: c.photo || null
+                bio: c.bio || '',
+                photo_url: c.photo || ''
               }).toPromise();
             } else {
               await this.campaignService.addCandidate(this.campaignId()!, {
                 name: c.name,
-                bio: c.bio || null,
-                photo_url: c.photo || null
+                bio: c.bio || '',
+                photo_url: c.photo || ''
               }).toPromise();
             }
           }
@@ -270,11 +270,11 @@ export class CreateCampaign {
       } else {
         const createdCampaign = await this.campaignService.addCampaign(campaignData).toPromise();
         if (!createdCampaign || !createdCampaign.id) throw new Error('Missing ID');
-        for (const c of formValue.candidates) {
+        for (const c of (formValue.candidates || []) as { id?: string; name: string; bio?: string; photo?: string }[]) {
           await this.campaignService.addCandidate(createdCampaign.id, {
             name: c.name,
-            bio: c.bio || null,
-            photo_url: c.photo || null
+            bio: c.bio || '',
+            photo_url: c.photo || ''
           }).toPromise();
         }
         this.campaignService['loadCampaigns']();

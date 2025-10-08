@@ -1,4 +1,4 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
 import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
@@ -26,6 +26,9 @@ type LoginForm = {
   styleUrls: ['./login.scss'],
 })
 export class Login {
+  private fb = inject(NonNullableFormBuilder);
+  private auth = inject(AuthService);
+
   form = signal<FormGroup<LoginForm>>(
     this.fb.group<LoginForm>({
       email: this.fb.control('', {
@@ -55,7 +58,7 @@ export class Login {
       : ''
   );
 
-  constructor(private fb: NonNullableFormBuilder, private auth: AuthService) {}
+  constructor() {}
 
   onSubmit() {
     this.submitted.set(true);

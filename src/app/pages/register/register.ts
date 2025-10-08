@@ -1,4 +1,4 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
 import {
   Validators,
   ReactiveFormsModule,
@@ -64,6 +64,9 @@ function matchFieldsValidator(
   styleUrls: ['./register.scss'],
 })
 export class Register {
+  private fb = inject(NonNullableFormBuilder);
+  private auth = inject(AuthService);
+
   form = signal<FormGroup<RegisterForm>>(
     this.fb.group<RegisterForm>(
       {
@@ -119,7 +122,7 @@ export class Register {
     return '';
   });
 
-  constructor(private fb: NonNullableFormBuilder, private auth: AuthService) {}
+  constructor() {}
 
   onSubmit() {
     this.submitted.set(true);
