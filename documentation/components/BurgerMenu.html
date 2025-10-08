@@ -1,0 +1,926 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>new-component-test documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">new-component-test documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
+  >
+  BurgerMenu</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/components/burger-menu/burger-menu.ts</code>
+</p>
+
+
+
+
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-burger-menu</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                            <code>RouterModule</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./burger-menu.scss</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./burger-menu.html</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#isOpen" >isOpen</a>
+                            </li>
+                            <li>
+                                <a href="#role" >role</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#closeMenu" >closeMenu</a>
+                            </li>
+                            <li>
+                                <a href="#logout" >logout</a>
+                            </li>
+                            <li>
+                                <a href="#toggleDarkMode" >toggleDarkMode</a>
+                            </li>
+                            <li>
+                                <a href="#toggleMenu" >toggleMenu</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(auth: <a href="../injectables/AuthService.html" target="_self">AuthService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">src/app/components/burger-menu/burger-menu.ts:14</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>auth</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/AuthService.html" target="_self" >AuthService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="closeMenu"></a>
+                    <span class="name">
+                        <span ><b>closeMenu</b></span>
+                        <a href="#closeMenu"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>closeMenu()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="24"
+                                    class="link-to-prism">src/app/components/burger-menu/burger-menu.ts:24</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="logout"></a>
+                    <span class="name">
+                        <span ><b>logout</b></span>
+                        <a href="#logout"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>logout()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="32"
+                                    class="link-to-prism">src/app/components/burger-menu/burger-menu.ts:32</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="toggleDarkMode"></a>
+                    <span class="name">
+                        <span ><b>toggleDarkMode</b></span>
+                        <a href="#toggleDarkMode"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>toggleDarkMode()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="28"
+                                    class="link-to-prism">src/app/components/burger-menu/burger-menu.ts:28</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="toggleMenu"></a>
+                    <span class="name">
+                        <span ><b>toggleMenu</b></span>
+                        <a href="#toggleMenu"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>toggleMenu()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="20"
+                                    class="link-to-prism">src/app/components/burger-menu/burger-menu.ts:20</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isOpen"></a>
+                    <span class="name">
+                        <span ><b>isOpen</b></span>
+                        <a href="#isOpen"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>true</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/app/components/burger-menu/burger-menu.ts:13</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="role"></a>
+                    <span class="name">
+                        <span ><b>role</b></span>
+                        <a href="#role"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>string | null</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">src/app/components/burger-menu/burger-menu.ts:14</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component } from &#x27;@angular/core&#x27;;
+import { RouterModule } from &#x27;@angular/router&#x27;;
+import { AuthService } from &#x27;../../services/auth&#x27;;
+
+@Component({
+  selector: &#x27;app-burger-menu&#x27;,
+  standalone: true,
+  imports: [RouterModule],
+  templateUrl: &#x27;./burger-menu.html&#x27;,
+  styleUrls: [&#x27;./burger-menu.scss&#x27;],
+})
+export class BurgerMenu {
+  isOpen &#x3D; true;
+  role: string | null &#x3D; null;
+
+  constructor(private auth: AuthService) {
+    this.role &#x3D; this.auth.getRole();
+  }
+
+  toggleMenu() {
+    this.isOpen &#x3D; !this.isOpen;
+  }
+
+  closeMenu() {
+    this.isOpen &#x3D; false;
+  }
+
+  toggleDarkMode() {
+    document.documentElement.classList.toggle(&#x27;dark&#x27;);
+  }
+
+  logout() {
+    this.auth.logout();
+    this.closeMenu();
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">@if (!isOpen) {
+&lt;div class&#x3D;&quot;burger-icon&quot; (click)&#x3D;&quot;toggleMenu()&quot;&gt;
+  &lt;span&gt;&lt;/span&gt;
+  &lt;span&gt;&lt;/span&gt;
+  &lt;span&gt;&lt;/span&gt;
+&lt;/div&gt;
+} @if (isOpen) {
+&lt;div class&#x3D;&quot;sidebar&quot; [class.open]&#x3D;&quot;isOpen&quot;&gt;
+  &lt;div class&#x3D;&quot;sidebar-header&quot;&gt;
+    &lt;button class&#x3D;&quot;close-btn&quot; (click)&#x3D;&quot;closeMenu()&quot;&gt;&amp;#10005;&lt;/button&gt;
+    &lt;div class&#x3D;&quot;masked-svg&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;nav&gt;
+    &lt;ul&gt;
+      &lt;li routerLink&#x3D;&quot;/menu&quot; routerLinkActive&#x3D;&quot;active&quot; &gt;
+        &lt;span class&#x3D;&quot;material-symbols-outlined&quot;&gt;team_dashboard&lt;/span&gt;
+        Dashboard
+      &lt;/li&gt;
+      &lt;li
+        routerLink&#x3D;&quot;/campaign-status&quot;
+        routerLinkActive&#x3D;&quot;active&quot;
+      &gt;
+        &lt;span class&#x3D;&quot;material-symbols-outlined&quot;&gt;apps&lt;/span&gt;
+        Campaigns
+      &lt;/li&gt;
+      &lt;li
+        routerLink&#x3D;&quot;/create-campaign&quot;
+        routerLinkActive&#x3D;&quot;active&quot;
+      &gt;
+        &lt;span class&#x3D;&quot;material-symbols-outlined&quot;&gt;add_circle&lt;/span&gt;
+        Create Campaign
+      &lt;/li&gt;
+      &lt;li
+        routerLink&#x3D;&quot;/notifications&quot;
+        routerLinkActive&#x3D;&quot;active&quot;
+      &gt;
+        &lt;span class&#x3D;&quot;material-symbols-outlined&quot;&gt;notifications&lt;/span&gt;
+        Notifications
+      &lt;/li&gt;
+
+      @if (role &#x3D;&#x3D;&#x3D; &#x27;admin&#x27;) {
+      &lt;li
+        routerLink&#x3D;&quot;/user-management&quot;
+        routerLinkActive&#x3D;&quot;active&quot;
+      &gt;
+        &lt;span class&#x3D;&quot;material-symbols-outlined&quot;&gt;manage_accounts&lt;/span&gt;
+        User Management
+      &lt;/li&gt;
+      &lt;li
+        routerLink&#x3D;&quot;/moderator-management&quot;
+        routerLinkActive&#x3D;&quot;active&quot;
+      &gt;
+        &lt;span class&#x3D;&quot;material-symbols-outlined&quot;&gt;account_box&lt;/span&gt;
+        Moderator Management
+      &lt;/li&gt;
+      } @if (role) {
+      &lt;li (click)&#x3D;&quot;toggleDarkMode()&quot;&gt;
+        &lt;span class&#x3D;&quot;material-symbols-outlined&quot;&gt;dark_mode&lt;/span&gt; Toggle dark
+        mode
+      &lt;/li&gt;
+      &lt;li class&#x3D;&quot;logout-btn&quot; (click)&#x3D;&quot;logout()&quot;&gt;
+        &lt;span class&#x3D;&quot;material-symbols-outlined&quot;&gt;logout&lt;/span&gt;Logout
+      &lt;/li&gt;
+      }
+    &lt;/ul&gt;
+  &lt;/nav&gt;
+&lt;/div&gt;
+
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./burger-menu.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">.burger-icon {
+  margin: 2rem;
+  width: 30px;
+  height: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  z-index: 1003;
+  span {
+    height: 4px;
+    background: #333;
+    border-radius: 2px;
+    transition: 0.3s;
+  }
+  &amp;.open span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  &amp;.open span:nth-child(2) {
+    opacity: 0;
+  }
+  &amp;.open span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+  }
+}
+
+.sidebar {
+  font-family: Onest;
+  height: 100%;
+  width: 0;
+  min-width: 0;
+  background: var(--bg-100);
+  backdrop-filter: blur(20px);
+  z-index: 2;
+  padding: 0;
+  overflow: hidden;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  &amp;.open {
+    width: 320px;
+    min-width: 320px;
+    padding: 20px 3rem;
+  }
+  .sidebar-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .masked-svg {
+      -webkit-mask: url(../../../../public/assets/logo.svg) no-repeat center;
+      mask: url(../../../../public/assets/logo.svg) no-repeat center;
+      mask-size: contain;
+      mask-position: center;
+      mask-repeat: no-repeat;
+      background: #8b5d33;
+      background: linear-gradient(
+        129deg,
+        var(--primary-100) 35%,
+        var(--primary-200) 100%
+      );
+      width: 6rem;
+      height: 4rem;
+    }
+    .close-btn {
+      color: #fffcec;
+      align-self: flex-end;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+      &amp;:hover {
+        border-radius: 100px;
+        transform: scale(1.2);
+      }
+    }
+    .logo {
+      margin-top: 10px;
+      max-width: 120px;
+    }
+  }
+  nav {
+    margin-top: 30px;
+    ul {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      list-style: none;
+      padding: 0;
+
+      li {
+        display: flex;
+        gap: 0.8rem;
+        align-items: center;
+        font-weight: 500;
+        font-size: 0.95rem;
+        color: var(--text-200);
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 10px;
+        transition: all 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+
+        span {
+          color: var(--primary-100);
+        }
+
+        &amp;:nth-child(7) {
+          min-width: 16rem;
+        }
+        &amp;:hover {
+          background: var(--primary-100);
+          color: var(--primary-300);
+          padding-left: 1.5rem;
+
+          span {
+            color: inherit;
+          }
+        }
+        &amp;.active {
+          background: #8b5d33;
+          background: var(--primary-100);
+          padding-left: 1.5rem;
+          color: var(--primary-300);
+
+          span {
+            color: inherit;
+          }
+        }
+      }
+    }
+  }
+}
+
+.logout-btn {
+  margin-top: 3rem;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  &amp;:hover {
+    color: #c9302c;
+  }
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div>@if (!isOpen) {<div class="burger-icon" (click)="toggleMenu()">  <span></span>  <span></span>  <span></span></div>} @if (isOpen) {<div class="sidebar" [class.open]="isOpen">  <div class="sidebar-header">    <button class="close-btn" (click)="closeMenu()">&#10005;</button>    <div class="masked-svg"></div>  </div>  <nav>    <ul>      <li routerLink="/menu" routerLinkActive="active" >        <span class="material-symbols-outlined">team_dashboard</span>        Dashboard      </li>      <li        routerLink="/campaign-status"        routerLinkActive="active"      >        <span class="material-symbols-outlined">apps</span>        Campaigns      </li>      <li        routerLink="/create-campaign"        routerLinkActive="active"      >        <span class="material-symbols-outlined">add_circle</span>        Create Campaign      </li>      <li        routerLink="/notifications"        routerLinkActive="active"      >        <span class="material-symbols-outlined">notifications</span>        Notifications      </li>      @if (role === \'admin\') {      <li        routerLink="/user-management"        routerLinkActive="active"      >        <span class="material-symbols-outlined">manage_accounts</span>        User Management      </li>      <li        routerLink="/moderator-management"        routerLinkActive="active"      >        <span class="material-symbols-outlined">account_box</span>        Moderator Management      </li>      } @if (role) {      <li (click)="toggleDarkMode()">        <span class="material-symbols-outlined">dark_mode</span> Toggle dark        mode      </li>      <li class="logout-btn" (click)="logout()">        <span class="material-symbols-outlined">logout</span>Logout      </li>      }    </ul>  </nav></div>}</div>'
+    var COMPONENTS = [{'name': 'App', 'selector': 'app-root'},{'name': 'BurgerMenu', 'selector': 'app-burger-menu'},{'name': 'Button', 'selector': 'app-button'},{'name': 'CampaignCard', 'selector': 'app-campaign-card'},{'name': 'CampaignStatus', 'selector': 'app-campaign-status'},{'name': 'CdkTable', 'selector': 'app-cdk-table'},{'name': 'CreateCampaign', 'selector': 'app-create-campaign'},{'name': 'DetailCards', 'selector': 'app-detail-cards'},{'name': 'Footer', 'selector': 'app-footer'},{'name': 'FuiField', 'selector': 'app-fui-field'},{'name': 'FuiInput', 'selector': 'app-fui-input'},{'name': 'Login', 'selector': 'app-login'},{'name': 'Menu', 'selector': 'app-admin-dashboard'},{'name': 'ModeratorManagement', 'selector': 'app-moderator-management'},{'name': 'NavBar', 'selector': 'app-nav-bar'},{'name': 'NotificationBlock', 'selector': 'app-notification-block'},{'name': 'Notifications', 'selector': 'app-notifications'},{'name': 'Register', 'selector': 'app-register'},{'name': 'UserCampaign', 'selector': 'app-user-campaign'},{'name': 'UserManagement', 'selector': 'app-user-management'},{'name': 'UserPage', 'selector': 'app-user-page'},{'name': 'VoteCandidate', 'selector': 'app-vote-candidate'}];
+    var DIRECTIVES = [];
+    var ACTUAL_COMPONENT = {'name': 'BurgerMenu'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'BurgerMenu.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

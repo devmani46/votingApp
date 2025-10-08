@@ -75,7 +75,7 @@
   gap: 2rem;
 
   .campaign-wrapper {
-    max-width: 33%;
+    max-width: 23.5%;
   }
 
   .manipulation-btns {
@@ -107,10 +107,15 @@
       }
     }
   }
+
+  .campaign-paginator {
+    background-color: var(--bg-200);
+  }
 }
 
 .campaign-cards {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
 }
 
@@ -252,7 +257,7 @@
   }
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -281,7 +286,7 @@
   position: relative;
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -8px;
     left: 50%;
@@ -329,7 +334,7 @@
   }
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;

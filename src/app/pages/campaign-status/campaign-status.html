@@ -26,41 +26,52 @@
 
     <div class="dashboard-content">
       @if (viewMode() === 'cards') {
-        <div class="campaign-cards">
-          @for (campaign of filteredCampaigns(); track trackByCampaignId($index, campaign)) {
-            <div class="campaign-wrapper">
-              <app-campaign-card
-                [title]="campaign.title"
-                [description]="'Votes: ' + getTotalVotes(campaign)"
-                [image]="getImage(campaign)"
-                size="medium"
-                [showKebabMenu]="true"
-                [showEditOption]="true"
-                [showDeleteOption]="true"
-                (cardClick)="openCampaignDetails(campaign)"
-                (edit)="editCampaign(campaign.id)"
-                (delete)="deleteCampaign(campaign.id)"
-              >
-                <div class="card-meta">
-                  <div class="meta-row">
-                    <div class="meta-item">
-                      <div class="meta-value">{{ getTotalVotes(campaign) }}</div>
-                      <div class="meta-label">Total votes</div>
-                    </div>
-                    <div class="meta-item">
-                      <div class="meta-value">{{ getTopCandidate(campaign) }}</div>
-                      <div class="meta-label">Top candidate</div>
-                    </div>
-                    <div class="meta-item">
-                      <div class="meta-value">{{ candidateCount(campaign) }}</div>
-                      <div class="meta-label">Candidates</div>
-                    </div>
-                  </div>
+      <div class="campaign-cards">
+        @for (campaign of pagedCampaigns(); track trackByCampaignId($index,
+        campaign)) {
+        <div class="campaign-wrapper">
+          <app-campaign-card
+            [title]="campaign.title"
+            [description]="'Votes: ' + getTotalVotes(campaign)"
+            [image]="getImage(campaign)"
+            size="medium"
+            [showKebabMenu]="true"
+            [showEditOption]="true"
+            [showDeleteOption]="true"
+            (cardClick)="openCampaignDetails(campaign)"
+            (edit)="editCampaign(campaign.id)"
+            (delete)="deleteCampaign(campaign.id)"
+          >
+            <div class="card-meta">
+              <div class="meta-row">
+                <div class="meta-item">
+                  <div class="meta-value">{{ getTotalVotes(campaign) }}</div>
+                  <div class="meta-label">Total votes</div>
                 </div>
-              </app-campaign-card>
+                <div class="meta-item">
+                  <div class="meta-value">{{ getTopCandidate(campaign) }}</div>
+                  <div class="meta-label">Top candidate</div>
+                </div>
+                <div class="meta-item">
+                  <div class="meta-value">{{ candidateCount(campaign) }}</div>
+                  <div class="meta-label">Candidates</div>
+                </div>
+              </div>
             </div>
-          }
+          </app-campaign-card>
         </div>
+        }
+      </div>
+
+      <mat-paginator
+        [length]="filteredCampaigns().length"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[4, 8, 12]"
+        (page)="onPageChange($event)"
+        aria-label="Select page"
+        class="campaign-paginator"
+      >
+      </mat-paginator>
       }
 
       <div
@@ -71,106 +82,110 @@
 
       <div class="side-drawer" [class.open]="!!selectedCampaign()">
         @if (selectedCampaign(); as sc) {
-          <div class="drawer-inner">
-            <div class="drawer-header">
-              <h3>{{ sc.title }}</h3>
-              <app-button appearance="secondary" (click)="closeCampaignDetails()">
-                Close
-              </app-button>
+        <div class="drawer-inner">
+          <div class="drawer-header">
+            <h3>{{ sc.title }}</h3>
+            <app-button appearance="secondary" (click)="closeCampaignDetails()">
+              Close
+            </app-button>
+          </div>
+
+          <div class="drawer-stats">
+            <div class="stat">
+              <div class="stat-value">{{ getTotalVotes(sc) }}</div>
+              <div class="stat-label">Total Votes</div>
             </div>
-
-            <div class="drawer-stats">
-              <div class="stat">
-                <div class="stat-value">{{ getTotalVotes(sc) }}</div>
-                <div class="stat-label">Total Votes</div>
-              </div>
-              <div class="stat">
-                <div class="stat-value">{{ getTopCandidate(sc) }}</div>
-                <div class="stat-label">Top Candidate</div>
-              </div>
-              <div class="stat">
-                <div class="stat-value">{{ candidateCount(sc) }}</div>
-                <div class="stat-label">Candidates</div>
-              </div>
+            <div class="stat">
+              <div class="stat-value">{{ getTopCandidate(sc) }}</div>
+              <div class="stat-label">Top Candidate</div>
             </div>
-
-            @if (candidateCount(sc) > 0) {
-              <div class="ranks-and-chart">
-                <div class="ranks">
-                  <div class="ranks-title">Ranks</div>
-                  @for (rc of getRankedCandidates(sc); track $index) {
-                    <div class="rank-item">
-                      {{ getOrdinal($index + 1) }} — {{ rc.name }}
-                      ({{ getCandidateVotes(sc.id, rc.name) }} votes)
-                    </div>
-                  }
-                </div>
-
-                <div class="drawer-chart">
-                  <div
-                    echarts
-                    [options]="getChartOptions(sc, 'pie')"
-                    class="echart"
-                  ></div>
-                </div>
-              </div>
-            }
-
-            <div class="candidate-grid">
-              @for (candidate of sc.candidates; track trackByCandidateName($index, candidate)) {
-                <div class="candidate-item">
-                  <div class="candidate-votes-text">
-                    Total votes of {{ candidate.name }}:
-                    {{ getCandidateVotes(sc.id, candidate.name) }}
-                  </div>
-                  <app-campaign-card
-                    [title]="candidate.name"
-                    [description]="candidate.bio"
-                    [image]="getImage(candidate)"
-                    size="small"
-                  >
-                  </app-campaign-card>
-                </div>
-              }
+            <div class="stat">
+              <div class="stat-value">{{ candidateCount(sc) }}</div>
+              <div class="stat-label">Candidates</div>
             </div>
           </div>
+
+          @if (candidateCount(sc) > 0) {
+          <div class="ranks-and-chart">
+            <div class="ranks">
+              <div class="ranks-title">Ranks</div>
+              @for (rc of getRankedCandidates(sc); track $index) {
+              <div class="rank-item">
+                {{ getOrdinal($index + 1) }} — {{ rc.name }} ({{
+                  getCandidateVotes(sc.id, rc.name)
+                }}
+                votes)
+              </div>
+              }
+            </div>
+
+            <div class="drawer-chart">
+              <div
+                echarts
+                [options]="getChartOptions(sc, 'pie')"
+                class="echart"
+              ></div>
+            </div>
+          </div>
+          }
+
+          <div class="candidate-grid">
+            @for (candidate of sc.candidates; track trackByCandidateName($index,
+            candidate)) {
+            <div class="candidate-item">
+              <div class="candidate-votes-text">
+                Total votes of {{ candidate.name }}:
+                {{ getCandidateVotes(sc.id, candidate.name) }}
+              </div>
+              <app-campaign-card
+                [title]="candidate.name"
+                [description]="candidate.bio"
+                [image]="getImage(candidate)"
+                size="small"
+              >
+              </app-campaign-card>
+            </div>
+            }
+          </div>
+        </div>
         }
       </div>
 
       @if (viewMode() === 'charts') {
-        <div class="chart-view">
-          @for (campaign of filteredCampaigns(); track trackByCampaignId($index, campaign)) {
-            <div class="campaign-charts-container">
-              <h3 class="campaign-title">{{ campaign.title }}</h3>
-              <div class="charts-grid">
-                <div class="chart-item">
-                  <h4 class="chart-label">Pie Chart</h4>
-                  <div
-                    echarts
-                    [options]="getChartOptions(campaign, 'pie')"
-                    class="echart"
-                  ></div>
-                </div>
-                <div class="chart-item">
-                  <h4 class="chart-label">Bar Chart</h4>
-                  <div
-                    echarts
-                    [options]="getChartOptions(campaign, 'bar')"
-                    class="echart"
-                  ></div>
-                </div>
-                <div class="chart-item">
-                  <h4 class="chart-label">Line Chart</h4>
-                  <div
-                    echarts
-                    [options]="getChartOptions(campaign, 'line')"
-                    class="echart"
-                  ></div>
-                </div>
-              </div>
+      <div class="chart-view">
+        @for (campaign of filteredCampaigns(); track trackByCampaignId($index,
+        campaign)) {
+        <div class="campaign-charts-container">
+          <h3 class="campaign-title">{{ campaign.title }}</h3>
+          <div class="charts-grid">
+            <div class="chart-item">
+              <h4 class="chart-label">Pie Chart</h4>
+              <div
+                echarts
+                [options]="getChartOptions(campaign, 'pie')"
+                class="echart"
+              ></div>
             </div>
-          }
+            <div class="chart-item">
+              <h4 class="chart-label">Bar Chart</h4>
+              <div
+                echarts
+                [options]="getChartOptions(campaign, 'bar')"
+                class="echart"
+              ></div>
+            </div>
+            <div class="chart-item">
+              <h4 class="chart-label">Line Chart</h4>
+              <div
+                echarts
+                [options]="getChartOptions(campaign, 'line')"
+                class="echart"
+              ></div>
+            </div>
+          </div>
         </div>
+        }
+      </div>
       }
     </div>
   </div>

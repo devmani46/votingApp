@@ -1,0 +1,2946 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>new-component-test documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">new-component-test documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
+  >
+  CampaignStatus</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/pages/campaign-status/campaign-status.ts</code>
+</p>
+
+
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                <code>OnDestroy</code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-campaign-status</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                            <code>CommonModule</code>
+                            <code>FormsModule</code>
+                                <code><a href="../components/CampaignCard.html" target="_self" >CampaignCard</a></code>
+                                <code><a href="../components/Button.html" target="_self" >Button</a></code>
+                                <code><a href="../components/BurgerMenu.html" target="_self" >BurgerMenu</a></code>
+                            <code>NgxEchartsModule</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./campaign-status.scss</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./campaign-status.html</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#campaigns" >campaigns</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#campaignService" >campaignService</a>
+                            </li>
+                            <li>
+                                <a href="#handleStorageChange" >handleStorageChange</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#router" >router</a>
+                            </li>
+                            <li>
+                                <a href="#searchTerm" >searchTerm</a>
+                            </li>
+                            <li>
+                                <a href="#selectedCampaign" >selectedCampaign</a>
+                            </li>
+                            <li>
+                                <a href="#viewMode" >viewMode</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#candidateCount" >candidateCount</a>
+                            </li>
+                            <li>
+                                <a href="#closeAllKebabMenus" >closeAllKebabMenus</a>
+                            </li>
+                            <li>
+                                <a href="#closeCampaignDetails" >closeCampaignDetails</a>
+                            </li>
+                            <li>
+                                <a href="#deleteCampaign" >deleteCampaign</a>
+                            </li>
+                            <li>
+                                <a href="#editCampaign" >editCampaign</a>
+                            </li>
+                            <li>
+                                <a href="#exportCSV" >exportCSV</a>
+                            </li>
+                            <li>
+                                <a href="#filteredCampaigns" >filteredCampaigns</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#getBarChartOptions" >getBarChartOptions</a>
+                            </li>
+                            <li>
+                                <a href="#getCandidateVotes" >getCandidateVotes</a>
+                            </li>
+                            <li>
+                                <a href="#getChartOptions" >getChartOptions</a>
+                            </li>
+                            <li>
+                                <a href="#getChartTypeForIndex" >getChartTypeForIndex</a>
+                            </li>
+                            <li>
+                                <a href="#getImage" >getImage</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#getLineChartOptions" >getLineChartOptions</a>
+                            </li>
+                            <li>
+                                <a href="#getOrdinal" >getOrdinal</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#getPieChartOptions" >getPieChartOptions</a>
+                            </li>
+                            <li>
+                                <a href="#getRankedCandidates" >getRankedCandidates</a>
+                            </li>
+                            <li>
+                                <a href="#getTopCandidate" >getTopCandidate</a>
+                            </li>
+                            <li>
+                                <a href="#getTotalVotes" >getTotalVotes</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnDestroy" >ngOnDestroy</a>
+                            </li>
+                            <li>
+                                <a href="#openCampaignDetails" >openCampaignDetails</a>
+                            </li>
+                            <li>
+                                <a href="#toggleView" >toggleView</a>
+                            </li>
+                            <li>
+                                <a href="#trackByCampaignId" >trackByCampaignId</a>
+                            </li>
+                            <li>
+                                <a href="#trackByCandidateName" >trackByCandidateName</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor()</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="25" class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:25</a></div>
+                            </td>
+                        </tr>
+
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="candidateCount"></a>
+                    <span class="name">
+                        <span ><b>candidateCount</b></span>
+                        <a href="#candidateCount"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>candidateCount(campaign: <a href="../interfaces/Campaign.html" target="_self">Campaign | null</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="71"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:71</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>campaign</td>
+                                            <td>
+                                                            <code><a href="../interfaces/Campaign.html" target="_self" >Campaign | null</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="closeAllKebabMenus"></a>
+                    <span class="name">
+                        <span ><b>closeAllKebabMenus</b></span>
+                        <a href="#closeAllKebabMenus"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>closeAllKebabMenus()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="219"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:219</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="closeCampaignDetails"></a>
+                    <span class="name">
+                        <span ><b>closeCampaignDetails</b></span>
+                        <a href="#closeCampaignDetails"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>closeCampaignDetails()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="176"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:176</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="deleteCampaign"></a>
+                    <span class="name">
+                        <span ><b>deleteCampaign</b></span>
+                        <a href="#deleteCampaign"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>deleteCampaign(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="200"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:200</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="editCampaign"></a>
+                    <span class="name">
+                        <span ><b>editCampaign</b></span>
+                        <a href="#editCampaign"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>editCampaign(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="196"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:196</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="exportCSV"></a>
+                    <span class="name">
+                        <span ><b>exportCSV</b></span>
+                        <a href="#exportCSV"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>exportCSV()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="180"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:180</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="filteredCampaigns"></a>
+                    <span class="name">
+                        <span ><b>filteredCampaigns</b></span>
+                        <a href="#filteredCampaigns"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>filteredCampaigns()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="44"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:44</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../interfaces/Campaign.html" target="_self" >Campaign[]</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getBarChartOptions"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>getBarChartOptions</b></span>
+                        <a href="#getBarChartOptions"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getBarChartOptions(campaign: <a href="../interfaces/Campaign.html" target="_self">Campaign</a>, data: any[])</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="125"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:125</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>campaign</td>
+                                            <td>
+                                                            <code><a href="../interfaces/Campaign.html" target="_self" >Campaign</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>data</td>
+                                            <td>
+                                                        <code>any[]</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>{ tooltip: { trigger: string; axisPointer: { type: string; }; }; legend: { bottom: number; left: string; }; grid: { left: string; right: string; bottom: string; top: string; containLabel: boolean; }; xAxis: { ...; }; yAxis: { ...; }; series: {}; }</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getCandidateVotes"></a>
+                    <span class="name">
+                        <span ><b>getCandidateVotes</b></span>
+                        <a href="#getCandidateVotes"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getCandidateVotes(campaignId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, candidateName: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="50"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:50</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>campaignId</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>candidateName</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getChartOptions"></a>
+                    <span class="name">
+                        <span ><b>getChartOptions</b></span>
+                        <a href="#getChartOptions"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getChartOptions(campaign: <a href="../interfaces/Campaign.html" target="_self">Campaign | null</a>, chartType: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="86"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:86</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Default value</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>campaign</td>
+                                            <td>
+                                                            <code><a href="../interfaces/Campaign.html" target="_self" >Campaign | null</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+                                            <td>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                                <td>chartType</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+                                            <td>
+                                                    <code>&#x27;pie&#x27;</code>
+                                            </td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>{ tooltip: { trigger: string; }; legend: { bottom: number; left: string; }; series: {}; } | { tooltip: { show: boolean; }; series: {}; }</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getChartTypeForIndex"></a>
+                    <span class="name">
+                        <span ><b>getChartTypeForIndex</b></span>
+                        <a href="#getChartTypeForIndex"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getChartTypeForIndex(index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="167"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:167</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>index</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getImage"></a>
+                    <span class="name">
+                        <span ><b>getImage</b></span>
+                        <a href="#getImage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getImage(entity: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="214"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:214</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>entity</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getLineChartOptions"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>getLineChartOptions</b></span>
+                        <a href="#getLineChartOptions"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getLineChartOptions(campaign: <a href="../interfaces/Campaign.html" target="_self">Campaign</a>, data: any[])</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="144"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:144</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>campaign</td>
+                                            <td>
+                                                            <code><a href="../interfaces/Campaign.html" target="_self" >Campaign</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>data</td>
+                                            <td>
+                                                        <code>any[]</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>{ tooltip: { trigger: string; }; legend: { bottom: number; left: string; }; grid: { left: string; right: string; bottom: string; top: string; containLabel: boolean; }; xAxis: { type: string; boundaryGap: boolean; data: any; }; yAxis: { ...; }; series: {}; }</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getOrdinal"></a>
+                    <span class="name">
+                        <span ><b>getOrdinal</b></span>
+                        <a href="#getOrdinal"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getOrdinal(n: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="80"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:80</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>n</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getPieChartOptions"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>getPieChartOptions</b></span>
+                        <a href="#getPieChartOptions"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getPieChartOptions(campaign: <a href="../interfaces/Campaign.html" target="_self">Campaign</a>, data: any[])</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="105"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:105</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>campaign</td>
+                                            <td>
+                                                            <code><a href="../interfaces/Campaign.html" target="_self" >Campaign</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>data</td>
+                                            <td>
+                                                        <code>any[]</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>{ tooltip: { trigger: string; }; legend: { bottom: number; left: string; }; series: {}; }</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getRankedCandidates"></a>
+                    <span class="name">
+                        <span ><b>getRankedCandidates</b></span>
+                        <a href="#getRankedCandidates"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getRankedCandidates(campaign: <a href="../interfaces/Campaign.html" target="_self">Campaign | null</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="75"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:75</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>campaign</td>
+                                            <td>
+                                                            <code><a href="../interfaces/Campaign.html" target="_self" >Campaign | null</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../interfaces/Candidate.html" target="_self" >Candidate[]</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getTopCandidate"></a>
+                    <span class="name">
+                        <span ><b>getTopCandidate</b></span>
+                        <a href="#getTopCandidate"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getTopCandidate(campaign: <a href="../interfaces/Campaign.html" target="_self">Campaign | null</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="62"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:62</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>campaign</td>
+                                            <td>
+                                                            <code><a href="../interfaces/Campaign.html" target="_self" >Campaign | null</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getTotalVotes"></a>
+                    <span class="name">
+                        <span ><b>getTotalVotes</b></span>
+                        <a href="#getTotalVotes"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getTotalVotes(campaign: <a href="../interfaces/Campaign.html" target="_self">Campaign | null</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="57"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:57</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>campaign</td>
+                                            <td>
+                                                            <code><a href="../interfaces/Campaign.html" target="_self" >Campaign | null</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnDestroy"></a>
+                    <span class="name">
+                        <span ><b>ngOnDestroy</b></span>
+                        <a href="#ngOnDestroy"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnDestroy()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="31"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:31</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="openCampaignDetails"></a>
+                    <span class="name">
+                        <span ><b>openCampaignDetails</b></span>
+                        <a href="#openCampaignDetails"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>openCampaignDetails(campaign: <a href="../interfaces/Campaign.html" target="_self">Campaign</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="172"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:172</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>campaign</td>
+                                            <td>
+                                                            <code><a href="../interfaces/Campaign.html" target="_self" >Campaign</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="toggleView"></a>
+                    <span class="name">
+                        <span ><b>toggleView</b></span>
+                        <a href="#toggleView"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>toggleView()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="35"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:35</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="trackByCampaignId"></a>
+                    <span class="name">
+                        <span ><b>trackByCampaignId</b></span>
+                        <a href="#trackByCampaignId"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>trackByCampaignId(index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, item: <a href="../interfaces/Campaign.html" target="_self">Campaign</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="206"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:206</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>index</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>item</td>
+                                            <td>
+                                                            <code><a href="../interfaces/Campaign.html" target="_self" >Campaign</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="trackByCandidateName"></a>
+                    <span class="name">
+                        <span ><b>trackByCandidateName</b></span>
+                        <a href="#trackByCandidateName"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>trackByCandidateName(index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, item: <a href="../interfaces/Candidate.html" target="_self">Candidate</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="210"
+                                    class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:210</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>index</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>item</td>
+                                            <td>
+                                                            <code><a href="../interfaces/Candidate.html" target="_self" >Candidate</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="campaigns"></a>
+                    <span class="name">
+                        <span ><b>campaigns</b></span>
+                        <a href="#campaigns"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>this.campaignService.campaigns</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="25" class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:25</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="campaignService"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>campaignService</b></span>
+                        <a href="#campaignService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(CampaignService)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="19" class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:19</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="handleStorageChange"></a>
+                    <span class="name">
+                        <span ><b>handleStorageChange</b></span>
+                        <a href="#handleStorageChange"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>() &#x3D;&gt; {...}</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="40" class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:40</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="router"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>router</b></span>
+                        <a href="#router"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(Router)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="20" class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:20</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="searchTerm"></a>
+                    <span class="name">
+                        <span ><b>searchTerm</b></span>
+                        <a href="#searchTerm"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="23" class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:23</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="selectedCampaign"></a>
+                    <span class="name">
+                        <span ><b>selectedCampaign</b></span>
+                        <a href="#selectedCampaign"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../interfaces/Campaign.html" target="_self" >Campaign | null</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:24</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="viewMode"></a>
+                    <span class="name">
+                        <span ><b>viewMode</b></span>
+                        <a href="#viewMode"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>&quot;cards&quot; | &quot;charts&quot;</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;cards&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="22" class="link-to-prism">src/app/pages/campaign-status/campaign-status.ts:22</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnDestroy, inject } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { FormsModule } from &#x27;@angular/forms&#x27;;
+import { NgxEchartsModule } from &#x27;ngx-echarts&#x27;;
+import { Router } from &#x27;@angular/router&#x27;;
+import { CampaignService, Campaign, Candidate } from &#x27;../../services/campaign&#x27;;
+import { CampaignCard } from &#x27;../../components/campaign-card/campaign-card&#x27;;
+import { Button } from &#x27;../../components/button/button&#x27;;
+import { BurgerMenu } from &#x27;../../components/burger-menu/burger-menu&#x27;;
+
+@Component({
+  selector: &#x27;app-campaign-status&#x27;,
+  standalone: true,
+  imports: [CommonModule, FormsModule, CampaignCard, Button, BurgerMenu, NgxEchartsModule],
+  templateUrl: &#x27;./campaign-status.html&#x27;,
+  styleUrls: [&#x27;./campaign-status.scss&#x27;]
+})
+export class CampaignStatus implements OnDestroy {
+  private campaignService &#x3D; inject(CampaignService);
+  private router &#x3D; inject(Router);
+
+  viewMode: &#x27;cards&#x27; | &#x27;charts&#x27; &#x3D; &#x27;cards&#x27;;
+  searchTerm &#x3D; &#x27;&#x27;;
+  selectedCampaign: Campaign | null &#x3D; null;
+  campaigns &#x3D; this.campaignService.campaigns;
+
+  constructor() {
+    window.addEventListener(&#x27;storage&#x27;, this.handleStorageChange);
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener(&#x27;storage&#x27;, this.handleStorageChange);
+  }
+
+  toggleView() {
+    this.viewMode &#x3D; this.viewMode &#x3D;&#x3D;&#x3D; &#x27;cards&#x27; ? &#x27;charts&#x27; : &#x27;cards&#x27;;
+    this.closeCampaignDetails();
+  }
+
+  handleStorageChange &#x3D; () &#x3D;&gt; {
+    this.campaignService.refreshCampaigns();
+  };
+
+  filteredCampaigns(): Campaign[] {
+    const term &#x3D; this.searchTerm?.trim().toLowerCase() ?? &#x27;&#x27;;
+    if (!term) return this.campaigns();
+    return this.campaigns().filter(c &#x3D;&gt; (c.title ?? &#x27;&#x27;).toLowerCase().includes(term));
+  }
+
+  getCandidateVotes(campaignId: string, candidateName: string): number {
+    const campaign &#x3D; this.campaignService.getCampaignById(campaignId);
+    if (!campaign) return 0;
+    const candidate &#x3D; campaign.candidates.find(c &#x3D;&gt; c.name &#x3D;&#x3D;&#x3D; candidateName);
+    return candidate ? (candidate.votes ?? 0) : 0;
+  }
+
+  getTotalVotes(campaign: Campaign | null): number {
+    if (!campaign) return 0;
+    return campaign.candidates.reduce((s, c) &#x3D;&gt; s + (c.votes ?? 0), 0);
+  }
+
+  getTopCandidate(campaign: Campaign | null): string {
+    if (!campaign || campaign.candidates.length &#x3D;&#x3D;&#x3D; 0) return &#x27;—&#x27;;
+    const winner &#x3D; this.campaignService.getWinner(campaign);
+    if (!winner) return &#x27;—&#x27;;
+    return winner.draw
+      ? &#x60;Draw between ${winner.candidates.map(c &#x3D;&gt; c.name).join(&#x27;, &#x27;)}&#x60;
+      : winner.candidates[0].name;
+  }
+
+  candidateCount(campaign: Campaign | null): number {
+    return campaign ? campaign.candidates.length : 0;
+  }
+
+  getRankedCandidates(campaign: Campaign | null): Candidate[] {
+    if (!campaign) return [];
+    return [...campaign.candidates].sort((a, b) &#x3D;&gt; (b.votes ?? 0) - (a.votes ?? 0));
+  }
+
+  getOrdinal(n: number): string {
+    const s &#x3D; [&#x27;th&#x27;, &#x27;st&#x27;, &#x27;nd&#x27;, &#x27;rd&#x27;];
+    const v &#x3D; n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+
+  getChartOptions(campaign: Campaign | null, chartType: string &#x3D; &#x27;pie&#x27;) {
+    if (!campaign) return { tooltip: { show: false }, series: [] };
+    const data &#x3D; campaign.candidates.map(c &#x3D;&gt; ({
+      name: c.name,
+      value: c.votes ?? 0
+    }));
+
+    switch (chartType) {
+      case &#x27;pie&#x27;:
+        return this.getPieChartOptions(campaign, data);
+      case &#x27;bar&#x27;:
+        return this.getBarChartOptions(campaign, data);
+      case &#x27;line&#x27;:
+        return this.getLineChartOptions(campaign, data);
+      default:
+        return this.getPieChartOptions(campaign, data);
+    }
+  }
+
+  private getPieChartOptions(campaign: Campaign, data: any[]) {
+    return {
+      tooltip: { trigger: &#x27;item&#x27; },
+      legend: { bottom: 0, left: &#x27;center&#x27; },
+      series: [
+        {
+          name: campaign.title,
+          type: &#x27;pie&#x27;,
+          radius: [&#x27;40%&#x27;, &#x27;70%&#x27;],
+          avoidLabelOverlap: false,
+          label: { show: false },
+          emphasis: { label: { show: true, fontSize: &#x27;14&#x27;, fontWeight: &#x27;600&#x27; } },
+          data
+        }
+      ]
+    };
+  }
+
+
+
+  private getBarChartOptions(campaign: Campaign, data: any[]) {
+    return {
+      tooltip: { trigger: &#x27;axis&#x27;, axisPointer: { type: &#x27;shadow&#x27; } },
+      legend: { bottom: 0, left: &#x27;center&#x27; },
+      grid: { left: &#x27;3%&#x27;, right: &#x27;4%&#x27;, bottom: &#x27;15%&#x27;, top: &#x27;10%&#x27;, containLabel: true },
+      xAxis: { type: &#x27;category&#x27;, data: data.map(d &#x3D;&gt; d.name) },
+      yAxis: { type: &#x27;value&#x27; },
+      series: [
+        {
+          name: &#x27;Votes&#x27;,
+          type: &#x27;bar&#x27;,
+          data: data.map(d &#x3D;&gt; d.value),
+          itemStyle: { color: &#x27;#76affb&#x27; },
+          emphasis: { itemStyle: { color: &#x27;#4a90e2&#x27; } }
+        }
+      ]
+    };
+  }
+
+  private getLineChartOptions(campaign: Campaign, data: any[]) {
+    return {
+      tooltip: { trigger: &#x27;axis&#x27; },
+      legend: { bottom: 0, left: &#x27;center&#x27; },
+      grid: { left: &#x27;3%&#x27;, right: &#x27;4%&#x27;, bottom: &#x27;15%&#x27;, top: &#x27;10%&#x27;, containLabel: true },
+      xAxis: { type: &#x27;category&#x27;, boundaryGap: false, data: data.map(d &#x3D;&gt; d.name) },
+      yAxis: { type: &#x27;value&#x27; },
+      series: [
+        {
+          name: &#x27;Votes&#x27;,
+          type: &#x27;line&#x27;,
+          smooth: true,
+          data: data.map(d &#x3D;&gt; d.value),
+          itemStyle: { color: &#x27;#76affb&#x27; },
+          areaStyle: { color: &#x27;rgba(118, 175, 251, 0.1)&#x27; },
+          emphasis: { focus: &#x27;series&#x27; }
+        }
+      ]
+    };
+  }
+
+
+
+  getChartTypeForIndex(index: number): string {
+    const chartTypes &#x3D; [&#x27;pie&#x27;, &#x27;bar&#x27;, &#x27;line&#x27;];
+    return chartTypes[index % chartTypes.length];
+  }
+
+  openCampaignDetails(campaign: Campaign) {
+    this.selectedCampaign &#x3D; campaign;
+  }
+
+  closeCampaignDetails() {
+    this.selectedCampaign &#x3D; null;
+  }
+
+  exportCSV() {
+    const rows: string[] &#x3D; [&#x27;campaignId,title,candidateName,candidateVotes&#x27;];
+    for (const c of this.campaigns()) {
+      for (const cand of c.candidates) {
+        rows.push(&#x60;${c.id},&quot;${c.title}&quot;,&quot;${cand.name}&quot;,${cand.votes ?? 0}&#x60;);
+      }
+    }
+    const blob &#x3D; new Blob([rows.join(&#x27;\n&#x27;)], { type: &#x27;text/csv;charset&#x3D;utf-8;&#x27; });
+    const url &#x3D; URL.createObjectURL(blob);
+    const a &#x3D; document.createElement(&#x27;a&#x27;);
+    a.href &#x3D; url;
+    a.download &#x3D; &#x60;campaigns_${new Date().toISOString()}.csv&#x60;;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  editCampaign(id: string) {
+    this.router.navigate([&#x27;/create-campaign&#x27;, id]);
+  }
+
+  deleteCampaign(id: string) {
+    this.campaignService.deleteCampaign(id).subscribe(() &#x3D;&gt; {
+      if (this.selectedCampaign?.id &#x3D;&#x3D;&#x3D; id) this.selectedCampaign &#x3D; null;
+    });
+  }
+
+  trackByCampaignId(index: number, item: Campaign) {
+    return item.id ?? index;
+  }
+
+  trackByCandidateName(index: number, item: Candidate) {
+    return item?.name ?? index;
+  }
+
+  getImage(entity: any): string {
+    if (!entity) return &#x27;/assets/default-user.png&#x27;;
+    return (entity.banner_url ?? entity.photo_url ?? entity.logo ?? entity.photo ?? &#x27;/assets/default-user.png&#x27;) as string;
+  }
+
+  closeAllKebabMenus() {
+    // This method will be called when clicking outside kebab menus
+    // The actual closing logic will be handled by the campaign cards themselves
+    // through their closeKebabMenu() method when they detect clicks outside
+  }
+}
+
+
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div
+  class&#x3D;&quot;campaign-status-page&quot;
+  (window:keydown.escape)&#x3D;&quot;closeCampaignDetails()&quot;
+&gt;
+  &lt;app-burger-menu&gt;&lt;/app-burger-menu&gt;
+
+  &lt;div class&#x3D;&quot;campaigns-container&quot;&gt;
+    &lt;div class&#x3D;&quot;header&quot;&gt;
+      &lt;h2&gt;Campaigns&lt;/h2&gt;
+    &lt;/div&gt;
+
+    &lt;div class&#x3D;&quot;dashboard-controls&quot;&gt;
+      &lt;app-button shape&#x3D;&quot;circular&quot; appearance&#x3D;&quot;outline&quot; (click)&#x3D;&quot;toggleView()&quot;&gt;
+        Switch to {{ viewMode &#x3D;&#x3D;&#x3D; &quot;cards&quot; ? &quot;Charts&quot; : &quot;Cards&quot; }} View
+      &lt;/app-button&gt;
+
+      &lt;app-button shape&#x3D;&quot;circular&quot; appearance&#x3D;&quot;outline&quot; (click)&#x3D;&quot;exportCSV()&quot;&gt;
+        Export CSV
+      &lt;/app-button&gt;
+
+      &lt;input
+        type&#x3D;&quot;text&quot;
+        class&#x3D;&quot;search-input&quot;
+        placeholder&#x3D;&quot;Search campaigns...&quot;
+        [(ngModel)]&#x3D;&quot;searchTerm&quot;
+      /&gt;
+    &lt;/div&gt;
+
+    &lt;div class&#x3D;&quot;dashboard-content&quot;&gt;
+      &lt;!-- Card View --&gt;
+      &lt;div *ngIf&#x3D;&quot;viewMode &#x3D;&#x3D;&#x3D; &#x27;cards&#x27;&quot; class&#x3D;&quot;campaign-cards&quot;&gt;
+        &lt;div
+          *ngFor&#x3D;&quot;let campaign of filteredCampaigns(); trackBy: trackByCampaignId&quot;
+          class&#x3D;&quot;campaign-wrapper&quot;
+        &gt;
+          &lt;app-campaign-card
+            [title]&#x3D;&quot;campaign.title&quot;
+            [description]&#x3D;&quot;&#x27;Votes: &#x27; + getTotalVotes(campaign)&quot;
+            [image]&#x3D;&quot;getImage(campaign)&quot;
+            size&#x3D;&quot;medium&quot;
+            [showKebabMenu]&#x3D;&quot;true&quot;
+            [showEditOption]&#x3D;&quot;true&quot;
+            [showDeleteOption]&#x3D;&quot;true&quot;
+            (cardClick)&#x3D;&quot;openCampaignDetails(campaign)&quot;
+            (edit)&#x3D;&quot;editCampaign(campaign.id)&quot;
+            (delete)&#x3D;&quot;deleteCampaign(campaign.id)&quot;
+          &gt;
+            &lt;div class&#x3D;&quot;card-meta&quot;&gt;
+              &lt;div class&#x3D;&quot;meta-row&quot;&gt;
+                &lt;div class&#x3D;&quot;meta-item&quot;&gt;
+                  &lt;div class&#x3D;&quot;meta-value&quot;&gt;{{ getTotalVotes(campaign) }}&lt;/div&gt;
+                  &lt;div class&#x3D;&quot;meta-label&quot;&gt;Total votes&lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div class&#x3D;&quot;meta-item&quot;&gt;
+                  &lt;div class&#x3D;&quot;meta-value&quot;&gt;{{ getTopCandidate(campaign) }}&lt;/div&gt;
+                  &lt;div class&#x3D;&quot;meta-label&quot;&gt;Top candidate&lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div class&#x3D;&quot;meta-item&quot;&gt;
+                  &lt;div class&#x3D;&quot;meta-value&quot;&gt;{{ candidateCount(campaign) }}&lt;/div&gt;
+                  &lt;div class&#x3D;&quot;meta-label&quot;&gt;Candidates&lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/app-campaign-card&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;!-- Drawer Backdrop --&gt;
+      &lt;div
+        class&#x3D;&quot;drawer-backdrop&quot;
+        [class.visible]&#x3D;&quot;selectedCampaign&quot;
+        (click)&#x3D;&quot;closeCampaignDetails()&quot;
+      &gt;&lt;/div&gt;
+
+      &lt;!-- Side Drawer --&gt;
+      &lt;div class&#x3D;&quot;side-drawer&quot; [class.open]&#x3D;&quot;selectedCampaign&quot;&gt;
+        &lt;ng-container *ngIf&#x3D;&quot;selectedCampaign as sc&quot;&gt;
+          &lt;div class&#x3D;&quot;drawer-inner&quot;&gt;
+            &lt;div class&#x3D;&quot;drawer-header&quot;&gt;
+              &lt;h3&gt;{{ sc.title }}&lt;/h3&gt;
+              &lt;app-button appearance&#x3D;&quot;secondary&quot; (click)&#x3D;&quot;closeCampaignDetails()&quot;&gt;
+                Close
+              &lt;/app-button&gt;
+            &lt;/div&gt;
+
+            &lt;div class&#x3D;&quot;drawer-stats&quot;&gt;
+              &lt;div class&#x3D;&quot;stat&quot;&gt;
+                &lt;div class&#x3D;&quot;stat-value&quot;&gt;{{ getTotalVotes(sc) }}&lt;/div&gt;
+                &lt;div class&#x3D;&quot;stat-label&quot;&gt;Total Votes&lt;/div&gt;
+              &lt;/div&gt;
+              &lt;div class&#x3D;&quot;stat&quot;&gt;
+                &lt;div class&#x3D;&quot;stat-value&quot;&gt;{{ getTopCandidate(sc) }}&lt;/div&gt;
+                &lt;div class&#x3D;&quot;stat-label&quot;&gt;Top Candidate&lt;/div&gt;
+              &lt;/div&gt;
+              &lt;div class&#x3D;&quot;stat&quot;&gt;
+                &lt;div class&#x3D;&quot;stat-value&quot;&gt;{{ candidateCount(sc) }}&lt;/div&gt;
+                &lt;div class&#x3D;&quot;stat-label&quot;&gt;Candidates&lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;div *ngIf&#x3D;&quot;candidateCount(sc) &gt; 0&quot; class&#x3D;&quot;ranks-and-chart&quot;&gt;
+              &lt;div class&#x3D;&quot;ranks&quot;&gt;
+                &lt;div class&#x3D;&quot;ranks-title&quot;&gt;Ranks&lt;/div&gt;
+                &lt;div
+                  *ngFor&#x3D;&quot;let rc of getRankedCandidates(sc); let idx &#x3D; index&quot;
+                  class&#x3D;&quot;rank-item&quot;
+                &gt;
+                  {{ getOrdinal(idx + 1) }} — {{ rc.name }}
+                  ({{ getCandidateVotes(sc.id, rc.name) }} votes)
+                &lt;/div&gt;
+              &lt;/div&gt;
+
+              &lt;div class&#x3D;&quot;drawer-chart&quot;&gt;
+                &lt;div
+                  echarts
+                  [options]&#x3D;&quot;getChartOptions(sc, &#x27;pie&#x27;)&quot;
+                  class&#x3D;&quot;echart&quot;
+                &gt;&lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;div class&#x3D;&quot;candidate-grid&quot;&gt;
+              &lt;div
+                *ngFor&#x3D;&quot;let candidate of sc.candidates; trackBy: trackByCandidateName&quot;
+                class&#x3D;&quot;candidate-item&quot;
+              &gt;
+                &lt;div class&#x3D;&quot;candidate-votes-text&quot;&gt;
+                  Total votes of {{ candidate.name }}:
+                  {{ getCandidateVotes(sc.id, candidate.name) }}
+                &lt;/div&gt;
+                &lt;app-campaign-card
+                  [title]&#x3D;&quot;candidate.name&quot;
+                  [description]&#x3D;&quot;candidate.bio&quot;
+                  [image]&#x3D;&quot;getImage(candidate)&quot;
+                  size&#x3D;&quot;small&quot;
+                &gt;
+                &lt;/app-campaign-card&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/ng-container&gt;
+      &lt;/div&gt;
+
+      &lt;!-- Charts View --&gt;
+      &lt;div *ngIf&#x3D;&quot;viewMode &#x3D;&#x3D;&#x3D; &#x27;charts&#x27;&quot; class&#x3D;&quot;chart-view&quot;&gt;
+        &lt;div
+          *ngFor&#x3D;&quot;let campaign of filteredCampaigns(); let i &#x3D; index; trackBy: trackByCampaignId&quot;
+          class&#x3D;&quot;campaign-charts-container&quot;
+        &gt;
+          &lt;h3 class&#x3D;&quot;campaign-title&quot;&gt;{{ campaign.title }}&lt;/h3&gt;
+          &lt;div class&#x3D;&quot;charts-grid&quot;&gt;
+            &lt;div class&#x3D;&quot;chart-item&quot;&gt;
+              &lt;h4 class&#x3D;&quot;chart-label&quot;&gt;Pie Chart&lt;/h4&gt;
+              &lt;div
+                echarts
+                [options]&#x3D;&quot;getChartOptions(campaign, &#x27;pie&#x27;)&quot;
+                class&#x3D;&quot;echart&quot;
+              &gt;&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class&#x3D;&quot;chart-item&quot;&gt;
+              &lt;h4 class&#x3D;&quot;chart-label&quot;&gt;Bar Chart&lt;/h4&gt;
+              &lt;div
+                echarts
+                [options]&#x3D;&quot;getChartOptions(campaign, &#x27;bar&#x27;)&quot;
+                class&#x3D;&quot;echart&quot;
+              &gt;&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class&#x3D;&quot;chart-item&quot;&gt;
+              &lt;h4 class&#x3D;&quot;chart-label&quot;&gt;Line Chart&lt;/h4&gt;
+              &lt;div
+                echarts
+                [options]&#x3D;&quot;getChartOptions(campaign, &#x27;line&#x27;)&quot;
+                class&#x3D;&quot;echart&quot;
+              &gt;&lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./campaign-status.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">.campaign-status-page {
+  font-family: Manrope;
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-200);
+
+  --card-size: 16rem;
+  --max-image-height: 12rem;
+  --min-image-height: 12rem;
+  --max-image-height-hover: 10rem;
+
+  --temp: blue;
+}
+
+.campaigns-container {
+  flex: 1;
+  padding: 4rem;
+  overflow-y: auto;
+}
+
+.drawer-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 999;
+
+  &amp;.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.header {
+  margin-bottom: 1.5rem;
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    color: var(--text-100);
+  }
+}
+
+.dashboard-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--text-100);
+  border-radius: 100px;
+  font-size: 1rem;
+
+  &amp;:focus {
+    border-color: #76affb;
+    outline: none;
+    box-shadow: 0 0 5px rgba(118, 175, 251, 0.4);
+  }
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  .campaign-wrapper {
+    max-width: 33%;
+  }
+
+  .manipulation-btns {
+    display: flex;
+    gap: 1rem;
+    --colorBrand90: var(--text);
+
+    .delete-btn {
+      width: 100%;
+      --colorBrand90: var(--bg-100);
+      --colorNeutralBackground1: rgb(235, 73, 15);
+      --colorNeutralBackground2: rgba(235, 73, 15, 0.2);
+
+      --colorBrandBackgroundHover: rgb(235, 73, 15);
+
+      &amp;:hover {
+        --colorNeutralBackground1: var(--bg-100);
+      }
+    }
+
+    .edit-btn {
+      --colorBrand90: var(--bg-100);
+      --colorNeutralBackground1: var(--text-100);
+      --colorNeutralBackground2: #33333320;
+      width: 100%;
+
+      &amp;:hover {
+        --colorNeutralBackground1: var(--bg-100);
+      }
+    }
+  }
+}
+
+.campaign-cards {
+  display: flex;
+  gap: 1rem;
+}
+
+.campaign-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.card-meta {
+  margin-top: 1rem;
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  flex: 1;
+  text-align: center;
+}
+
+.meta-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #222;
+}
+
+.meta-label {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+  gap: 0.5rem;
+}
+
+.side-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 420px;
+  height: 100%;
+  background: #fff;
+  box-shadow: -4px 0 15px rgba(0, 0, 0, 0.15);
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow-y: auto;
+  z-index: 1000;
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+
+  &amp;.open {
+    transform: translateX(0);
+  }
+}
+
+.drawer-inner {
+  padding: 1.5rem;
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+  }
+}
+
+.drawer-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  background: #f5f7fb;
+  border-radius: 0.75rem;
+  padding: 1rem;
+
+  .stat {
+    text-align: center;
+    flex: 1;
+
+    .stat-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #222;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: #777;
+    }
+  }
+}
+
+.drawer-chart {
+  margin-bottom: 1.5rem;
+
+  .echart {
+    width: 100%;
+    height: 280px;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    background: #fff;
+  }
+}
+
+.chart-view {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  padding: 1rem 0;
+}
+
+.campaign-charts-container {
+  background: #fff;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &amp;:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    border-color: #76affb;
+  }
+
+  &amp;::before {
+    content: &#x27;&#x27;;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #76affb 0%, #4a90e2 50%, #76affb 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &amp;:hover::before {
+    opacity: 1;
+  }
+}
+
+.campaign-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 2rem;
+  text-align: center;
+  background: linear-gradient(135deg, #76affb 0%, #4a90e2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+
+  &amp;::after {
+    content: &#x27;&#x27;;
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #76affb 0%, #4a90e2 100%);
+    border-radius: 2px;
+  }
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  align-items: start;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 769px) and (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1201px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.chart-item {
+  background: #fafbfc;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &amp;:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(118, 175, 251, 0.15);
+    border-color: #76affb;
+  }
+
+  &amp;::before {
+    content: &#x27;&#x27;;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #76affb 0%, #4a90e2 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &amp;:hover::before {
+    opacity: 1;
+  }
+}
+
+.chart-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 1rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.chart-item .echart {
+  width: 100%;
+  height: 220px;
+  border-radius: 0.75rem;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+  @media (max-width: 768px) {
+    height: 200px;
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div  class="campaign-status-page"  (window:keydown.escape)="closeCampaignDetails()">  <app-burger-menu></app-burger-menu>  <div class="campaigns-container">    <div class="header">      <h2>Campaigns</h2>    </div>    <div class="dashboard-controls">      <app-button shape="circular" appearance="outline" (click)="toggleView()">        Switch to {{ viewMode === "cards" ? "Charts" : "Cards" }} View      </app-button>      <app-button shape="circular" appearance="outline" (click)="exportCSV()">        Export CSV      </app-button>      <input        type="text"        class="search-input"        placeholder="Search campaigns..."        [(ngModel)]="searchTerm"      />    </div>    <div class="dashboard-content">      <!-- Card View -->      <div *ngIf="viewMode === \'cards\'" class="campaign-cards">        <div          *ngFor="let campaign of filteredCampaigns(); trackBy: trackByCampaignId"          class="campaign-wrapper"        >          <app-campaign-card            [title]="campaign.title"            [description]="\'Votes: \' + getTotalVotes(campaign)"            [image]="getImage(campaign)"            size="medium"            [showKebabMenu]="true"            [showEditOption]="true"            [showDeleteOption]="true"            (cardClick)="openCampaignDetails(campaign)"            (edit)="editCampaign(campaign.id)"            (delete)="deleteCampaign(campaign.id)"          >            <div class="card-meta">              <div class="meta-row">                <div class="meta-item">                  <div class="meta-value">{{ getTotalVotes(campaign) }}</div>                  <div class="meta-label">Total votes</div>                </div>                <div class="meta-item">                  <div class="meta-value">{{ getTopCandidate(campaign) }}</div>                  <div class="meta-label">Top candidate</div>                </div>                <div class="meta-item">                  <div class="meta-value">{{ candidateCount(campaign) }}</div>                  <div class="meta-label">Candidates</div>                </div>              </div>            </div>          </app-campaign-card>        </div>      </div>      <!-- Drawer Backdrop -->      <div        class="drawer-backdrop"        [class.visible]="selectedCampaign"        (click)="closeCampaignDetails()"      ></div>      <!-- Side Drawer -->      <div class="side-drawer" [class.open]="selectedCampaign">        <ng-container *ngIf="selectedCampaign as sc">          <div class="drawer-inner">            <div class="drawer-header">              <h3>{{ sc.title }}</h3>              <app-button appearance="secondary" (click)="closeCampaignDetails()">                Close              </app-button>            </div>            <div class="drawer-stats">              <div class="stat">                <div class="stat-value">{{ getTotalVotes(sc) }}</div>                <div class="stat-label">Total Votes</div>              </div>              <div class="stat">                <div class="stat-value">{{ getTopCandidate(sc) }}</div>                <div class="stat-label">Top Candidate</div>              </div>              <div class="stat">                <div class="stat-value">{{ candidateCount(sc) }}</div>                <div class="stat-label">Candidates</div>              </div>            </div>            <div *ngIf="candidateCount(sc) > 0" class="ranks-and-chart">              <div class="ranks">                <div class="ranks-title">Ranks</div>                <div                  *ngFor="let rc of getRankedCandidates(sc); let idx = index"                  class="rank-item"                >                  {{ getOrdinal(idx + 1) }} — {{ rc.name }}                  ({{ getCandidateVotes(sc.id, rc.name) }} votes)                </div>              </div>              <div class="drawer-chart">                <div                  echarts                  [options]="getChartOptions(sc, \'pie\')"                  class="echart"                ></div>              </div>            </div>            <div class="candidate-grid">              <div                *ngFor="let candidate of sc.candidates; trackBy: trackByCandidateName"                class="candidate-item"              >                <div class="candidate-votes-text">                  Total votes of {{ candidate.name }}:                  {{ getCandidateVotes(sc.id, candidate.name) }}                </div>                <app-campaign-card                  [title]="candidate.name"                  [description]="candidate.bio"                  [image]="getImage(candidate)"                  size="small"                >                </app-campaign-card>              </div>            </div>          </div>        </ng-container>      </div>      <!-- Charts View -->      <div *ngIf="viewMode === \'charts\'" class="chart-view">        <div          *ngFor="let campaign of filteredCampaigns(); let i = index; trackBy: trackByCampaignId"          class="campaign-charts-container"        >          <h3 class="campaign-title">{{ campaign.title }}</h3>          <div class="charts-grid">            <div class="chart-item">              <h4 class="chart-label">Pie Chart</h4>              <div                echarts                [options]="getChartOptions(campaign, \'pie\')"                class="echart"              ></div>            </div>            <div class="chart-item">              <h4 class="chart-label">Bar Chart</h4>              <div                echarts                [options]="getChartOptions(campaign, \'bar\')"                class="echart"              ></div>            </div>            <div class="chart-item">              <h4 class="chart-label">Line Chart</h4>              <div                echarts                [options]="getChartOptions(campaign, \'line\')"                class="echart"              ></div>            </div>          </div>        </div>      </div>    </div>  </div></div></div>'
+    var COMPONENTS = [{'name': 'App', 'selector': 'app-root'},{'name': 'BurgerMenu', 'selector': 'app-burger-menu'},{'name': 'Button', 'selector': 'app-button'},{'name': 'CampaignCard', 'selector': 'app-campaign-card'},{'name': 'CampaignStatus', 'selector': 'app-campaign-status'},{'name': 'CdkTable', 'selector': 'app-cdk-table'},{'name': 'CreateCampaign', 'selector': 'app-create-campaign'},{'name': 'DetailCards', 'selector': 'app-detail-cards'},{'name': 'Footer', 'selector': 'app-footer'},{'name': 'FuiField', 'selector': 'app-fui-field'},{'name': 'FuiInput', 'selector': 'app-fui-input'},{'name': 'Login', 'selector': 'app-login'},{'name': 'Menu', 'selector': 'app-admin-dashboard'},{'name': 'ModeratorManagement', 'selector': 'app-moderator-management'},{'name': 'NavBar', 'selector': 'app-nav-bar'},{'name': 'NotificationBlock', 'selector': 'app-notification-block'},{'name': 'Notifications', 'selector': 'app-notifications'},{'name': 'Register', 'selector': 'app-register'},{'name': 'UserCampaign', 'selector': 'app-user-campaign'},{'name': 'UserManagement', 'selector': 'app-user-management'},{'name': 'UserPage', 'selector': 'app-user-page'},{'name': 'VoteCandidate', 'selector': 'app-vote-candidate'}];
+    var DIRECTIVES = [];
+    var ACTUAL_COMPONENT = {'name': 'CampaignStatus'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'CampaignStatus.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

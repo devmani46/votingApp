@@ -1,4 +1,13 @@
-import { Component, signal, computed, effect, HostListener, inject, DestroyRef } from '@angular/core';
+import {
+  Component,
+  signal,
+  computed,
+  effect,
+  HostListener,
+  inject,
+  DestroyRef,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgxEchartsModule } from 'ngx-echarts';
@@ -8,17 +17,29 @@ import { CampaignCard } from '../../components/campaign-card/campaign-card';
 import { Button } from '../../components/button/button';
 import { BurgerMenu } from '../../components/burger-menu/burger-menu';
 
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+
 @Component({
   selector: 'app-campaign-status',
   standalone: true,
-  imports: [CommonModule, FormsModule, CampaignCard, Button, BurgerMenu, NgxEchartsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    CampaignCard,
+    Button,
+    BurgerMenu,
+    NgxEchartsModule,
+    MatPaginatorModule,
+  ],
   templateUrl: './campaign-status.html',
-  styleUrls: ['./campaign-status.scss']
+  styleUrls: ['./campaign-status.scss'],
 })
 export class CampaignStatus {
   private campaignService = inject(CampaignService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   viewMode = signal<'cards' | 'charts'>('cards');
   searchTerm = signal('');
@@ -28,7 +49,9 @@ export class CampaignStatus {
   filteredCampaigns = computed(() => {
     const term = this.searchTerm()?.trim().toLowerCase() ?? '';
     if (!term) return this.campaigns();
-    return this.campaigns().filter(c => (c.title ?? '').toLowerCase().includes(term));
+    return this.campaigns().filter((c) =>
+      (c.title ?? '').toLowerCase().includes(term)
+    );
   });
 
   constructor() {
@@ -55,8 +78,8 @@ export class CampaignStatus {
   getCandidateVotes(campaignId: string, candidateName: string): number {
     const campaign = this.campaignService.getCampaignById(campaignId);
     if (!campaign) return 0;
-    const candidate = campaign.candidates.find(c => c.name === candidateName);
-    return candidate ? (candidate.votes ?? 0) : 0;
+    const candidate = campaign.candidates.find((c) => c.name === candidateName);
+    return candidate ? candidate.votes ?? 0 : 0;
   }
 
   getTotalVotes(campaign: Campaign | null): number {
@@ -69,7 +92,7 @@ export class CampaignStatus {
     const winner = this.campaignService.getWinner(campaign);
     if (!winner) return '—';
     return winner.draw
-      ? `Draw between ${winner.candidates.map(c => c.name).join(', ')}`
+      ? `Draw between ${winner.candidates.map((c) => c.name).join(', ')}`
       : winner.candidates[0].name;
   }
 
@@ -79,7 +102,9 @@ export class CampaignStatus {
 
   getRankedCandidates(campaign: Campaign | null): Candidate[] {
     if (!campaign) return [];
-    return [...campaign.candidates].sort((a, b) => (b.votes ?? 0) - (a.votes ?? 0));
+    return [...campaign.candidates].sort(
+      (a, b) => (b.votes ?? 0) - (a.votes ?? 0)
+    );
   }
 
   getOrdinal(n: number): string {
@@ -90,9 +115,9 @@ export class CampaignStatus {
 
   getChartOptions(campaign: Campaign | null, chartType: string = 'pie') {
     if (!campaign) return { tooltip: { show: false }, series: [] };
-    const data = campaign.candidates.map(c => ({
+    const data = campaign.candidates.map((c) => ({
       name: c.name,
-      value: c.votes ?? 0
+      value: c.votes ?? 0,
     }));
 
     switch (chartType) {
@@ -118,10 +143,12 @@ export class CampaignStatus {
           radius: ['40%', '70%'],
           avoidLabelOverlap: false,
           label: { show: false },
-          emphasis: { label: { show: true, fontSize: '14', fontWeight: '600' } },
-          data
-        }
-      ]
+          emphasis: {
+            label: { show: true, fontSize: '14', fontWeight: '600' },
+          },
+          data,
+        },
+      ],
     };
   }
 
@@ -129,18 +156,24 @@ export class CampaignStatus {
     return {
       tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
       legend: { bottom: 0, left: 'center' },
-      grid: { left: '3%', right: '4%', bottom: '15%', top: '10%', containLabel: true },
-      xAxis: { type: 'category', data: data.map(d => d.name) },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '15%',
+        top: '10%',
+        containLabel: true,
+      },
+      xAxis: { type: 'category', data: data.map((d) => d.name) },
       yAxis: { type: 'value' },
       series: [
         {
           name: 'Votes',
           type: 'bar',
-          data: data.map(d => d.value),
+          data: data.map((d) => d.value),
           itemStyle: { color: '#76affb' },
-          emphasis: { itemStyle: { color: '#4a90e2' } }
-        }
-      ]
+          emphasis: { itemStyle: { color: '#4a90e2' } },
+        },
+      ],
     };
   }
 
@@ -148,20 +181,30 @@ export class CampaignStatus {
     return {
       tooltip: { trigger: 'axis' },
       legend: { bottom: 0, left: 'center' },
-      grid: { left: '3%', right: '4%', bottom: '15%', top: '10%', containLabel: true },
-      xAxis: { type: 'category', boundaryGap: false, data: data.map(d => d.name) },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '15%',
+        top: '10%',
+        containLabel: true,
+      },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: data.map((d) => d.name),
+      },
       yAxis: { type: 'value' },
       series: [
         {
           name: 'Votes',
           type: 'line',
           smooth: true,
-          data: data.map(d => d.value),
+          data: data.map((d) => d.value),
           itemStyle: { color: '#76affb' },
           areaStyle: { color: 'rgba(118, 175, 251, 0.1)' },
-          emphasis: { focus: 'series' }
-        }
-      ]
+          emphasis: { focus: 'series' },
+        },
+      ],
     };
   }
 
@@ -181,7 +224,9 @@ export class CampaignStatus {
         rows.push(`${c.id},"${c.title}","${cand.name}",${cand.votes ?? 0}`);
       }
     }
-    const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob([rows.join('\n')], {
+      type: 'text/csv;charset=utf-8;',
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -210,9 +255,27 @@ export class CampaignStatus {
 
   getImage(entity: any): string {
     if (!entity) return '/assets/default-user.png';
-    return (entity.banner_url ?? entity.photo_url ?? entity.logo ?? entity.photo ?? '/assets/default-user.png') as string;
+    return (entity.banner_url ??
+      entity.photo_url ??
+      entity.logo ??
+      entity.photo ??
+      '/assets/default-user.png') as string;
   }
 
-  closeAllKebabMenus() {
+  pageSize = 6;
+  currentPage = 0;
+
+  pagedCampaigns() {
+    const all = this.filteredCampaigns();
+    const startIndex = this.currentPage * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    return all.slice(startIndex, endIndex);
   }
+
+  onPageChange(event: PageEvent) {
+    this.pageSize = event.pageSize;
+    this.currentPage = event.pageIndex;
+  }
+
+  closeAllKebabMenus() {}
 }
