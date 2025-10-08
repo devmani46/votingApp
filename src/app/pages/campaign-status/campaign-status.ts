@@ -262,7 +262,7 @@ export class CampaignStatus {
       '/assets/default-user.png') as string;
   }
 
-  pageSize = 6;
+  pageSize = 4;
   currentPage = 0;
 
   pagedCampaigns() {

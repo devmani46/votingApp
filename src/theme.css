@@ -41,7 +41,7 @@
   --text-100: var(--text);
   --text-200: var(--text);
   --bg-100: var(--background);
-  --bg-200: #f7f4e8;
+  --bg-200: #f3efe1; /* old : f7f4e8 */
   --bg-300: #b3b3b3;
 
   /*secondary theme*/

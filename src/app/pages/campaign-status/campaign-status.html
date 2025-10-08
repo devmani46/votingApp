@@ -90,24 +90,26 @@
             </app-button>
           </div>
 
+          <div class="winner">
+            <div class="winner-label"><h2>Top Candidate</h2></div>
+            <div class="winner-value">{{ getTopCandidate(sc) }}</div>
+          </div>
+
           <div class="drawer-stats">
             <div class="stat">
-              <div class="stat-value">{{ getTotalVotes(sc) }}</div>
               <div class="stat-label">Total Votes</div>
+              <div class="stat-value">{{ getTotalVotes(sc) }}</div>
             </div>
+
             <div class="stat">
-              <div class="stat-value">{{ getTopCandidate(sc) }}</div>
-              <div class="stat-label">Top Candidate</div>
-            </div>
-            <div class="stat">
-              <div class="stat-value">{{ candidateCount(sc) }}</div>
               <div class="stat-label">Candidates</div>
+              <div class="stat-value">{{ candidateCount(sc) }}</div>
             </div>
           </div>
 
           @if (candidateCount(sc) > 0) {
           <div class="ranks-and-chart">
-            <div class="ranks">
+            <!--<div class="ranks">
               <div class="ranks-title">Ranks</div>
               @for (rc of getRankedCandidates(sc); track $index) {
               <div class="rank-item">
@@ -117,7 +119,7 @@
                 votes)
               </div>
               }
-            </div>
+            </div> -->
 
             <div class="drawer-chart">
               <div
@@ -134,7 +136,7 @@
             candidate)) {
             <div class="candidate-item">
               <div class="candidate-votes-text">
-                Total votes of {{ candidate.name }}:
+                <span class="material-symbols-outlined">arrow_circle_up</span>
                 {{ getCandidateVotes(sc.id, candidate.name) }}
               </div>
               <app-campaign-card
