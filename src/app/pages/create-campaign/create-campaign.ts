@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, HostListener, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -29,26 +29,83 @@ import { CampaignCard } from '../../components/campaign-card/campaign-card';
   templateUrl: './create-campaign.html',
   styleUrls: ['./create-campaign.scss']
 })
-export class CreateCampaign implements OnInit, OnDestroy {
+export class CreateCampaign {
   private fb = inject(FormBuilder);
   private campaignService = inject(CampaignService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
-  form!: FormGroup;
-  editMode = false;
-  campaignId: string | null = null;
+  form = this.fb.group({
+    title: ['', Validators.required],
+    description: ['', Validators.required],
+    logo: [''],
+    startDate: ['', Validators.required],
+    endDate: ['', Validators.required],
+    candidates: this.fb.array([])
+  });
 
-  logoPreview: string | null = null;
+  editMode = signal(false);
+  campaignId = signal<string | null>(null);
 
-  showDialog = false;
-  editIndex: number | null = null;
-  candidatePhotoPreview: string | null = null;
+  logoPreview = signal<string | null>(null);
+  showDialog = signal(false);
+  editIndex = signal<number | null>(null);
+  candidatePhotoPreview = signal<string | null>(null);
 
   nameControl = new FormControl('', Validators.required);
   bioControl = new FormControl('');
 
-  private readonly MAX_FILE_SIZE = 5 * 1024 * 1024;
+  readonly MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+  candidates = computed(() => this.form.get('candidates') as FormArray);
+
+  headerTitle = computed(() => (this.editMode() ? 'Edit Campaign' : 'Create Campaign'));
+  submitButtonLabel = computed(() => (this.editMode() ? 'Update Campaign' : 'Create Campaign'));
+  dialogTitle = computed(() =>
+    this.editIndex() !== null ? 'Edit Candidate' : 'Add Candidate'
+  );
+
+  constructor() {
+    effect(() => {
+      this.route.paramMap.subscribe(params => {
+        const id = params.get('id');
+        if (id) {
+          this.editMode.set(true);
+          this.campaignId.set(id);
+          const existing = this.campaignService.getCampaignById(id);
+
+          if (existing) {
+            this.form.patchValue({
+              title: existing.title,
+              description: existing.description,
+              logo: existing.banner_url,
+              startDate: this.formatDateForInput(existing.start_date),
+              endDate: this.formatDateForInput(existing.end_date)
+            });
+            this.logoPreview.set(existing.banner_url);
+
+            existing.candidates.forEach(c => {
+              this.candidates().push(
+                this.fb.group({
+                  id: [c.id],
+                  name: [c.name, Validators.required],
+                  bio: [c.bio],
+                  photo: [c.photo_url]
+                })
+              );
+            });
+          }
+        }
+      });
+    });
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleEsc(event: KeyboardEvent) {
+    if (event.key === 'Escape' && this.showDialog()) {
+      this.closeDialog();
+    }
+  }
 
   private formatDateForInput(isoDate: string): string {
     if (!isoDate) return '';
@@ -56,126 +113,55 @@ export class CreateCampaign implements OnInit, OnDestroy {
       const date = new Date(isoDate);
       if (isNaN(date.getTime())) return '';
       return date.toISOString().split('T')[0];
-    } catch (error) {
-      console.error('Error formatting date:', error);
+    } catch {
       return '';
     }
   }
 
   private validateFileSize(file: File): boolean {
     if (file.size > this.MAX_FILE_SIZE) {
-      alert(`File size exceeds the maximum limit of ${this.MAX_FILE_SIZE / (1024 * 1024)}MB. Please choose a smaller file.`);
+      alert(`File size exceeds ${this.MAX_FILE_SIZE / (1024 * 1024)}MB.`);
       return false;
     }
     return true;
   }
 
-  private formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  }
-
-  ngOnInit() {
-    this.form = this.fb.group({
-      title: ['', Validators.required],
-      description: ['', Validators.required],
-      logo: [''],
-          startDate: ['', Validators.required],
-          endDate: ['', Validators.required],
-      candidates: this.fb.array([])
-    });
-
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
-      if (id) {
-        this.editMode = true;
-        this.campaignId = id;
-        const existing = this.campaignService.getCampaignById(id);
-
-        if (existing) {
-          this.form.patchValue({
-            title: existing.title,
-            description: existing.description,
-            logo: existing.banner_url,
-            startDate: this.formatDateForInput(existing.start_date),
-            endDate: this.formatDateForInput(existing.end_date)
-          });
-          this.logoPreview = existing.banner_url;
-
-          existing.candidates.forEach(c => {
-            this.candidates.push(
-              this.fb.group({
-                id: [c.id],
-                name: [c.name, Validators.required],
-                bio: [c.bio],
-                photo: [c.photo_url]
-              })
-            );
-          });
-        }
-      }
-    });
-
-    document.addEventListener('keydown', this.handleEsc);
-  }
-
-  ngOnDestroy() {
-    document.removeEventListener('keydown', this.handleEsc);
-  }
-
-  get candidates() {
-    return this.form.get('candidates') as FormArray;
-  }
-
   onLogoSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
-      if (!this.validateFileSize(file)) {
-        (event.target as HTMLInputElement).value = '';
-        return;
-      }
-
+    if (file && this.validateFileSize(file)) {
       const reader = new FileReader();
       reader.onload = () => {
-        this.logoPreview = reader.result as string;
-        this.form.patchValue({ logo: this.logoPreview });
+        const result = reader.result as string;
+        this.logoPreview.set(result);
+        this.form.patchValue({ logo: result });
       };
       reader.readAsDataURL(file);
     }
   }
 
   openDialog(index: number | null = null) {
-    this.showDialog = true;
-    this.editIndex = index;
+    this.showDialog.set(true);
+    this.editIndex.set(index);
 
     if (index !== null) {
-      const candidate = this.candidates.at(index).value;
+      const candidate = this.candidates().at(index).value;
       this.nameControl.setValue(candidate.name);
       this.bioControl.setValue(candidate.bio);
-      this.candidatePhotoPreview = candidate.photo;
+      this.candidatePhotoPreview.set(candidate.photo);
     } else {
       this.nameControl.reset();
       this.bioControl.reset();
-      this.candidatePhotoPreview = null;
+      this.candidatePhotoPreview.set(null);
     }
   }
 
   closeDialog() {
-    this.showDialog = false;
-    this.editIndex = null;
-      this.nameControl.reset();
-      this.bioControl.reset();
-      this.candidatePhotoPreview = null;
+    this.showDialog.set(false);
+    this.editIndex.set(null);
+    this.nameControl.reset();
+    this.bioControl.reset();
+    this.candidatePhotoPreview.set(null);
   }
-
-  handleEsc = (event: KeyboardEvent) => {
-    if (event.key === 'Escape' && this.showDialog) {
-      this.closeDialog();
-    }
-  };
 
   closeDialogOnBackdrop(event: MouseEvent) {
     if (event.target === event.currentTarget) {
@@ -185,59 +171,48 @@ export class CreateCampaign implements OnInit, OnDestroy {
 
   onCandidatePhotoSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
-      if (!this.validateFileSize(file)) {
-        (event.target as HTMLInputElement).value = '';
-        return;
-      }
-
+    if (file && this.validateFileSize(file)) {
       const reader = new FileReader();
       reader.onload = () => {
-        this.candidatePhotoPreview = reader.result as string;
-
-        if (this.editIndex !== null) {
-          this.candidates.at(this.editIndex).patchValue({
-            photo: this.candidatePhotoPreview
-          });
+        const result = reader.result as string;
+        this.candidatePhotoPreview.set(result);
+        if (this.editIndex() !== null) {
+          this.candidates().at(this.editIndex()!).patchValue({ photo: result });
         }
       };
       reader.readAsDataURL(file);
     }
   }
 
-
-
   saveCandidate() {
     const candidate = {
       name: this.nameControl.value ?? '',
       bio: this.bioControl.value ?? '',
-      photo: this.candidatePhotoPreview ?? ''
+      photo: this.candidatePhotoPreview() ?? ''
     };
 
-    if (this.editIndex !== null) {
-      this.candidates.at(this.editIndex).patchValue(candidate);
+    if (this.editIndex() !== null) {
+      this.candidates().at(this.editIndex()!).patchValue(candidate);
     } else {
-      this.candidates.push(this.fb.group(candidate));
+      this.candidates().push(this.fb.group(candidate));
     }
 
     this.closeDialog();
   }
 
   async deleteCandidate(index: number) {
-    if (this.editMode && this.campaignId && index >= 0 && index < this.candidates.length) {
-      const candidate = this.candidates.at(index).value;
+    if (this.editMode() && this.campaignId() && index >= 0 && index < this.candidates().length) {
+      const candidate = this.candidates().at(index).value;
       if (candidate.id) {
         try {
-          await this.campaignService.deleteCandidate(this.campaignId, candidate.id).toPromise();
-          this.candidates.removeAt(index);
-        } catch (error) {
-          console.error('Failed to delete candidate:', error);
-        }
+          await this.campaignService.deleteCandidate(this.campaignId()!, candidate.id).toPromise();
+          this.candidates().removeAt(index);
+        } catch {}
       } else {
-        this.candidates.removeAt(index);
+        this.candidates().removeAt(index);
       }
     } else {
-      this.candidates.removeAt(index);
+      this.candidates().removeAt(index);
     }
   }
 
@@ -247,10 +222,7 @@ export class CreateCampaign implements OnInit, OnDestroy {
   }
 
   async submitForm() {
-    if (this.form.invalid) {
-      console.error('Form is invalid:', this.form.errors);
-      return;
-    }
+    if (this.form.invalid) return;
 
     const formValue = this.form.value;
     const campaignData = {
@@ -261,31 +233,30 @@ export class CreateCampaign implements OnInit, OnDestroy {
       end_date: formValue.endDate
     };
 
-
     try {
-      if (this.editMode && this.campaignId !== null) {
-        await this.campaignService.updateCampaign(this.campaignId, campaignData).toPromise();
+      if (this.editMode() && this.campaignId() !== null) {
+        await this.campaignService.updateCampaign(this.campaignId()!, campaignData).toPromise();
 
-        const existingCampaign = this.campaignService.getCampaignById(this.campaignId);
+        const existingCampaign = this.campaignService.getCampaignById(this.campaignId()!);
         if (existingCampaign) {
           const existingCandidates = existingCampaign.candidates || [];
           const formCandidates = formValue.candidates || [];
 
           for (const existingCandidate of existingCandidates) {
             if (!formCandidates.find((c: any) => c.id === existingCandidate.id)) {
-              await this.campaignService.deleteCandidate(this.campaignId, existingCandidate.id).toPromise();
+              await this.campaignService.deleteCandidate(this.campaignId()!, existingCandidate.id).toPromise();
             }
           }
 
           for (const c of formCandidates) {
             if (c.id) {
-              await this.campaignService.updateCandidate(this.campaignId, c.id, {
+              await this.campaignService.updateCandidate(this.campaignId()!, c.id, {
                 name: c.name,
                 bio: c.bio || null,
                 photo_url: c.photo || null
               }).toPromise();
             } else {
-              await this.campaignService.addCandidate(this.campaignId, {
+              await this.campaignService.addCandidate(this.campaignId()!, {
                 name: c.name,
                 bio: c.bio || null,
                 photo_url: c.photo || null
@@ -298,10 +269,7 @@ export class CreateCampaign implements OnInit, OnDestroy {
         this.router.navigate(['/campaign-status']);
       } else {
         const createdCampaign = await this.campaignService.addCampaign(campaignData).toPromise();
-
-        if (!createdCampaign || !createdCampaign.id) {
-          throw new Error('Created campaign is undefined or missing id');
-        }
+        if (!createdCampaign || !createdCampaign.id) throw new Error('Missing ID');
         for (const c of formValue.candidates) {
           await this.campaignService.addCandidate(createdCampaign.id, {
             name: c.name,
@@ -309,12 +277,9 @@ export class CreateCampaign implements OnInit, OnDestroy {
             photo_url: c.photo || null
           }).toPromise();
         }
-
         this.campaignService['loadCampaigns']();
         this.router.navigate(['/campaign-status']);
       }
-    } catch (err) {
-      console.error('Error during campaign create/update:', err);
-    }
+    } catch {}
   }
 }

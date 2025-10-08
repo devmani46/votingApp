@@ -3,9 +3,10 @@
 
   <div class="create-form">
     <div class="header">
-      <h2>{{ editMode ? "Edit Campaign" : "Create Campaign" }}</h2>
+      <h2>{{ headerTitle() }}</h2>
       <img class="admin-photo" src="/assets/admin.png" alt="Admin" />
     </div>
+
     <form [formGroup]="form" (ngSubmit)="submitForm()">
       <div class="photo-divide">
         <app-fui-input
@@ -35,9 +36,9 @@
         </div>
 
         <div class="candidates-list">
-          <ng-container *ngFor="let c of candidates.controls; let i = index">
+          @for (c of candidates().controls; track $index) {
             <app-campaign-card
-              [id]="i.toString()"
+              [id]="$index.toString()"
               [title]="c.value.name"
               [description]="c.value.bio"
               [image]="c.value.photo"
@@ -46,19 +47,16 @@
               [showKebabMenu]="true"
               [showEditOption]="true"
               [showDeleteOption]="true"
-              (edit)="openDialog(i)"
-              (delete)="onCandidateDelete(i.toString())"
-            >
-            </app-campaign-card>
-          </ng-container>
+              (edit)="openDialog($index)"
+              (delete)="onCandidateDelete($index.toString())"
+            ></app-campaign-card>
+          }
         </div>
 
-        <ng-container *ngIf="showDialog">
+        @if (showDialog()) {
           <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">
             <div class="dialog-content" (click)="$event.stopPropagation()">
-              <h3>
-                {{ editIndex !== null ? "Edit Candidate" : "Add Candidate" }}
-              </h3>
+              <h3>{{ dialogTitle() }}</h3>
 
               <div class="candidate-form">
                 <div class="candidate-form-divided">
@@ -75,36 +73,32 @@
                       class="choose-photo-btn"
                       (click)="candidateFile.click()"
                     >
-                      <ng-container *ngIf="candidatePhotoPreview; else addPhoto">
+                      @if (candidatePhotoPreview()) {
                         <img
                           class="candidate-photo"
-                          [src]="candidatePhotoPreview"
+                          [src]="candidatePhotoPreview()"
                           alt="Candidate Photo"
                         />
-                      </ng-container>
-                      <ng-template #addPhoto>
-                        <span class="material-symbols-outlined"
-                          >add_photo_alternate</span
-                        >
+                      } @else {
+                        <span class="material-symbols-outlined">add_photo_alternate</span>
                         <h2>Add Photo</h2>
-                      </ng-template>
+                      }
                     </button>
                   </div>
 
                   <div class="candidate-details">
-                    <label for="name">Enter your name:</label>
+                    <label>Enter your name:</label>
                     <app-fui-input
                       [formControl]="nameControl"
                       placeholder="Name"
                     ></app-fui-input>
 
-                    <label for="bio">Enter your bio:</label>
+                    <label>Enter your bio:</label>
                     <textarea
                       class="bio-box"
                       [formControl]="bioControl"
                       placeholder="Bio"
                     ></textarea>
-
                   </div>
                 </div>
               </div>
@@ -119,7 +113,7 @@
               </div>
             </div>
           </div>
-        </ng-container>
+        }
 
         <div class="row dates">
           <div class="start-date">
@@ -133,9 +127,10 @@
         </div>
 
         <app-button size="large" type="submit" appearance="primary">
-          {{ editMode ? "Update Campaign" : "Create Campaign" }}
+          {{ submitButtonLabel() }}
         </app-button>
       </div>
+
       <div class="row add-banner">
         <input
           type="file"
@@ -145,15 +140,14 @@
           #logoInput
         />
         <button class="image-upload" type="button" (click)="logoInput.click()">
-          <ng-container *ngIf="logoPreview; else addBannerPhoto">
+          @if (logoPreview()) {
             <div class="logo-preview">
-              <img [src]="logoPreview" alt="Campaign Logo" />
+              <img [src]="logoPreview()" alt="Campaign Logo" />
             </div>
-          </ng-container>
-          <ng-template #addBannerPhoto>
+          } @else {
             <span class="material-symbols-outlined">add_photo_alternate</span>
             <p>Add banner photo</p>
-          </ng-template>
+          }
         </button>
       </div>
     </form>
