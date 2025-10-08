@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, signal, computed, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -6,6 +6,7 @@ import {
   Validators,
   FormControl,
 } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FuiInput } from '../../components/fui-input/fui-input';
 import { Button } from '../../components/button/button';
 import { BurgerMenu } from '../../components/burger-menu/burger-menu';
@@ -29,14 +30,15 @@ type SortDirection = 'asc' | 'desc';
   templateUrl: './moderator-management.html',
   styleUrls: ['./moderator-management.scss'],
 })
-export class ModeratorManagement implements OnInit, OnDestroy {
+export class ModeratorManagement {
   private fb = inject(FormBuilder);
   private moderatorService = inject(ModeratorService);
 
-  moderators: Moderator[] = [];
-  filteredModerators: Moderator[] = [];
-  showDialog = false;
-  editId: string | null = null;
+  moderators = signal<Moderator[]>([]);
+  showDialog = signal(false);
+  editId = signal<string | null>(null);
+  sortField = signal<SortField>('first_name');
+  sortDirection = signal<SortDirection>('asc');
 
   firstNameControl = new FormControl('', Validators.required);
   lastNameControl = new FormControl('', Validators.required);
@@ -45,8 +47,7 @@ export class ModeratorManagement implements OnInit, OnDestroy {
   passwordControl = new FormControl('', Validators.required);
 
   searchControl = new FormControl('');
-  sortField: SortField = 'first_name';
-  sortDirection: SortDirection = 'asc';
+  searchValue = toSignal(this.searchControl.valueChanges, { initialValue: '' });
 
   displayedColumns: string[] = [
     'username',
@@ -56,33 +57,44 @@ export class ModeratorManagement implements OnInit, OnDestroy {
     'actions',
   ];
 
-  ngOnInit() {
-    this.loadModerators();
+  filteredModerators = computed(() => {
+    const search = this.searchValue()?.toLowerCase() || '';
+    let filtered = this.moderators().filter(
+      (mod) =>
+        mod.first_name.toLowerCase().includes(search) ||
+        mod.last_name.toLowerCase().includes(search) ||
+        mod.username.toLowerCase().includes(search) ||
+        mod.email.toLowerCase().includes(search)
+    );
 
-    this.searchControl.valueChanges.subscribe(() => {
-      this.applyFilters();
+    filtered.sort((a, b) => {
+      const valA = a[this.sortField()].toLowerCase();
+      const valB = b[this.sortField()].toLowerCase();
+
+      if (valA < valB) return this.sortDirection() === 'asc' ? -1 : 1;
+      if (valA > valB) return this.sortDirection() === 'asc' ? 1 : -1;
+      return 0;
     });
 
-    document.addEventListener('keydown', this.handleEsc);
-  }
+    return filtered;
+  });
 
-  ngOnDestroy() {
-    document.removeEventListener('keydown', this.handleEsc);
+  constructor() {
+    this.loadModerators();
   }
 
   loadModerators() {
     this.moderatorService.getAll().subscribe(moderators => {
-      this.moderators = moderators;
-      this.applyFilters();
+      this.moderators.set(moderators);
     });
   }
 
   openDialog(id: string | null = null) {
-    this.showDialog = true;
-    this.editId = id;
+    this.showDialog.set(true);
+    this.editId.set(id);
 
     if (id !== null) {
-      const mod = this.moderators.find(m => m.id === id);
+      const mod = this.moderators().find(m => m.id === id);
       if (mod) {
         this.firstNameControl.setValue(mod.first_name);
         this.lastNameControl.setValue(mod.last_name);
@@ -98,19 +110,20 @@ export class ModeratorManagement implements OnInit, OnDestroy {
   }
 
   closeDialog() {
-    this.showDialog = false;
-    this.editId = null;
+    this.showDialog.set(false);
+    this.editId.set(null);
     this.firstNameControl.reset('');
     this.lastNameControl.reset('');
     this.usernameControl.reset('');
     this.emailControl.reset('');
   }
 
-  handleEsc = (event: KeyboardEvent) => {
-    if (event.key === 'Escape' && this.showDialog) {
+  @HostListener('document:keydown', ['$event'])
+  handleEsc(event: KeyboardEvent) {
+    if (event.key === 'Escape' && this.showDialog()) {
       this.closeDialog();
     }
-  };
+  }
 
   closeDialogOnBackdrop(event: MouseEvent) {
     if (event.target === event.currentTarget) {
@@ -129,8 +142,8 @@ export class ModeratorManagement implements OnInit, OnDestroy {
 
     if (!moderatorData.first_name || !moderatorData.last_name || !moderatorData.username || !moderatorData.email || !moderatorData.password) return;
 
-    if (this.editId !== null) {
-      this.moderatorService.updateModerator(this.editId, moderatorData).subscribe(() => {
+    if (this.editId() !== null) {
+      this.moderatorService.updateModerator(this.editId()!, moderatorData).subscribe(() => {
         this.loadModerators();
         this.closeDialog();
       });
@@ -151,33 +164,12 @@ export class ModeratorManagement implements OnInit, OnDestroy {
     }
   }
 
-  applyFilters() {
-    const search = (this.searchControl.value || '').toLowerCase();
-    this.filteredModerators = this.moderators.filter(
-      (mod) =>
-        mod.first_name.toLowerCase().includes(search) ||
-        mod.last_name.toLowerCase().includes(search) ||
-        mod.username.toLowerCase().includes(search) ||
-        mod.email.toLowerCase().includes(search)
-    );
-
-    this.filteredModerators.sort((a, b) => {
-      const valA = a[this.sortField].toLowerCase();
-      const valB = b[this.sortField].toLowerCase();
-
-      if (valA < valB) return this.sortDirection === 'asc' ? -1 : 1;
-      if (valA > valB) return this.sortDirection === 'asc' ? 1 : -1;
-      return 0;
-    });
-  }
-
   changeSort(field: SortField) {
-    if (this.sortField === field) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    if (this.sortField() === field) {
+      this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
     } else {
-      this.sortField = field;
-      this.sortDirection = 'asc';
+      this.sortField.set(field);
+      this.sortDirection.set('asc');
     }
-    this.applyFilters();
   }
 }

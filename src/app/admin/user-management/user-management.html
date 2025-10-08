@@ -18,12 +18,12 @@
       </div>
     </div>
 
-    <cdk-table [dataSource]="filteredUsers" class="user-table">
+    <cdk-table [dataSource]="filteredUsers()" class="user-table">
       <ng-container cdkColumnDef="username">
         <cdk-header-cell *cdkHeaderCellDef (click)="changeSort('username')">
           Username
-          @if (sortField === 'username') {
-            <span>{{ sortDirection === "asc" ? "↑" : "↓" }}</span>
+          @if (sortField() === 'username') {
+            <span>{{ sortDirection() === "asc" ? "↑" : "↓" }}</span>
           }
         </cdk-header-cell>
         <cdk-cell *cdkCellDef="let user"> {{ user.username }} </cdk-cell>
@@ -32,8 +32,8 @@
       <ng-container cdkColumnDef="email">
         <cdk-header-cell *cdkHeaderCellDef (click)="changeSort('email')">
           Email
-          @if (sortField === 'email') {
-            <span>{{ sortDirection === "asc" ? "↑" : "↓" }}</span>
+          @if (sortField() === 'email') {
+            <span>{{ sortDirection() === "asc" ? "↑" : "↓" }}</span>
           }
         </cdk-header-cell>
         <cdk-cell *cdkCellDef="let user"> {{ user.email }} </cdk-cell>
@@ -75,17 +75,17 @@
       <cdk-row *cdkRowDef="let row; columns: displayedColumns"></cdk-row>
     </cdk-table>
 
-    @if (filteredUsers.length === 0) {
+    @if (filteredUsers().length === 0) {
       <div class="empty-state">
         <p>No users found.</p>
       </div>
     }
   </div>
 
-  @if (showDialog) {
+  @if (showDialog()) {
     <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">
       <div class="dialog-content" (click)="$event.stopPropagation()">
-        <h3>{{ editId !== null ? "Edit User" : "Add User" }}</h3>
+        <h3>{{ editId() !== null ? "Edit User" : "Add User" }}</h3>
 
         <div class="user-form">
           <label>First Name</label>

@@ -1,7 +1,4 @@
-<div
-  class="campaign-status-page"
-  (window:keydown.escape)="closeCampaignDetails()"
->
+<div class="campaign-status-page">
   <app-burger-menu></app-burger-menu>
 
   <div class="campaigns-container">
@@ -11,7 +8,7 @@
 
     <div class="dashboard-controls">
       <app-button shape="circular" appearance="outline" (click)="toggleView()">
-        Switch to {{ viewMode === "cards" ? "Charts" : "Cards" }} View
+        Switch to {{ viewMode() === "cards" ? "Charts" : "Cards" }} View
       </app-button>
 
       <app-button shape="circular" appearance="outline" (click)="exportCSV()">
@@ -22,59 +19,58 @@
         type="text"
         class="search-input"
         placeholder="Search campaigns..."
-        [(ngModel)]="searchTerm"
+        [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event)"
       />
     </div>
 
     <div class="dashboard-content">
-      <!-- Card View -->
-      <div *ngIf="viewMode === 'cards'" class="campaign-cards">
-        <div
-          *ngFor="let campaign of filteredCampaigns(); trackBy: trackByCampaignId"
-          class="campaign-wrapper"
-        >
-          <app-campaign-card
-            [title]="campaign.title"
-            [description]="'Votes: ' + getTotalVotes(campaign)"
-            [image]="getImage(campaign)"
-            size="medium"
-            [showKebabMenu]="true"
-            [showEditOption]="true"
-            [showDeleteOption]="true"
-            (cardClick)="openCampaignDetails(campaign)"
-            (edit)="editCampaign(campaign.id)"
-            (delete)="deleteCampaign(campaign.id)"
-          >
-            <div class="card-meta">
-              <div class="meta-row">
-                <div class="meta-item">
-                  <div class="meta-value">{{ getTotalVotes(campaign) }}</div>
-                  <div class="meta-label">Total votes</div>
+      @if (viewMode() === 'cards') {
+        <div class="campaign-cards">
+          @for (campaign of filteredCampaigns(); track trackByCampaignId($index, campaign)) {
+            <div class="campaign-wrapper">
+              <app-campaign-card
+                [title]="campaign.title"
+                [description]="'Votes: ' + getTotalVotes(campaign)"
+                [image]="getImage(campaign)"
+                size="medium"
+                [showKebabMenu]="true"
+                [showEditOption]="true"
+                [showDeleteOption]="true"
+                (cardClick)="openCampaignDetails(campaign)"
+                (edit)="editCampaign(campaign.id)"
+                (delete)="deleteCampaign(campaign.id)"
+              >
+                <div class="card-meta">
+                  <div class="meta-row">
+                    <div class="meta-item">
+                      <div class="meta-value">{{ getTotalVotes(campaign) }}</div>
+                      <div class="meta-label">Total votes</div>
+                    </div>
+                    <div class="meta-item">
+                      <div class="meta-value">{{ getTopCandidate(campaign) }}</div>
+                      <div class="meta-label">Top candidate</div>
+                    </div>
+                    <div class="meta-item">
+                      <div class="meta-value">{{ candidateCount(campaign) }}</div>
+                      <div class="meta-label">Candidates</div>
+                    </div>
+                  </div>
                 </div>
-                <div class="meta-item">
-                  <div class="meta-value">{{ getTopCandidate(campaign) }}</div>
-                  <div class="meta-label">Top candidate</div>
-                </div>
-                <div class="meta-item">
-                  <div class="meta-value">{{ candidateCount(campaign) }}</div>
-                  <div class="meta-label">Candidates</div>
-                </div>
-              </div>
+              </app-campaign-card>
             </div>
-          </app-campaign-card>
+          }
         </div>
-      </div>
+      }
 
-      <!-- Drawer Backdrop -->
       <div
         class="drawer-backdrop"
-        [class.visible]="selectedCampaign"
+        [class.visible]="!!selectedCampaign()"
         (click)="closeCampaignDetails()"
       ></div>
 
-      <!-- Side Drawer -->
-      <div class="side-drawer" [class.open]="selectedCampaign">
-        <ng-container *ngIf="selectedCampaign as sc">
+      <div class="side-drawer" [class.open]="!!selectedCampaign()">
+        @if (selectedCampaign(); as sc) {
           <div class="drawer-inner">
             <div class="drawer-header">
               <h3>{{ sc.title }}</h3>
@@ -98,84 +94,84 @@
               </div>
             </div>
 
-            <div *ngIf="candidateCount(sc) > 0" class="ranks-and-chart">
-              <div class="ranks">
-                <div class="ranks-title">Ranks</div>
-                <div
-                  *ngFor="let rc of getRankedCandidates(sc); let idx = index"
-                  class="rank-item"
-                >
-                  {{ getOrdinal(idx + 1) }} — {{ rc.name }}
-                  ({{ getCandidateVotes(sc.id, rc.name) }} votes)
+            @if (candidateCount(sc) > 0) {
+              <div class="ranks-and-chart">
+                <div class="ranks">
+                  <div class="ranks-title">Ranks</div>
+                  @for (rc of getRankedCandidates(sc); track $index) {
+                    <div class="rank-item">
+                      {{ getOrdinal($index + 1) }} — {{ rc.name }}
+                      ({{ getCandidateVotes(sc.id, rc.name) }} votes)
+                    </div>
+                  }
+                </div>
+
+                <div class="drawer-chart">
+                  <div
+                    echarts
+                    [options]="getChartOptions(sc, 'pie')"
+                    class="echart"
+                  ></div>
                 </div>
               </div>
-
-              <div class="drawer-chart">
-                <div
-                  echarts
-                  [options]="getChartOptions(sc, 'pie')"
-                  class="echart"
-                ></div>
-              </div>
-            </div>
+            }
 
             <div class="candidate-grid">
-              <div
-                *ngFor="let candidate of sc.candidates; trackBy: trackByCandidateName"
-                class="candidate-item"
-              >
-                <div class="candidate-votes-text">
-                  Total votes of {{ candidate.name }}:
-                  {{ getCandidateVotes(sc.id, candidate.name) }}
+              @for (candidate of sc.candidates; track trackByCandidateName($index, candidate)) {
+                <div class="candidate-item">
+                  <div class="candidate-votes-text">
+                    Total votes of {{ candidate.name }}:
+                    {{ getCandidateVotes(sc.id, candidate.name) }}
+                  </div>
+                  <app-campaign-card
+                    [title]="candidate.name"
+                    [description]="candidate.bio"
+                    [image]="getImage(candidate)"
+                    size="small"
+                  >
+                  </app-campaign-card>
                 </div>
-                <app-campaign-card
-                  [title]="candidate.name"
-                  [description]="candidate.bio"
-                  [image]="getImage(candidate)"
-                  size="small"
-                >
-                </app-campaign-card>
-              </div>
+              }
             </div>
           </div>
-        </ng-container>
+        }
       </div>
 
-      <!-- Charts View -->
-      <div *ngIf="viewMode === 'charts'" class="chart-view">
-        <div
-          *ngFor="let campaign of filteredCampaigns(); let i = index; trackBy: trackByCampaignId"
-          class="campaign-charts-container"
-        >
-          <h3 class="campaign-title">{{ campaign.title }}</h3>
-          <div class="charts-grid">
-            <div class="chart-item">
-              <h4 class="chart-label">Pie Chart</h4>
-              <div
-                echarts
-                [options]="getChartOptions(campaign, 'pie')"
-                class="echart"
-              ></div>
+      @if (viewMode() === 'charts') {
+        <div class="chart-view">
+          @for (campaign of filteredCampaigns(); track trackByCampaignId($index, campaign)) {
+            <div class="campaign-charts-container">
+              <h3 class="campaign-title">{{ campaign.title }}</h3>
+              <div class="charts-grid">
+                <div class="chart-item">
+                  <h4 class="chart-label">Pie Chart</h4>
+                  <div
+                    echarts
+                    [options]="getChartOptions(campaign, 'pie')"
+                    class="echart"
+                  ></div>
+                </div>
+                <div class="chart-item">
+                  <h4 class="chart-label">Bar Chart</h4>
+                  <div
+                    echarts
+                    [options]="getChartOptions(campaign, 'bar')"
+                    class="echart"
+                  ></div>
+                </div>
+                <div class="chart-item">
+                  <h4 class="chart-label">Line Chart</h4>
+                  <div
+                    echarts
+                    [options]="getChartOptions(campaign, 'line')"
+                    class="echart"
+                  ></div>
+                </div>
+              </div>
             </div>
-            <div class="chart-item">
-              <h4 class="chart-label">Bar Chart</h4>
-              <div
-                echarts
-                [options]="getChartOptions(campaign, 'bar')"
-                class="echart"
-              ></div>
-            </div>
-            <div class="chart-item">
-              <h4 class="chart-label">Line Chart</h4>
-              <div
-                echarts
-                [options]="getChartOptions(campaign, 'line')"
-                class="echart"
-              ></div>
-            </div>
-          </div>
+          }
         </div>
-      </div>
+      }
     </div>
   </div>
 </div>

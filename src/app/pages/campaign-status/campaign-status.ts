@@ -1,4 +1,4 @@
-import { Component, OnDestroy, inject } from '@angular/core';
+import { Component, signal, computed, effect, HostListener, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgxEchartsModule } from 'ngx-echarts';
@@ -15,37 +15,42 @@ import { BurgerMenu } from '../../components/burger-menu/burger-menu';
   templateUrl: './campaign-status.html',
   styleUrls: ['./campaign-status.scss']
 })
-export class CampaignStatus implements OnDestroy {
+export class CampaignStatus {
   private campaignService = inject(CampaignService);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
-  viewMode: 'cards' | 'charts' = 'cards';
-  searchTerm = '';
-  selectedCampaign: Campaign | null = null;
+  viewMode = signal<'cards' | 'charts'>('cards');
+  searchTerm = signal('');
+  selectedCampaign = signal<Campaign | null>(null);
   campaigns = this.campaignService.campaigns;
+
+  filteredCampaigns = computed(() => {
+    const term = this.searchTerm()?.trim().toLowerCase() ?? '';
+    if (!term) return this.campaigns();
+    return this.campaigns().filter(c => (c.title ?? '').toLowerCase().includes(term));
+  });
 
   constructor() {
     window.addEventListener('storage', this.handleStorageChange);
+    this.destroyRef.onDestroy(() => {
+      window.removeEventListener('storage', this.handleStorageChange);
+    });
   }
 
-  ngOnDestroy() {
-    window.removeEventListener('storage', this.handleStorageChange);
+  @HostListener('window:keydown.escape')
+  closeCampaignDetails() {
+    this.selectedCampaign.set(null);
   }
 
   toggleView() {
-    this.viewMode = this.viewMode === 'cards' ? 'charts' : 'cards';
+    this.viewMode.set(this.viewMode() === 'cards' ? 'charts' : 'cards');
     this.closeCampaignDetails();
   }
 
   handleStorageChange = () => {
     this.campaignService.refreshCampaigns();
   };
-
-  filteredCampaigns(): Campaign[] {
-    const term = this.searchTerm?.trim().toLowerCase() ?? '';
-    if (!term) return this.campaigns();
-    return this.campaigns().filter(c => (c.title ?? '').toLowerCase().includes(term));
-  }
 
   getCandidateVotes(campaignId: string, candidateName: string): number {
     const campaign = this.campaignService.getCampaignById(campaignId);
@@ -120,8 +125,6 @@ export class CampaignStatus implements OnDestroy {
     };
   }
 
-
-
   private getBarChartOptions(campaign: Campaign, data: any[]) {
     return {
       tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
@@ -162,19 +165,13 @@ export class CampaignStatus implements OnDestroy {
     };
   }
 
-
-
   getChartTypeForIndex(index: number): string {
     const chartTypes = ['pie', 'bar', 'line'];
     return chartTypes[index % chartTypes.length];
   }
 
   openCampaignDetails(campaign: Campaign) {
-    this.selectedCampaign = campaign;
-  }
-
-  closeCampaignDetails() {
-    this.selectedCampaign = null;
+    this.selectedCampaign.set(campaign);
   }
 
   exportCSV() {
@@ -199,7 +196,7 @@ export class CampaignStatus implements OnDestroy {
 
   deleteCampaign(id: string) {
     this.campaignService.deleteCampaign(id).subscribe(() => {
-      if (this.selectedCampaign?.id === id) this.selectedCampaign = null;
+      if (this.selectedCampaign()?.id === id) this.selectedCampaign.set(null);
     });
   }
 
@@ -217,10 +214,5 @@ export class CampaignStatus implements OnDestroy {
   }
 
   closeAllKebabMenus() {
-    // This method will be called when clicking outside kebab menus
-    // The actual closing logic will be handled by the campaign cards themselves
-    // through their closeKebabMenu() method when they detect clicks outside
   }
 }
-
-

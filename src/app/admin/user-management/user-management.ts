@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, signal, computed, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -6,6 +6,7 @@ import {
   Validators,
   FormControl,
 } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FuiInput } from '../../components/fui-input/fui-input';
 import { Button } from '../../components/button/button';
 import { BurgerMenu } from '../../components/burger-menu/burger-menu';
@@ -29,14 +30,15 @@ type SortDirection = 'asc' | 'desc';
   templateUrl: './user-management.html',
   styleUrls: ['./user-management.scss'],
 })
-export class UserManagement implements OnInit, OnDestroy {
+export class UserManagement {
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
 
-  users: User[] = [];
-  filteredUsers: User[] = [];
-  showDialog = false;
-  editId: string | null = null;
+  users = signal<User[]>([]);
+  showDialog = signal(false);
+  editId = signal<string | null>(null);
+  sortField = signal<SortField>('first_name');
+  sortDirection = signal<SortDirection>('asc');
 
   firstNameControl = new FormControl('', Validators.required);
   lastNameControl = new FormControl('', Validators.required);
@@ -45,8 +47,7 @@ export class UserManagement implements OnInit, OnDestroy {
   passwordControl = new FormControl('', Validators.required);
 
   searchControl = new FormControl('');
-  sortField: SortField = 'first_name';
-  sortDirection: SortDirection = 'asc';
+  searchValue = toSignal(this.searchControl.valueChanges, { initialValue: '' });
 
   displayedColumns: string[] = [
     'username',
@@ -56,33 +57,44 @@ export class UserManagement implements OnInit, OnDestroy {
     'actions',
   ];
 
-  ngOnInit() {
-    this.loadUsers();
+  filteredUsers = computed(() => {
+    const search = this.searchValue()?.toLowerCase() || '';
+    let filtered = this.users().filter(
+      (u) =>
+        u.first_name.toLowerCase().includes(search) ||
+        u.last_name.toLowerCase().includes(search) ||
+        u.username.toLowerCase().includes(search) ||
+        u.email.toLowerCase().includes(search)
+    );
 
-    this.searchControl.valueChanges.subscribe(() => {
-      this.applyFilters();
+    filtered.sort((a, b) => {
+      const valA = a[this.sortField()].toLowerCase();
+      const valB = b[this.sortField()].toLowerCase();
+
+      if (valA < valB) return this.sortDirection() === 'asc' ? -1 : 1;
+      if (valA > valB) return this.sortDirection() === 'asc' ? 1 : -1;
+      return 0;
     });
 
-    document.addEventListener('keydown', this.handleEsc);
-  }
+    return filtered;
+  });
 
-  ngOnDestroy() {
-    document.removeEventListener('keydown', this.handleEsc);
+  constructor() {
+    this.loadUsers();
   }
 
   loadUsers() {
     this.userService.getAll().subscribe(users => {
-      this.users = users;
-      this.applyFilters();
+      this.users.set(users);
     });
   }
 
   openDialog(id: string | null = null) {
-    this.showDialog = true;
-    this.editId = id;
+    this.showDialog.set(true);
+    this.editId.set(id);
 
     if (id !== null) {
-      const user = this.users.find(u => u.id === id);
+      const user = this.users().find(u => u.id === id);
       if (user) {
         this.firstNameControl.setValue(user.first_name);
         this.lastNameControl.setValue(user.last_name);
@@ -100,8 +112,8 @@ export class UserManagement implements OnInit, OnDestroy {
   }
 
   closeDialog() {
-    this.showDialog = false;
-    this.editId = null;
+    this.showDialog.set(false);
+    this.editId.set(null);
     this.firstNameControl.reset('');
     this.lastNameControl.reset('');
     this.usernameControl.reset('');
@@ -109,11 +121,12 @@ export class UserManagement implements OnInit, OnDestroy {
     this.passwordControl.reset('');
   }
 
-  handleEsc = (event: KeyboardEvent) => {
-    if (event.key === 'Escape' && this.showDialog) {
+  @HostListener('document:keydown', ['$event'])
+  handleEsc(event: KeyboardEvent) {
+    if (event.key === 'Escape' && this.showDialog()) {
       this.closeDialog();
     }
-  };
+  }
 
   closeDialogOnBackdrop(event: MouseEvent) {
     if (event.target === event.currentTarget) {
@@ -139,8 +152,8 @@ export class UserManagement implements OnInit, OnDestroy {
     )
       return;
 
-    if (this.editId !== null) {
-      this.userService.updateUser(this.editId, user).subscribe(() => {
+    if (this.editId() !== null) {
+      this.userService.updateUser(this.editId()!, user).subscribe(() => {
         this.loadUsers();
         this.closeDialog();
       });
@@ -160,33 +173,12 @@ export class UserManagement implements OnInit, OnDestroy {
     }
   }
 
-  applyFilters() {
-    const search = (this.searchControl.value || '').toLowerCase();
-    this.filteredUsers = this.users.filter(
-      (u) =>
-        u.first_name.toLowerCase().includes(search) ||
-        u.last_name.toLowerCase().includes(search) ||
-        u.username.toLowerCase().includes(search) ||
-        u.email.toLowerCase().includes(search)
-    );
-
-    this.filteredUsers.sort((a, b) => {
-      const valA = a[this.sortField].toLowerCase();
-      const valB = b[this.sortField].toLowerCase();
-
-      if (valA < valB) return this.sortDirection === 'asc' ? -1 : 1;
-      if (valA > valB) return this.sortDirection === 'asc' ? 1 : -1;
-      return 0;
-    });
-  }
-
   changeSort(field: SortField) {
-    if (this.sortField === field) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    if (this.sortField() === field) {
+      this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
     } else {
-      this.sortField = field;
-      this.sortDirection = 'asc';
+      this.sortField.set(field);
+      this.sortDirection.set('asc');
     }
-    this.applyFilters();
   }
 }
