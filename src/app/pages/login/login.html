@@ -1,17 +1,9 @@
 <div class="login-page">
   <div class="auth-container">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form [formGroup]="form()" (ngSubmit)="onSubmit()">
       <h2>Sign in</h2>
-      <app-fui-field
-        label="Email"
-        [errorMessage]="
-          submitted && email.hasError('required')
-            ? 'Email is required'
-            : submitted && email.hasError('email')
-            ? 'Invalid email'
-            : ''
-        "
-      >
+
+      <app-fui-field label="Email" [errorMessage]="emailError()">
         <app-fui-input
           size="large"
           placeholder="Enter your email"
@@ -20,14 +12,7 @@
         ></app-fui-input>
       </app-fui-field>
 
-      <app-fui-field
-        label="Password"
-        [errorMessage]="
-          submitted && password.hasError('required')
-            ? 'Password is required'
-            : ''
-        "
-      >
+      <app-fui-field label="Password" [errorMessage]="passwordError()">
         <app-fui-input
           size="large"
           placeholder="Enter password"
@@ -40,7 +25,7 @@
       </app-fui-field>
 
       <div class="remember-me">
-        <input type="checkbox" id="rememberMe" formControlName="rememberMe">
+        <input type="checkbox" id="rememberMe" formControlName="rememberMe" />
         <label for="rememberMe">Remember Me</label>
       </div>
 
@@ -67,7 +52,9 @@
     <div class="aesthetic">
       <img src="assets/logo.svg" alt="Logo" class="welcome-logo" />
       <h2 class="welcome-title">Welcome Back</h2>
-      <p class="welcome-text">Sign in to your account to continue your voting journey</p>
+      <p class="welcome-text">
+        Sign in to your account to continue your voting journey
+      </p>
     </div>
   </div>
 </div>

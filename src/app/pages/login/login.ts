@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Component, signal, computed } from '@angular/core';
 import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
@@ -15,7 +15,7 @@ import { AuthService } from '../../services/auth';
 type LoginForm = {
   email: FormControl<string>;
   password: FormControl<string>;
-  rememberMe?: FormControl<boolean>;
+  rememberMe: FormControl<boolean>;
 };
 
 @Component({
@@ -24,39 +24,49 @@ type LoginForm = {
   imports: [ReactiveFormsModule, RouterModule, FuiField, FuiInput, Button],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Login implements OnInit {
-  form: FormGroup<LoginForm>;
-  submitted = false;
-
-  constructor(
-    private fb: NonNullableFormBuilder,
-    private auth: AuthService
-  ) {
-    this.form = this.fb.group<LoginForm>({
+export class Login {
+  form = signal<FormGroup<LoginForm>>(
+    this.fb.group<LoginForm>({
       email: this.fb.control('', {
         validators: [Validators.required, Validators.email],
       }),
       password: this.fb.control('', { validators: [Validators.required] }),
       rememberMe: this.fb.control(false),
-    });
-  }
+    })
+  );
 
-  ngOnInit(): void {}
+  submitted = signal<boolean>(false);
+
+  email = computed(() => this.form().controls.email);
+  password = computed(() => this.form().controls.password);
+  rememberMe = computed(() => this.form().controls.rememberMe);
+
+  emailError = computed(() => {
+    if (!this.submitted()) return '';
+    if (this.email().hasError('required')) return 'Email is required';
+    if (this.email().hasError('email')) return 'Invalid email';
+    return '';
+  });
+
+  passwordError = computed(() =>
+    this.submitted() && this.password().hasError('required')
+      ? 'Password is required'
+      : ''
+  );
+
+  constructor(private fb: NonNullableFormBuilder, private auth: AuthService) {}
 
   onSubmit() {
-    this.submitted = true;
-
-    if (this.form.valid) {
-      const { email, password, rememberMe } = this.form.getRawValue();
+    this.submitted.set(true);
+    if (this.form().valid) {
+      const { email, password, rememberMe } = this.form().getRawValue();
       this.auth.login(email, password, rememberMe).subscribe({
         next: (success) => {
           if (!success) {
             alert('Invalid email or password');
           } else {
             if (rememberMe) {
-              // Extend session timeout by setting a longer expiration cookie or localStorage flag
               localStorage.setItem('rememberMe', 'true');
             } else {
               localStorage.removeItem('rememberMe');
@@ -66,18 +76,10 @@ export class Login implements OnInit {
         error: (err) => {
           console.error('Login failed:', err);
           alert('Login failed. Please check your credentials.');
-        }
+        },
       });
     } else {
-      this.form.markAllAsTouched();
+      this.form().markAllAsTouched();
     }
-  }
-
-  get email() {
-    return this.form.controls.email;
-  }
-
-  get password() {
-    return this.form.controls.password;
   }
 }
