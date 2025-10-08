@@ -1,6 +1,17 @@
-import { Component, OnInit, inject, HostListener, computed } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  HostListener,
+  computed,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { NavBar } from '../../components/nav-bar/nav-bar';
 import { Footer } from '../../components/footer/footer';
 import { Button } from '../../components/button/button';
@@ -10,13 +21,23 @@ import { CampaignService } from '../../services/campaign';
 import { AuthService } from '../../services/auth';
 import { UserService } from '../../services/user';
 import { StorageService } from '../../services/storage';
+import { NotificationBlock } from '../../components/notification-block/notification-block';
+import { NotificationService, Notification } from '../../services/notification';
 
 @Component({
   selector: 'app-user-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NavBar, Button, FuiInput, CampaignCard],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    NavBar,
+    Button,
+    FuiInput,
+    CampaignCard,
+    NotificationBlock,
+  ],
   templateUrl: './user-page.html',
-  styleUrls: ['./user-page.scss']
+  styleUrls: ['./user-page.scss'],
 })
 export class UserPage implements OnInit {
   private fb = inject(FormBuilder);
@@ -25,14 +46,37 @@ export class UserPage implements OnInit {
   private userService = inject(UserService);
   private storageService = inject(StorageService);
 
-  user: any = { photo_url: '', first_name: '', last_name: '', username: '', age: '', dob: '', email: '', bio: '' };
+  user: any = {
+    photo_url: '',
+    first_name: '',
+    last_name: '',
+    username: '',
+    age: '',
+    dob: '',
+    email: '',
+    bio: '',
+  };
   form!: FormGroup;
   showDialog = false;
   photoPreview: string | null = null;
   selectedCampaign: any = null;
   winner: any = null;
 
+  notifications: Notification[] = [];
+
+  constructor(private notificationService: NotificationService) {}
+
   ngOnInit() {
+    console.log('[Component] NotificationsComponent init');
+    this.notificationService.getNotifications().subscribe({
+      next: (data) => {
+        console.log('[Component] Notifications data:', data);
+        this.notifications = data;
+      },
+      error: (err) =>
+        console.error('[Component] Error fetching notifications:', err),
+    });
+
     this.refreshUserData();
   }
 
@@ -46,7 +90,7 @@ export class UserPage implements OnInit {
             ...freshUserData,
             firstName: freshUserData.first_name || '',
             lastName: freshUserData.last_name || '',
-            photo: freshUserData.photo_url || '/assets/admin.png'
+            photo: freshUserData.photo_url || '/assets/admin.png',
           };
 
           if (this.user.dob) {
@@ -59,8 +103,14 @@ export class UserPage implements OnInit {
             firstName: [this.user.firstName || '', Validators.required],
             lastName: [this.user.lastName || '', Validators.required],
             username: [this.user.username || '', Validators.required],
-            dob: [this.formatDateForInput(this.user.dob) || '', Validators.required],
-            email: [this.user.email || '', [Validators.required, Validators.email]],
+            dob: [
+              this.formatDateForInput(this.user.dob) || '',
+              Validators.required,
+            ],
+            email: [
+              this.user.email || '',
+              [Validators.required, Validators.email],
+            ],
             bio: [this.user.bio || ''],
             password: [''],
             confirmPassword: [''],
@@ -75,7 +125,10 @@ export class UserPage implements OnInit {
               ...currentUser,
               firstName: currentUser.first_name || currentUser.firstName || '',
               lastName: currentUser.last_name || currentUser.lastName || '',
-              photo: currentUser.photo_url || currentUser.photo || '/assets/admin.png'
+              photo:
+                currentUser.photo_url ||
+                currentUser.photo ||
+                '/assets/admin.png',
             };
 
             if (this.user.dob) {
@@ -86,8 +139,14 @@ export class UserPage implements OnInit {
               firstName: [this.user.firstName || '', Validators.required],
               lastName: [this.user.lastName || '', Validators.required],
               username: [this.user.username || '', Validators.required],
-              dob: [this.formatDateForInput(this.user.dob) || '', Validators.required],
-              email: [this.user.email || '', [Validators.required, Validators.email]],
+              dob: [
+                this.formatDateForInput(this.user.dob) || '',
+                Validators.required,
+              ],
+              email: [
+                this.user.email || '',
+                [Validators.required, Validators.email],
+              ],
               bio: [this.user.bio || ''],
               password: [''],
               confirmPassword: [''],
@@ -95,7 +154,7 @@ export class UserPage implements OnInit {
 
             this.photoPreview = this.user.photo;
           }
-        }
+        },
       });
     } else {
       if (currentUser) {
@@ -104,7 +163,8 @@ export class UserPage implements OnInit {
           ...currentUser,
           firstName: currentUser.first_name || currentUser.firstName || '',
           lastName: currentUser.last_name || currentUser.lastName || '',
-          photo: currentUser.photo_url || currentUser.photo || '/assets/admin.png'
+          photo:
+            currentUser.photo_url || currentUser.photo || '/assets/admin.png',
         };
 
         if (this.user.dob) {
@@ -115,8 +175,14 @@ export class UserPage implements OnInit {
           firstName: [this.user.firstName || '', Validators.required],
           lastName: [this.user.lastName || '', Validators.required],
           username: [this.user.username || '', Validators.required],
-          dob: [this.formatDateForInput(this.user.dob) || '', Validators.required],
-          email: [this.user.email || '', [Validators.required, Validators.email]],
+          dob: [
+            this.formatDateForInput(this.user.dob) || '',
+            Validators.required,
+          ],
+          email: [
+            this.user.email || '',
+            [Validators.required, Validators.email],
+          ],
           bio: [this.user.bio || ''],
           password: [''],
           confirmPassword: [''],
@@ -140,15 +206,18 @@ export class UserPage implements OnInit {
 
     // Filter campaigns to only show past campaigns where user has participated
     return campaigns
-      .filter(c => {
+      .filter((c) => {
         const endDate = new Date(c.end_date);
         const hasEnded = endDate < today;
-        const hasParticipated = this.storageService.hasVotedForCampaign(userEmail, c.id);
+        const hasParticipated = this.storageService.hasVotedForCampaign(
+          userEmail,
+          c.id
+        );
         return hasEnded && hasParticipated;
       })
-      .map(c => ({
+      .map((c) => ({
         ...c,
-        winner: this.campaignService.getWinner(c)
+        winner: this.campaignService.getWinner(c),
       }));
   });
 
@@ -205,15 +274,23 @@ export class UserPage implements OnInit {
     return '';
   }
 
-  openDialog() { this.showDialog = true; }
-  closeDialog() { this.showDialog = false; }
-  closeDialogOnBackdrop(event: MouseEvent) { if (event.target === event.currentTarget) this.closeDialog(); }
+  openDialog() {
+    this.showDialog = true;
+  }
+  closeDialog() {
+    this.showDialog = false;
+  }
+  closeDialogOnBackdrop(event: MouseEvent) {
+    if (event.target === event.currentTarget) this.closeDialog();
+  }
 
   onPhotoSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = () => { this.photoPreview = reader.result as string; };
+      reader.onload = () => {
+        this.photoPreview = reader.result as string;
+      };
       reader.readAsDataURL(file);
     }
   }
@@ -240,7 +317,10 @@ export class UserPage implements OnInit {
       let age = today.getFullYear() - birthDate.getFullYear();
       const monthDiff = today.getMonth() - birthDate.getMonth();
 
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < birthDate.getDate())
+      ) {
         age--;
       }
 
@@ -286,7 +366,8 @@ export class UserPage implements OnInit {
 
     if (this.form.value.password || this.form.value.confirmPassword) {
       if (this.form.value.password !== this.form.value.confirmPassword) {
-        alert('Passwords do not match'); return;
+        alert('Passwords do not match');
+        return;
       }
     }
 
@@ -312,7 +393,7 @@ export class UserPage implements OnInit {
             ...userData,
             firstName: userData.first_name,
             lastName: userData.last_name,
-            photo: userData.photo_url
+            photo: userData.photo_url,
           });
 
           this.user = {
@@ -320,7 +401,7 @@ export class UserPage implements OnInit {
             ...updatedUser,
             firstName: updatedUser.first_name || '',
             lastName: updatedUser.last_name || '',
-            photo: updatedUser.photo_url || '/assets/admin.png'
+            photo: updatedUser.photo_url || '/assets/admin.png',
           };
 
           this.form.patchValue({
@@ -331,12 +412,12 @@ export class UserPage implements OnInit {
             email: this.user.email,
             bio: this.user.bio,
             password: '',
-            confirmPassword: ''
+            confirmPassword: '',
           });
 
           // Dispatch custom event to notify other components
           const customEvent = new CustomEvent('userProfileUpdated', {
-            detail: { user: updatedUser }
+            detail: { user: updatedUser },
           });
           window.dispatchEvent(customEvent);
           this.closeDialog();
@@ -347,7 +428,7 @@ export class UserPage implements OnInit {
             ...userData,
             firstName: userData.first_name,
             lastName: userData.last_name,
-            photo: userData.photo_url
+            photo: userData.photo_url,
           });
 
           this.user = {
@@ -355,7 +436,7 @@ export class UserPage implements OnInit {
             ...userData,
             firstName: userData.first_name,
             lastName: userData.last_name,
-            photo: userData.photo_url
+            photo: userData.photo_url,
           };
 
           this.form.patchValue({
@@ -366,11 +447,11 @@ export class UserPage implements OnInit {
             email: this.user.email,
             bio: this.user.bio,
             password: '',
-            confirmPassword: ''
+            confirmPassword: '',
           });
 
           this.closeDialog();
-        }
+        },
       });
     } else {
       // Fallback for when no current user exists
@@ -379,14 +460,20 @@ export class UserPage implements OnInit {
         ...this.form.value,
         photo_url: this.photoPreview || this.user.photo_url,
         age: this.user.age,
-        password: this.form.value.password ? this.form.value.password : this.user.password,
+        password: this.form.value.password
+          ? this.form.value.password
+          : this.user.password,
       };
       this.authService.updateUser(this.user);
       this.form.patchValue({
-        firstName: this.user.firstName, lastName: this.user.lastName,
-        username: this.user.username, dob: this.formatDateForInput(this.user.dob),
-        email: this.user.email, bio: this.user.bio,
-        password: '', confirmPassword: ''
+        firstName: this.user.firstName,
+        lastName: this.user.lastName,
+        username: this.user.username,
+        dob: this.formatDateForInput(this.user.dob),
+        email: this.user.email,
+        bio: this.user.bio,
+        password: '',
+        confirmPassword: '',
       });
       this.closeDialog();
     }
@@ -395,7 +482,11 @@ export class UserPage implements OnInit {
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (this.showDialog && event.key === 'Escape') this.closeDialog();
-    if (this.selectedCampaign && event.key === 'Escape') this.closeCampaignDialog();
-    if (this.showDialog && event.key === 'Enter') { event.preventDefault(); this.saveProfile(); }
+    if (this.selectedCampaign && event.key === 'Escape')
+      this.closeCampaignDialog();
+    if (this.showDialog && event.key === 'Enter') {
+      event.preventDefault();
+      this.saveProfile();
+    }
   }
 }

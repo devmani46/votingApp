@@ -96,6 +96,23 @@ h2 {
       }
     }
   }
+
+  .notifications-section {
+    h2 {
+      margin-bottom: 2rem;
+    }
+
+    .notification-list {
+      height: 50vw;
+      overflow-y: scroll;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      border-radius: 10px;
+      padding: 1rem;
+      background-color: var(--text-100);
+    }
+  }
 }
 
 .profile-photo {

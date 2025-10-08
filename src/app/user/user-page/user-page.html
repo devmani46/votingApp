@@ -14,7 +14,11 @@
           Edit Profile
         </app-button>
       </div>
-      <img class="profile-photo" [src]="user.photo || '/assets/admin.png'" alt="User Photo" />
+      <img
+        class="profile-photo"
+        [src]="user.photo || '/assets/admin.png'"
+        alt="User Photo"
+      />
     </div>
   </div>
 
@@ -28,138 +32,198 @@
     <div class="past-campaigns">
       <h2>Your Past Campaigns</h2>
       @if (pastCampaigns().length === 0) {
-        <p>You have not participated in any campaigns yet.</p>
+      <p>You have not participated in any campaigns yet.</p>
       } @else {
-        <div class="campaign-list">
-          @for (c of pastCampaigns(); track c.id) {
-            <app-campaign-card
-              [id]="c.id"
-              [title]="c.title"
-              [description]="c.description"
-              [image]="c.banner_url || '/assets/admin.png'"
-              size="small"
-              (click)="openCampaignDetails(c)"
-            >
-              <div class="campaign-winner">
-                <strong>Winner:</strong>
-                @if (c.winner) {
-                  @if (!c.winner.draw) {
-                    {{ c.winner.candidates[0].name }}
-                  } @else {
-                    Draw between {{ getDrawNames(c) }}
-                  }
-                } @else {
-                  <em>No winner determined yet.</em>
-                }
-              </div>
-            </app-campaign-card>
-          }
-        </div>
+      <div class="campaign-list">
+        @for (c of pastCampaigns(); track c.id) {
+        <app-campaign-card
+          [id]="c.id"
+          [title]="c.title"
+          [description]="c.description"
+          [image]="c.banner_url || '/assets/admin.png'"
+          size="small"
+          (click)="openCampaignDetails(c)"
+        >
+          <div class="campaign-winner">
+            <strong>Winner:</strong>
+            @if (c.winner) { @if (!c.winner.draw) {
+            {{ c.winner.candidates[0].name }}
+            } @else { Draw between {{ getDrawNames(c) }}
+            } } @else {
+            <em>No winner determined yet.</em>
+            }
+          </div>
+        </app-campaign-card>
+        }
+      </div>
       }
+    </div>
+
+    <div class="notifications-section">
+      <h2>Notifications</h2>
+      <ul class="notification-list">
+        @if (notifications.length > 0) { @for (n of notifications; track n.id) {
+        <app-notification-block
+          [type]="n.type"
+          [created_date]="n.created_at"
+          [metadata]="n.metadata"
+        />
+        } }
+      </ul>
     </div>
   </div>
 
   @if (selectedCampaign) {
-    <div class="dialog-backdrop" (click)="closeCampaignDialog($event)">
-      <div class="dialog-content" (click)="$event.stopPropagation()">
-        <h2>{{ selectedCampaign.title }}</h2>
-        <p>{{ selectedCampaign.description }}</p>
-        <div class="winner-section">
-          <h3>Winner:</h3>
-          @if (winner) {
-            @if (!winner.draw) {
-              <div class="winner-card">
-                <img [src]="getWinnerPhotoUrl(winner.candidates[0])" alt="Winner Photo" class="winner-photo" />
-                <div class="winner-info">
-                  <p><strong>Name:</strong> {{ winner.candidates[0].name }}</p>
-                  <p><strong>Bio:</strong> {{ winner.candidates[0].bio || "No bio available." }}</p>
-                  <p><strong>Total Votes:</strong> {{ winner.candidates[0].votes }}</p>
-                </div>
-              </div>
-            } @else {
-              <p><strong>It's a draw between:</strong> {{ getDrawNames(selectedCampaign) }}</p>
-              <div class="draw-candidates">
-                @for (cand of winner.candidates; track cand.name) {
-                  <div class="winner-card">
-                    <img [src]="getWinnerPhotoUrl(cand)" alt="Candidate Photo" class="winner-photo" />
-                    <div class="winner-info">
-                      <p><strong>Name:</strong> {{ cand.name }}</p>
-                      <p><strong>Bio:</strong> {{ cand.bio || "No bio available." }}</p>
-                      <p><strong>Total Votes:</strong> {{ cand.votes }}</p>
-                    </div>
-                  </div>
-                }
-              </div>
-            }
-          } @else {
-            <em>No winner determined yet.</em>
+  <div class="dialog-backdrop" (click)="closeCampaignDialog($event)">
+    <div class="dialog-content" (click)="$event.stopPropagation()">
+      <h2>{{ selectedCampaign.title }}</h2>
+      <p>{{ selectedCampaign.description }}</p>
+      <div class="winner-section">
+        <h3>Winner:</h3>
+        @if (winner) { @if (!winner.draw) {
+        <div class="winner-card">
+          <img
+            [src]="getWinnerPhotoUrl(winner.candidates[0])"
+            alt="Winner Photo"
+            class="winner-photo"
+          />
+          <div class="winner-info">
+            <p><strong>Name:</strong> {{ winner.candidates[0].name }}</p>
+            <p>
+              <strong>Bio:</strong>
+              {{ winner.candidates[0].bio || "No bio available." }}
+            </p>
+            <p>
+              <strong>Total Votes:</strong> {{ winner.candidates[0].votes }}
+            </p>
+          </div>
+        </div>
+        } @else {
+        <p>
+          <strong>It's a draw between:</strong>
+          {{ getDrawNames(selectedCampaign) }}
+        </p>
+        <div class="draw-candidates">
+          @for (cand of winner.candidates; track cand.name) {
+          <div class="winner-card">
+            <img
+              [src]="getWinnerPhotoUrl(cand)"
+              alt="Candidate Photo"
+              class="winner-photo"
+            />
+            <div class="winner-info">
+              <p><strong>Name:</strong> {{ cand.name }}</p>
+              <p><strong>Bio:</strong> {{ cand.bio || "No bio available." }}</p>
+              <p><strong>Total Votes:</strong> {{ cand.votes }}</p>
+            </div>
+          </div>
           }
         </div>
-        <div class="dialog-actions">
-          <app-button appearance="secondary" (click)="closeCampaignDialog()">Close</app-button>
+        } } @else {
+        <em>No winner determined yet.</em>
+        }
+      </div>
+      <div class="dialog-actions">
+        <app-button appearance="secondary" (click)="closeCampaignDialog()"
+          >Close</app-button
+        >
+      </div>
+    </div>
+  </div>
+  } @if (showDialog) {
+  <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">
+    <div class="dialog-content" (click)="$event.stopPropagation()">
+      <h2 class="dialog-title">Edit Your Profile</h2>
+      <p class="dialog-subtitle">Update your personal details and photo</p>
+      <form [formGroup]="form" class="dialog-form">
+        <div class="photo-upload">
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onPhotoSelected($event)"
+            hidden
+            #fileInput
+          />
+          <button
+            type="button"
+            class="choose-photo-btn"
+            (click)="fileInput.click()"
+          >
+            <img
+              class="profile-photo-preview"
+              [src]="photoPreview || '/assets/admin.png'"
+              alt="Profile Photo"
+            />
+          </button>
         </div>
-      </div>
+        <div class="form-grid">
+          <div>
+            <label>First Name</label>
+            <app-fui-input
+              formControlName="firstName"
+              placeholder="First Name"
+            />
+          </div>
+          <div>
+            <label>Last Name</label>
+            <app-fui-input formControlName="lastName" placeholder="Last Name" />
+          </div>
+          <div>
+            <label>Username</label>
+            <app-fui-input formControlName="username" placeholder="Username" />
+          </div>
+          <div>
+            <label>Date of Birth</label>
+            <input
+              formControlName="dob"
+              type="text"
+              class="date-input"
+              placeholder="YYYY-MM-DD"
+              (input)="updateAge()"
+            />
+          </div>
+          <div>
+            <label>Email</label>
+            <app-fui-input
+              formControlName="email"
+              type="text"
+              placeholder="Email"
+            />
+          </div>
+          <div>
+            <label>Bio</label>
+            <textarea
+              formControlName="bio"
+              placeholder="Write something about yourself..."
+            ></textarea>
+          </div>
+          <div>
+            <label>Password (leave blank to keep current)</label>
+            <app-fui-input
+              formControlName="password"
+              type="password"
+              placeholder="Password"
+            />
+          </div>
+          <div>
+            <label>Confirm Password</label>
+            <app-fui-input
+              formControlName="confirmPassword"
+              type="password"
+              placeholder="Confirm Password"
+            />
+          </div>
+        </div>
+        <div class="dialog-actions">
+          <app-button appearance="secondary" (click)="closeDialog()"
+            >Cancel</app-button
+          >
+          <app-button appearance="primary" (click)="saveProfile($event)"
+            >Save Changes</app-button
+          >
+        </div>
+      </form>
     </div>
-  }
-
-  @if (showDialog) {
-    <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">
-      <div class="dialog-content" (click)="$event.stopPropagation()">
-        <h2 class="dialog-title">Edit Your Profile</h2>
-        <p class="dialog-subtitle">Update your personal details and photo</p>
-        <form [formGroup]="form" class="dialog-form">
-          <div class="photo-upload">
-            <input type="file" accept="image/*" (change)="onPhotoSelected($event)" hidden #fileInput />
-            <button type="button" class="choose-photo-btn" (click)="fileInput.click()">
-              <img class="profile-photo-preview" [src]="photoPreview || '/assets/admin.png'" alt="Profile Photo" />
-            </button>
-          </div>
-          <div class="form-grid">
-            <div>
-              <label>First Name</label>
-              <app-fui-input formControlName="firstName" placeholder="First Name" />
-            </div>
-            <div>
-              <label>Last Name</label>
-              <app-fui-input formControlName="lastName" placeholder="Last Name" />
-            </div>
-            <div>
-              <label>Username</label>
-              <app-fui-input formControlName="username" placeholder="Username" />
-            </div>
-            <div>
-              <label>Date of Birth</label>
-              <input
-                formControlName="dob"
-                type="text"
-                class="date-input"
-                placeholder="YYYY-MM-DD"
-                (input)="updateAge()"
-              />
-            </div>
-            <div>
-              <label>Email</label>
-              <app-fui-input formControlName="email" type="text" placeholder="Email" />
-            </div>
-            <div>
-              <label>Bio</label>
-              <textarea formControlName="bio" placeholder="Write something about yourself..."></textarea>
-            </div>
-            <div>
-              <label>Password (leave blank to keep current)</label>
-              <app-fui-input formControlName="password" type="password" placeholder="Password" />
-            </div>
-            <div>
-              <label>Confirm Password</label>
-              <app-fui-input formControlName="confirmPassword" type="password" placeholder="Confirm Password" />
-            </div>
-          </div>
-          <div class="dialog-actions">
-            <app-button appearance="secondary" (click)="closeDialog()">Cancel</app-button>
-            <app-button appearance="primary" (click)="saveProfile($event)">Save Changes</app-button>
-          </div>
-        </form>
-      </div>
-    </div>
+  </div>
   }
 </div>
