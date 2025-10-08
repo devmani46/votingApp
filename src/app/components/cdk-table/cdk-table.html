@@ -1,44 +1,36 @@
 <table cdk-table [dataSource]="items" class="cdk-table">
 
-  <!-- File Column -->
-  <ng-container cdkColumnDef="file">
-    <th cdk-header-cell *cdkHeaderCellDef> File </th>
-    <td cdk-cell *cdkCellDef="let item">
-      <div class="cell-layout">
-        <span class="icon">{{ getFileIcon(item.file.label) }}</span>
-        <span>{{ item.file.label }}</span>
-      </div>
-    </td>
+  <!-- Username Column -->
+  <ng-container cdkColumnDef="username">
+    <th cdk-header-cell *cdkHeaderCellDef> Username </th>
+    <td cdk-cell *cdkCellDef="let item">{{ item.username }}</td>
   </ng-container>
 
-  <!-- Author Column -->
-  <ng-container cdkColumnDef="author">
-    <th cdk-header-cell *cdkHeaderCellDef> Author </th>
-    <td cdk-cell *cdkCellDef="let item">
-      <div class="cell-layout">
-        <div class="avatar" [ngClass]="item.author.status[0]">
-          {{ getInitials(item.author.label) }}
-        </div>
-        <span>{{ item.author.label }}</span>
-      </div>
-    </td>
+  <!-- Email Column -->
+  <ng-container cdkColumnDef="email">
+    <th cdk-header-cell *cdkHeaderCellDef> Email </th>
+    <td cdk-cell *cdkCellDef="let item">{{ item.email }}</td>
   </ng-container>
 
-  <!-- Last Updated Column -->
-  <ng-container cdkColumnDef="lastUpdated">
-    <th cdk-header-cell *cdkHeaderCellDef> Last updated </th>
-    <td cdk-cell *cdkCellDef="let item">
-      {{ item.lastUpdated.label }}
-    </td>
+  <!-- Join Date Column -->
+  <ng-container cdkColumnDef="joinDate">
+    <th cdk-header-cell *cdkHeaderCellDef> Join Date </th>
+    <td cdk-cell *cdkCellDef="let item">{{ item.joinDate }}</td>
   </ng-container>
 
-  <!-- Last Update Column -->
-  <ng-container cdkColumnDef="lastUpdate">
-    <th cdk-header-cell *cdkHeaderCellDef> Last update </th>
+  <!-- Session Column -->
+  <ng-container cdkColumnDef="session">
+    <th cdk-header-cell *cdkHeaderCellDef> Session </th>
+    <td cdk-cell *cdkCellDef="let item">{{ item.session }}</td>
+  </ng-container>
+
+  <!-- Actions Column -->
+  <ng-container cdkColumnDef="actions">
+    <th cdk-header-cell *cdkHeaderCellDef> Actions </th>
     <td cdk-cell *cdkCellDef="let item">
-      <div class="cell-layout">
-        <span class="icon">{{ getUpdateIcon(item.lastUpdate.label) }}</span>
-        <span>{{ item.lastUpdate.label }}</span>
+      <div class="action-buttons">
+        <button>Edit</button>
+        <button>Delete</button>
       </div>
     </td>
   </ng-container>
