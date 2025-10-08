@@ -46,7 +46,7 @@
 
       <ng-container cdkColumnDef="joinDate">
         <cdk-header-cell *cdkHeaderCellDef> Join Date </cdk-header-cell>
-        <cdk-cell *cdkCellDef="let user">2026-17-18</cdk-cell>
+        <cdk-cell *cdkCellDef="let user">{{ user.created_at | date:'short' }}</cdk-cell>
       </ng-container>
 
       <ng-container cdkColumnDef="actions">
