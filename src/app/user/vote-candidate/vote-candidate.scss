@@ -22,7 +22,7 @@
 }
 
 .vote-candidate-page {
-  background-color: var(--bg-100);
+  background-color: var(--bg-200);
   color: var(--text-100);
   font-family: Manrope;
   --card-size: 20rem;
@@ -33,12 +33,7 @@
   --colorNeutralForeground1: var(--text-100);
 
   .back-button-container {
-    padding: 1rem 5rem;
-    margin-bottom: 1rem;
-
-    app-button {
-      min-width: 160px;
-    }
+    padding: 1rem 80rem 1rem 3rem;
   }
 
   .loading-container {
@@ -91,6 +86,7 @@
 
     img {
       min-width: 50%;
+      max-width: 60%;
       border: solid 2px var(--bg-100);
       border-radius: 1rem;
     }
@@ -104,6 +100,18 @@
 
     .campaign-title {
       line-height: 3rem;
+    }
+
+    .campaign-dates {
+      display: flex;
+      gap: 1rem;
+
+      span {
+        background-color: var(--text);
+        padding: 5px 10px;
+        color: var(--bg-100);
+        border-radius: 5px;
+      }
     }
   }
 

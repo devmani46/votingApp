@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, signal, computed, inject, Signal } from '@angular/core';
 import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
@@ -12,6 +12,11 @@ import { FuiInput } from '../../components/fui-input/fui-input';
 import { Button } from '../../components/button/button';
 import { AuthService } from '../../services/auth';
 
+import { OnInit, OnDestroy } from '@angular/core';
+import gsap from 'gsap';
+import { GsapCounterComponent } from '../../components/gsap-counter-component/gsap-counter-component';
+import { Campaign, CampaignService } from '../../services/campaign';
+
 type LoginForm = {
   email: FormControl<string>;
   password: FormControl<string>;
@@ -21,7 +26,14 @@ type LoginForm = {
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterModule, FuiField, FuiInput, Button],
+  imports: [
+    ReactiveFormsModule,
+    RouterModule,
+    FuiField,
+    FuiInput,
+    Button,
+    GsapCounterComponent,
+  ],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
 })
@@ -58,7 +70,9 @@ export class Login {
       : ''
   );
 
-  constructor() {}
+  constructor(private campaignService: CampaignService) {
+    this.campaigns = this.campaignService.campaigns;
+  }
 
   onSubmit() {
     this.submitted.set(true);
@@ -84,5 +98,11 @@ export class Login {
     } else {
       this.form().markAllAsTouched();
     }
+  }
+
+  campaigns: Signal<Campaign[]>;
+
+  get totalCampaigns(): number {
+    return this.campaigns().length;
   }
 }

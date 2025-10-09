@@ -36,6 +36,7 @@
     "color-thief-browser": "^2.0.2",
     "colorthief": "^2.6.0",
     "echarts": "^6.0.0",
+    "gsap": "^3.13.0",
     "ngx-echarts": "^20.0.2",
     "node-vibrant": "^4.0.3",
     "postcss": "^8.5.6",
