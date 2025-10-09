@@ -21,8 +21,8 @@ import { CampaignService } from '../../services/campaign';
 import { AuthService } from '../../services/auth';
 import { UserService } from '../../services/user';
 import { StorageService } from '../../services/storage';
-import { NotificationBlock } from '../../components/notification-block/notification-block';
-import { NotificationService, Notification } from '../../services/notification';
+// import { NotificationBlock } from '../../components/notification-block/notification-block';
+// import { NotificationService, Notification } from '../../services/notification';
 
 @Component({
   selector: 'app-user-page',
@@ -34,7 +34,7 @@ import { NotificationService, Notification } from '../../services/notification';
     Button,
     FuiInput,
     CampaignCard,
-    NotificationBlock,
+    // NotificationBlock,
   ],
   templateUrl: './user-page.html',
   styleUrls: ['./user-page.scss'],
@@ -61,15 +61,16 @@ export class UserPage implements OnInit {
   photoPreview: string | null = null;
   selectedCampaign: any = null;
   winner: any = null;
-  notifications: Notification[] = [];
+  // notifications: Notification[] = [];
 
-  constructor(private notificationService: NotificationService) {}
+  // constructor(private notificationService: NotificationService) {}
+  constructor() {}
 
   ngOnInit() {
-    this.notificationService.getNotifications().subscribe({
-      next: (data) => (this.notifications = data),
-      error: (err) => console.error('[Notifications Error]', err),
-    });
+    // this.notificationService.getNotifications().subscribe({
+    //   next: (data) => (this.notifications = data),
+    //   error: (err) => console.error('[Notifications Error]', err),
+    // });
     this.refreshUserData();
   }
 

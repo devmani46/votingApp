@@ -6,7 +6,10 @@ import { moderatorGuard } from './guards/moderator-guard';
 import { adminOrModeratorGuard } from './guards/admin-or-moderator-guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  {
+    path: '',
+    loadComponent: () => import('./pages/home/home').then((m) => m.Home),
+  },
 
   {
     path: 'login',
