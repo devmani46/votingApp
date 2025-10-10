@@ -7,20 +7,20 @@
     </app-button>
   </div>
 
-  @if (isLoading) {
+  @if (isLoading()) {
   <div class="loading-container"></div>
-  } @else if (campaignNotFound) {
+  } @else if (campaignNotFound()) {
   <div class="error-container">
     <p class="not-found">Campaign not found.</p>
     <app-button appearance="primary" (click)="goBack()">
       Back to Campaigns
     </app-button>
   </div>
-  } @else if (campaign) {
+  } @else if (campaign()) {
   <div class="banner-container">
     <img
       class="banner-image"
-      [src]="campaign.banner_url || '/assets/default-banner.png'"
+      [src]="campaign()!.banner_url || '/assets/default-banner.png'"
       alt="Campaign Banner"
     />
   </div>
@@ -29,23 +29,23 @@
     <div class="campaign-dates">
       <span class="campaign-start-date"
         ><strong>Start Date: </strong>
-        {{ campaign.start_date | date : "shortDate" }}</span
+        {{ campaign()!.start_date | date : "shortDate" }}</span
       >
       <span class="campaign-end-date"
         ><strong>End Date: </strong
-        >{{ campaign.end_date | date : "shortDate" }}</span
+        >{{ campaign()!.end_date | date : "shortDate" }}</span
       >
     </div>
-    <h2 class="campaign-title">{{ campaign.title }}</h2>
-    <p class="description">{{ campaign.description }}</p>
+    <h2 class="campaign-title">{{ campaign()!.title }}</h2>
+    <p class="description">{{ campaign()!.description }}</p>
   </div>
 
   <div class="candidate-list">
-    @for (candidate of campaign.candidates; let i = $index; track i) {
+    @for (candidate of campaign()!.candidates; let i = $index; track i) {
     <div
       class="candidate-wrapper"
-      [class.disabled]="hasVoted(campaign.id)"
-      (click)="hasVoted(campaign.id) ? null : openCandidatePopup(i)"
+      [class.disabled]="hasVoted(campaign()!.id)"
+      (click)="hasVoted(campaign()!.id) ? null : openCandidatePopup(i)"
       tabindex="0"
     >
       <app-campaign-card
@@ -54,7 +54,7 @@
         [description]="candidate.bio"
         [image]="candidate.photo_url || '/assets/default-user.png'"
         size="medium"
-        [disabled]="hasVoted(campaign.id)"
+        [disabled]="hasVoted(campaign()!.id)"
       ></app-campaign-card>
     </div>
     }
@@ -95,20 +95,20 @@
     <div class="detail-top">
       <div class="photo-wrap">
         <img
-          [src]="activeCandidate?.photo || '/assets/default-user.png'"
-          [alt]="activeCandidate?.name"
+          [src]="activeCandidate()!.photo || '/assets/default-user.png'"
+          [alt]="activeCandidate()!.name"
         />
       </div>
 
       <div class="detail-meta">
-        <h3 class="candidate-name">{{ activeCandidate?.name }}</h3>
-        <p class="candidate-bio">{{ activeCandidate?.bio }}</p>
+        <h3 class="candidate-name">{{ activeCandidate()!.name }}</h3>
+        <p class="candidate-bio">{{ activeCandidate()!.bio }}</p>
 
         <div class="popup-actions">
           <app-button
             appearance="primary"
-            (click)="vote(activeIndex!); $event.stopPropagation()"
-            [disabled]="!!(campaign && hasVoted(campaign.id))"
+            (click)="vote(activeIndex()!); $event.stopPropagation()"
+            [disabled]="!!(campaign() && hasVoted(campaign()!.id))"
           >
             Vote
           </app-button>

@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { Router } from '@angular/router';
 import { CampaignService, Campaign, Candidate } from '../../services/campaign';
+import { SocketService } from '../../services/socket.service';
 import { CampaignCard } from '../../components/campaign-card/campaign-card';
 import { Button } from '../../components/button/button';
 import { BurgerMenu } from '../../components/burger-menu/burger-menu';
@@ -37,24 +38,38 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 })
 export class CampaignStatus {
   private campaignService = inject(CampaignService);
+  private socketService = inject(SocketService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   viewMode = signal<'cards' | 'charts'>('cards');
   searchTerm = signal('');
-  selectedCampaign = signal<Campaign | null>(null);
+  selectedCampaignId = signal<string | null>(null);
   campaigns = this.campaignService.campaigns;
+
+  selectedCampaign = computed(() => {
+    const id = this.selectedCampaignId();
+    return id ? this.campaigns().find(c => c.id === id) || null : null;
+  });
 
   filteredCampaigns = computed(() => {
     const term = this.searchTerm()?.trim().toLowerCase() ?? '';
-    if (!term) return this.campaigns();
-    return this.campaigns().filter((c) =>
+    let campaigns = this.campaigns();
+    // Remove duplicates by id to prevent Angular trackBy errors
+    const unique = new Map();
+    for (const c of campaigns) {
+      unique.set(c.id, c);
+    }
+    campaigns = Array.from(unique.values());
+    if (!term) return campaigns;
+    return campaigns.filter((c) =>
       (c.title ?? '').toLowerCase().includes(term)
     );
   });
 
   constructor() {
+    this.socketService.joinAdmin();
     window.addEventListener('storage', this.handleStorageChange);
     this.destroyRef.onDestroy(() => {
       window.removeEventListener('storage', this.handleStorageChange);
@@ -63,7 +78,7 @@ export class CampaignStatus {
 
   @HostListener('window:keydown.escape')
   closeCampaignDetails() {
-    this.selectedCampaign.set(null);
+    this.selectedCampaignId.set(null);
   }
 
   toggleView() {
@@ -214,7 +229,7 @@ export class CampaignStatus {
   }
 
   openCampaignDetails(campaign: Campaign) {
-    this.selectedCampaign.set(campaign);
+    this.selectedCampaignId.set(campaign.id);
   }
 
   exportCSV() {
@@ -241,7 +256,7 @@ export class CampaignStatus {
 
   deleteCampaign(id: string) {
     this.campaignService.deleteCampaign(id).subscribe(() => {
-      if (this.selectedCampaign()?.id === id) this.selectedCampaign.set(null);
+      if (this.selectedCampaignId() === id) this.selectedCampaignId.set(null);
     });
   }
 

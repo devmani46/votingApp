@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { SocketService } from './socket.service';
 
 export interface Candidate {
   id: string;
@@ -28,8 +29,74 @@ export class CampaignService {
   private _campaigns = signal<Campaign[]>([]);
   campaigns = this._campaigns.asReadonly();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private socketService: SocketService) {
+    this.socketService.connect();
     this.loadCampaigns();
+    this.setupRealtimeListeners();
+  }
+
+  private setupRealtimeListeners(): void {
+    this.socketService.onCampaignCreated().subscribe(data => {
+      const newCampaign = { ...data, candidates: data.candidates || [] };
+      this._campaigns.update(list => [...list, newCampaign]);
+    });
+
+    this.socketService.onCampaignUpdated().subscribe(data => {
+      this._campaigns.update(list =>
+        list.map(c => c.id === data.id ? data : c)
+      );
+    });
+
+    this.socketService.onCampaignDeleted().subscribe(data => {
+      this._campaigns.update(list => list.filter(c => c.id !== data.id));
+    });
+
+    this.socketService.onVoteUpdated().subscribe(data => {
+      this._campaigns.update(list =>
+        list.map(c => {
+          if (c.id === data.campaignId) {
+            return {
+              ...c,
+              candidates: c.candidates.map(cd => cd.id === data.candidateId ? { ...cd, votes: data.votes[cd.id] || 0 } : cd)
+            };
+          }
+          return c;
+        })
+      );
+    });
+
+    this.socketService.onCandidateAdded().subscribe(data => {
+      this._campaigns.update(list =>
+        list.map(c => {
+          if (c.id === data.campaignId) {
+            return { ...c, candidates: [...c.candidates, data.candidate] };
+          }
+          return c;
+        })
+      );
+    });
+
+    this.socketService.onCandidateRemoved().subscribe(data => {
+      this._campaigns.update(list =>
+        list.map(c => {
+          if (c.id === data.campaignId) {
+            return { ...c, candidates: c.candidates.filter(cd => cd.id !== data.candidateId) };
+          }
+          return c;
+        })
+      );
+    });
+
+    this.socketService.onCandidateUpdated().subscribe(data => {
+      this._campaigns.update(list =>
+        list.map(c => {
+          if (c.id === data.campaignId) {
+            return { ...c, candidates: c.candidates.map(cd => cd.id === data.candidateId ? { ...cd, ...data.changes } : cd) };
+          }
+          return c;
+        })
+      );
+    });
   }
 
   private loadCampaigns() {

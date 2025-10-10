@@ -38,8 +38,17 @@ export class UserCampaign {
 
   readonly INITIAL_DISPLAY_COUNT = 3;
 
-  selectedCampaign = signal<any | null>(null);
-  winner = signal<any | null>(null);
+  selectedCampaignId = signal<string>('');
+  selectedCampaign = computed(() =>
+    this.campaignService
+      .campaigns()
+      .find((c) => c.id === this.selectedCampaignId())
+  );
+  winner = computed(() =>
+    this.selectedCampaign()
+      ? this.campaignService.getWinner(this.selectedCampaign()!)
+      : null
+  );
 
   showAllPast = signal(false);
   showAllAvailable = signal(false);
@@ -87,16 +96,12 @@ export class UserCampaign {
   }
 
   openCampaignDetails(campaign: any) {
-    this.selectedCampaign.set(campaign);
-    this.winner.set(
-      campaign.winner || this.campaignService.getWinner(campaign)
-    );
+    this.selectedCampaignId.set(campaign.id);
   }
 
   closeCampaignDialog(event?: MouseEvent) {
     if (event && event.target !== event.currentTarget) return;
-    this.selectedCampaign.set(null);
-    this.winner.set(null);
+    this.selectedCampaignId.set('');
   }
 
   getWinnerPhotoUrl(candidate: any): string {

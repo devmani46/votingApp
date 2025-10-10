@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, HostListener } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, HostListener, signal, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CampaignService, Campaign } from '../../services/campaign';
@@ -23,17 +23,42 @@ export class VoteCandidate implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private storageService = inject(StorageService);
 
-  campaign?: Campaign;
+  campaignId = signal<string>('');
+  campaign = computed(() => this.campaignService.getCampaignById(this.campaignId()));
   showPopup = false;
   private votedCampaigns: Record<string, string[]> = {};
   private currentUserEmail: string = '';
   candidatePopupOpen = false;
-  activeIndex: number | null = null;
-  activeCandidate: any = null;
-  totalVotes = 0;
-  votePercent = 0;
-  isLoading = true;
-  campaignNotFound = false;
+  activeIndex = signal<number | null>(null);
+  activeCandidate = computed(() => {
+    const index = this.activeIndex();
+    const c = this.campaign();
+    if (index === null || !c || !c.candidates || index >= c.candidates.length) return null;
+    const cand = c.candidates[index];
+    return {
+      name: cand.name,
+      bio: cand.bio,
+      photo: cand.photo_url,
+      votes: cand.votes ?? 0,
+    };
+  });
+  totalVotes = computed(() => {
+    const c = this.campaign();
+    if (!c) return 0;
+    return (c.candidates ?? []).reduce((s, cand) => s + (cand.votes ?? 0), 0);
+  });
+  votePercent = computed(() => {
+    const ac = this.activeCandidate();
+    const tv = this.totalVotes();
+    const votes = ac?.votes ?? 0;
+    if (tv === 0) {
+      return votes > 0 ? 100 : 0;
+    } else {
+      return Math.round((votes / Math.max(1, tv)) * 100);
+    }
+  });
+  isLoading = signal(true);
+  campaignNotFound = computed(() => this.campaignId() && !this.campaign());
 
   constructor() {
     const currentUser = this.authService.getCurrentUser();
@@ -67,8 +92,8 @@ export class VoteCandidate implements OnInit, OnDestroy {
     }
     if (event.key === 'Enter') {
       event.preventDefault();
-      if (this.activeIndex !== null && this.campaign?.id && !this.hasVoted(this.campaign.id)) {
-        this.vote(this.activeIndex);
+      if (this.activeIndex() !== null && this.campaign()?.id && !this.hasVoted(this.campaign()!.id)) {
+        this.vote(this.activeIndex()!);
       }
     }
   }
@@ -76,37 +101,14 @@ export class VoteCandidate implements OnInit, OnDestroy {
   private async loadCampaign() {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
-      this.isLoading = false;
-      this.campaignNotFound = true;
+      this.isLoading.set(false);
       return;
     }
 
-    const campaigns = this.campaignService.campaigns;
-    if (campaigns.length > 0) {
-      this.campaign = this.campaignService.getCampaignById(id) ?? undefined;
-      this.isLoading = false;
-      if (!this.campaign) {
-        this.campaignNotFound = true;
-      } else {
-        this.campaignNotFound = false;
-        this.refreshTotalVotes();
-        this.loadVotedCampaigns();
-        this.checkIfAlreadyVoted();
-      }
-    } else {
-      setTimeout(() => {
-        this.campaign = this.campaignService.getCampaignById(id) ?? undefined;
-        this.isLoading = false;
-        if (!this.campaign) {
-          this.campaignNotFound = true;
-        } else {
-          this.campaignNotFound = false;
-          this.refreshTotalVotes();
-          this.loadVotedCampaigns();
-          this.checkIfAlreadyVoted();
-        }
-      }, 1000);
-    }
+    this.campaignId.set(id);
+    this.isLoading.set(false);
+    this.loadVotedCampaigns();
+    this.checkIfAlreadyVoted();
   }
 
   private loadVotedCampaigns() {
@@ -115,35 +117,29 @@ export class VoteCandidate implements OnInit, OnDestroy {
 
   private checkIfAlreadyVoted() {
     if (
-      this.campaign?.id &&
+      this.campaign()?.id &&
       this.currentUserEmail &&
-      this.storageService.hasVotedForCampaign(this.currentUserEmail, this.campaign.id)
+      this.storageService.hasVotedForCampaign(this.currentUserEmail, this.campaign()!.id)
     ) {
       this.showPopup = true;
     }
   }
 
   vote(candidateIndex: number) {
-    if (!this.campaign?.id || !this.currentUserEmail) return;
-    if (this.hasVoted(this.campaign.id)) {
+    if (!this.campaign()?.id || !this.currentUserEmail) return;
+    if (this.hasVoted(this.campaign()!.id)) {
       this.showPopup = true;
       return;
     }
     this.campaignService
-      .castVote(this.campaign.id, this.campaign.candidates[candidateIndex].id)
+      .castVote(this.campaign()!.id, this.campaign()!.candidates[candidateIndex].id)
       .subscribe(() => {
-        this.storageService.addVotedCampaign(this.currentUserEmail, this.campaign!.id);
+        this.storageService.addVotedCampaign(this.currentUserEmail, this.campaign()!.id);
 
         if (!this.votedCampaigns[this.currentUserEmail]) {
           this.votedCampaigns[this.currentUserEmail] = [];
         }
-        this.votedCampaigns[this.currentUserEmail].push(this.campaign!.id);
-
-        this.campaign = this.campaignService.getCampaignById(this.campaign!.id) ?? undefined;
-        this.refreshTotalVotes();
-        if (this.candidatePopupOpen && this.activeIndex === candidateIndex) {
-          this.setActiveCandidate(candidateIndex);
-        }
+        this.votedCampaigns[this.currentUserEmail].push(this.campaign()!.id);
       });
   }
 
@@ -157,59 +153,22 @@ export class VoteCandidate implements OnInit, OnDestroy {
   }
 
   openCandidatePopup(index: number) {
-    if (!this.campaign) return;
-    this.activeIndex = index;
+    if (!this.campaign()) return;
+    this.activeIndex.set(index);
     this.candidatePopupOpen = true;
-    const candidate = this.campaign.candidates?.[index];
-    if (candidate) {
-      this.setActiveCandidate(index);
-    }
-  }
-
-  setActiveCandidate(index: number) {
-    if (!this.campaign) return;
-    const c = this.campaign.candidates[index];
-    this.activeCandidate = {
-      name: c.name,
-      bio: c.bio,
-      photo: c.photo_url,
-      votes: c.votes ?? 0,
-    };
-    this.activeIndex = index;
-    this.refreshTotalVotes();
-    this.updateVotePercent();
   }
 
   closeCandidatePopup() {
     this.candidatePopupOpen = false;
-    this.activeCandidate = null;
-    this.activeIndex = null;
-    this.votePercent = 0;
+    this.activeIndex.set(null);
   }
 
   navigateActive(offset: number) {
-    if (!this.campaign || this.activeIndex === null) return;
-    const len = this.campaign.candidates?.length ?? 0;
+    if (!this.campaign() || this.activeIndex() === null) return;
+    const len = this.campaign()!.candidates?.length ?? 0;
     if (len === 0) return;
-    let next = (this.activeIndex + offset + len) % len;
+    let next = (this.activeIndex()! + offset + len) % len;
     this.openCandidatePopup(next);
-  }
-
-  refreshTotalVotes() {
-    if (!this.campaign) {
-      this.totalVotes = 0;
-      return;
-    }
-    this.totalVotes = (this.campaign.candidates ?? []).reduce((s, c) => s + (c.votes ?? 0), 0);
-  }
-
-  updateVotePercent() {
-    const votes = this.activeCandidate?.votes ?? 0;
-    if (this.totalVotes === 0) {
-      this.votePercent = votes > 0 ? 100 : 0;
-    } else {
-      this.votePercent = Math.round((votes / Math.max(1, this.totalVotes)) * 100);
-    }
   }
 
   goBack() {

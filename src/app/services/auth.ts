@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { tap, map, switchMap } from 'rxjs/operators';
 import { Observable, of, BehaviorSubject } from 'rxjs';
+import { SocketService } from './socket.service';
 
 interface LoginResponse {
   user: {
@@ -26,7 +27,7 @@ export class AuthService {
   private userUpdateSubject = new BehaviorSubject<any>(null);
   public userUpdate$ = this.userUpdateSubject.asObservable();
 
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private router: Router, private http: HttpClient, private socketService: SocketService) {}
 
   login(email: string, password: string, rememberMe: boolean = false): Observable<boolean> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, { email, password, rememberMe }, { withCredentials: true }).pipe(
@@ -45,6 +46,7 @@ export class AuthService {
       tap(() => {
         const currentUser = this.getCurrentUser();
         if (currentUser) {
+          this.socketService.connect();
           if (currentUser.role === 'admin' || currentUser.role === 'moderator') {
             this.router.navigate(['/menu']);
           } else {
@@ -67,6 +69,7 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.userKey);
     localStorage.removeItem(this.roleKey);
+    this.socketService.disconnect();
 
     this.http.post(`${this.apiUrl}/auth/logout`, {}, { withCredentials: true }).subscribe({
       next: () => {
