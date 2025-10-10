@@ -38,7 +38,7 @@
 
 .campaign-card {
   font-family: Manrope;
-  padding: 5px;
+  padding: 3px;
   display: flex;
   flex: 1 1 250px;
   max-width: 400px;
@@ -181,7 +181,7 @@
       position: relative;
 
       .kebab-btn {
-        background: rgba(255, 255, 255, 0.9);
+        background: var(--bg-100);
         border: none;
         border-radius: 50%;
         width: 32px;
@@ -191,11 +191,11 @@
         justify-content: center;
         cursor: pointer;
         transition: all 0.2s ease;
-        color: #6c757d;
+        color: var(--accent);
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
         &:hover {
-          background: #6c757d;
+          background: var(--accent);
           color: white;
           transform: scale(1.1);
         }
@@ -205,12 +205,12 @@
         }
 
         span {
-          font-size: 16px;
+          font-size: 1.3rem;
           line-height: 1;
         }
 
         &.active {
-          background: #6c757d;
+          background: var(--accent);
           color: white;
         }
       }
@@ -219,7 +219,7 @@
         position: absolute;
         top: 100%;
         right: 0;
-        background: white;
+        background: var(--bg-100);
         border-radius: 8px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         min-width: 120px;

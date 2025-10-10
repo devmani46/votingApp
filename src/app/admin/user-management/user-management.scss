@@ -1,6 +1,6 @@
 .user-management {
   --colorNeutralBackground1: var(--bg-100);
-  --colorNeutralBackground2: var(--primary);
+  --colorNeutralBackground2: var(--accent);
 
   --colorNeutralStroke1: rgba(0, 0, 0, 0.1);
   --colorBrand90: var(--text-200);
@@ -123,6 +123,10 @@
         }
       }
     }
+
+    .user-paginator {
+      background-color: var(--bg-200);
+    }
   }
 
   /* Dialog Styles */
@@ -191,6 +195,7 @@
 }
 
 .user-table {
+  overflow-y: scroll;
   width: 100%;
   border-collapse: collapse;
   display: table; /* make the cdk-table act like a table */

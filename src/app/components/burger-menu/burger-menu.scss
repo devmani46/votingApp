@@ -107,8 +107,8 @@
           min-width: 16rem;
         }
         &:hover {
-          background: var(--primary-100);
-          color: var(--primary-300);
+          background: var(--bg-200);
+          color: var(--primary-100);
           padding-left: 1.5rem;
 
           span {
@@ -116,10 +116,11 @@
           }
         }
         &.active {
-          background: #8b5d33;
-          background: var(--primary-100);
+          border: solid 1px rgba(0, 0, 0, 0.1);
+          box-shadow: inset 2px -2px var(--bg-100);
+          background: var(--bg-200);
           padding-left: 1.5rem;
-          color: var(--primary-300);
+          color: var(--primary-100);
 
           span {
             color: inherit;

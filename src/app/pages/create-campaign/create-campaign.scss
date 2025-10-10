@@ -46,7 +46,6 @@
   display: flex;
   align-items: center;
   gap: 2.5rem;
-  padding: 3rem 0rem;
 
   h2 {
     font-size: 2rem;
@@ -63,8 +62,7 @@
 
 .create-form {
   width: 60%;
-  padding-left: 8rem;
-  padding-bottom: 4rem;
+  padding: 4rem;
 
   form {
     display: flex;

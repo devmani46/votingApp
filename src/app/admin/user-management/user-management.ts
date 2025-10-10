@@ -1,4 +1,11 @@
-import { Component, signal, computed, HostListener, inject } from '@angular/core';
+import {
+  Component,
+  signal,
+  computed,
+  HostListener,
+  inject,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -13,6 +20,9 @@ import { BurgerMenu } from '../../components/burger-menu/burger-menu';
 import { CdkTableModule } from '@angular/cdk/table';
 import { UserService, User } from '../../services/user';
 
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+
 type SortField = 'first_name' | 'email' | 'username';
 type SortDirection = 'asc' | 'desc';
 
@@ -26,6 +36,7 @@ type SortDirection = 'asc' | 'desc';
     Button,
     BurgerMenu,
     CdkTableModule,
+    MatPaginatorModule,
   ],
   templateUrl: './user-management.html',
   styleUrls: ['./user-management.scss'],
@@ -33,6 +44,7 @@ type SortDirection = 'asc' | 'desc';
 export class UserManagement {
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   users = signal<User[]>([]);
   showDialog = signal(false);
@@ -84,7 +96,7 @@ export class UserManagement {
   }
 
   loadUsers() {
-    this.userService.getAll().subscribe(users => {
+    this.userService.getAll().subscribe((users) => {
       this.users.set(users);
     });
   }
@@ -94,7 +106,7 @@ export class UserManagement {
     this.editId.set(id);
 
     if (id !== null) {
-      const user = this.users().find(u => u.id === id);
+      const user = this.users().find((u) => u.id === id);
       if (user) {
         this.firstNameControl.setValue(user.first_name);
         this.lastNameControl.setValue(user.last_name);
@@ -165,7 +177,9 @@ export class UserManagement {
   }
 
   deleteUser(id: string) {
-    const confirmDelete = window.confirm('Are you sure you want to delete this user?');
+    const confirmDelete = window.confirm(
+      'Are you sure you want to delete this user?'
+    );
     if (confirmDelete) {
       this.userService.deleteUser(id).subscribe(() => {
         this.loadUsers();
@@ -180,5 +194,20 @@ export class UserManagement {
       this.sortField.set(field);
       this.sortDirection.set('asc');
     }
+  }
+
+  pageSize = 10;
+  currentPage = 0;
+
+  pagedUsers() {
+    const all = this.filteredUsers();
+    const startIndex = this.currentPage * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    return all.slice(startIndex, endIndex);
+  }
+
+  onPageChange(event: PageEvent) {
+    this.pageSize = event.pageSize;
+    this.currentPage = event.pageIndex;
   }
 }
