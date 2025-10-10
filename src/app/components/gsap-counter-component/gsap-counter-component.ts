@@ -4,6 +4,8 @@ import {
   Input,
   OnInit,
   OnDestroy,
+  OnChanges,
+  SimpleChanges,
   ChangeDetectorRef,
 } from '@angular/core';
 import gsap from 'gsap';
@@ -15,7 +17,7 @@ import { DecimalPipe } from '@angular/common';
   templateUrl: './gsap-counter-component.html',
   styleUrl: './gsap-counter-component.scss',
 })
-export class GsapCounterComponent implements OnInit, OnDestroy {
+export class GsapCounterComponent implements OnInit, OnDestroy, OnChanges {
   @Input() target = 100;
   @Input() duration = 2; // seconds
   displayNumber = 0;
@@ -24,6 +26,17 @@ export class GsapCounterComponent implements OnInit, OnDestroy {
   constructor(private el: ElementRef, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
+    this.startAnimation();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['target']) {
+      this.startAnimation();
+    }
+  }
+
+  private startAnimation() {
+    this.tween?.kill();
     this.displayNumber = 0;
     this.tween = gsap.to(this, {
       displayNumber: this.target,
@@ -31,7 +44,7 @@ export class GsapCounterComponent implements OnInit, OnDestroy {
       ease: 'power3.out',
       onUpdate: () => {
         this.displayNumber = Math.floor(this.displayNumber);
-        this.cdr.detectChanges(); // <-- This triggers Angular to update the view
+        this.cdr.detectChanges();
       },
     });
   }
@@ -40,3 +53,5 @@ export class GsapCounterComponent implements OnInit, OnDestroy {
     this.tween?.kill();
   }
 }
+
+
