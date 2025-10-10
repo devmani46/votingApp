@@ -7,8 +7,7 @@
     <p>There are no past campaigns yet.</p>
     } @else {
     <div class="campaign-list">
-      @for (c of pastCampaigns().slice(0, showAllPast() ? pastCampaigns().length
-      : INITIAL_DISPLAY_COUNT); track c.id) {
+      @for (c of pagedPastCampaigns(); track c.id) {
       <app-campaign-card
         [id]="c.id"
         [title]="c.title"
@@ -29,19 +28,17 @@
       </app-campaign-card>
       }
     </div>
-    @if (pastCampaigns().length > INITIAL_DISPLAY_COUNT) {
-    <div class="view-toggle">
-      @if (!showAllPast()) {
-      <app-button appearance="primary" (click)="togglePast()"
-        >View More</app-button
-      >
-      } @else {
-      <app-button appearance="secondary" (click)="togglePast()"
-        >View Less</app-button
-      >
-      }
-    </div>
-    } }
+    }
+
+    <mat-paginator
+      [length]="pastCampaigns().length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[4, 8, 12, 16]"
+      (page)="onPageChangePast($event)"
+      aria-label="Select page"
+      class="campaign-paginator"
+    >
+    </mat-paginator>
   </div>
 
   <div class="available-campaigns">
@@ -49,8 +46,7 @@
     <div class="campaign-list">
       @if (campaigns().length === 0) {
       <p>No campaigns available.</p>
-      } @else { @for (c of campaigns().slice(0, showAllAvailable() ?
-      campaigns().length : INITIAL_DISPLAY_COUNT); track c.id) {
+      } @else { @for (c of pagedCurrentCampaigns(); track c.id) {
       <app-campaign-card
         [id]="c.id"
         [title]="c.title"
@@ -61,19 +57,15 @@
       ></app-campaign-card>
       } }
     </div>
-    @if (campaigns().length > INITIAL_DISPLAY_COUNT) {
-    <div class="view-toggle">
-      @if (!showAllAvailable()) {
-      <app-button appearance="primary" (click)="toggleAvailable()"
-        >View More</app-button
-      >
-      } @else {
-      <app-button appearance="secondary" (click)="toggleAvailable()"
-        >View Less</app-button
-      >
-      }
-    </div>
-    }
+    <mat-paginator
+      [length]="campaigns().length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[4, 8, 12, 16]"
+      (page)="onPageChangeCurrent($event)"
+      aria-label="Select page"
+      class="campaign-paginator"
+    >
+    </mat-paginator>
   </div>
 
   <div class="upcoming-campaigns">
@@ -81,8 +73,7 @@
     <div class="campaign-list">
       @if (upcomingCampaigns().length === 0) {
       <p>No upcoming campaigns.</p>
-      } @else { @for (c of upcomingCampaigns().slice(0, showAllUpcoming() ?
-      upcomingCampaigns().length : INITIAL_DISPLAY_COUNT); track c.id) {
+      } @else { @for (c of upcomingCampaigns(); track c.id) {
       <app-campaign-card
         [id]="c.id"
         [title]="c.title"
@@ -91,20 +82,16 @@
         size="medium"
       ></app-campaign-card>
       } }
-    </div>
-    @if (upcomingCampaigns().length > INITIAL_DISPLAY_COUNT) {
-    <div class="view-toggle">
-      @if (!showAllUpcoming()) {
-      <app-button appearance="primary" (click)="toggleUpcoming()"
-        >View More</app-button
+      <mat-paginator
+        [length]="upcomingCampaigns().length"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[4, 8, 12, 16]"
+        (page)="onPageChangeUpcoming($event)"
+        aria-label="Select page"
+        class="campaign-paginator"
       >
-      } @else {
-      <app-button appearance="secondary" (click)="toggleUpcoming()"
-        >View Less</app-button
-      >
-      }
+      </mat-paginator>
     </div>
-    }
   </div>
 
   @if (selectedCampaign()) {

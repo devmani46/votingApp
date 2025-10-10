@@ -1,6 +1,6 @@
 .user-campaign-page {
   color: var(--text-100);
-  padding: 2rem 6rem;
+  padding: 4rem 6rem;
   min-height: 100vh;
   background: var(--bg-200);
 
@@ -34,6 +34,11 @@
   .past-campaigns,
   .upcoming-campaigns {
     margin-bottom: 4rem;
+
+    .campaign-paginator {
+      margin-top: 1rem;
+      background-color: var(--bg-200);
+    }
 
     @media screen and (max-width: 480px) {
       margin-bottom: 2rem;

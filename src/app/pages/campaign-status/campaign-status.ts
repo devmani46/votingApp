@@ -171,7 +171,7 @@ export class CampaignStatus {
           type: 'bar',
           data: data.map((d) => d.value),
           itemStyle: { color: '#76affb' },
-          emphasis: { itemStyle: { color: '#4a90e2' } },
+          emphasis: { itemStyle: { color: '#000000' } },
         },
       ],
     };
