@@ -82,16 +82,16 @@
         size="medium"
       ></app-campaign-card>
       } }
-      <mat-paginator
-        [length]="upcomingCampaigns().length"
-        [pageSize]="pageSize"
-        [pageSizeOptions]="[4, 8, 12, 16]"
-        (page)="onPageChangeUpcoming($event)"
-        aria-label="Select page"
-        class="campaign-paginator"
-      >
-      </mat-paginator>
     </div>
+    <mat-paginator
+      [length]="upcomingCampaigns().length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[4, 8, 12, 16]"
+      (page)="onPageChangeUpcoming($event)"
+      aria-label="Select page"
+      class="campaign-paginator"
+    >
+    </mat-paginator>
   </div>
 
   @if (selectedCampaign()) {
