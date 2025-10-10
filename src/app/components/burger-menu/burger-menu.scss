@@ -99,6 +99,18 @@
         border-radius: 10px;
         transition: all 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
 
+        .badge {
+          margin-left: auto;
+          background: var(--primary-100);
+          color: #fff;
+          border-radius: 999px;
+          padding: 2px 8px;
+          font-size: 0.75rem;
+          line-height: 1;
+          min-width: 20px;
+          text-align: center;
+        }
+
         span {
           color: var(--primary-100);
         }

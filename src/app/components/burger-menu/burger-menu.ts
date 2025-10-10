@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth';
+import { SocketService } from '../../services/socket.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-burger-menu',
@@ -12,9 +14,14 @@ import { AuthService } from '../../services/auth';
 export class BurgerMenu {
   isOpen = true;
   role: string | null = null;
+  unreadCount = 0;
+  private unreadSubscription?: Subscription;
 
-  constructor(private auth: AuthService) {
+  constructor(private auth: AuthService, private socketService: SocketService) {
     this.role = this.auth.getRole();
+    this.unreadSubscription = this.socketService
+      .getUnreadCount()
+      .subscribe((count) => (this.unreadCount = count));
   }
 
   toggleMenu() {
@@ -32,5 +39,9 @@ export class BurgerMenu {
   logout() {
     this.auth.logout();
     this.closeMenu();
+  }
+
+  ngOnDestroy() {
+    if (this.unreadSubscription) this.unreadSubscription.unsubscribe();
   }
 }

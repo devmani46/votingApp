@@ -13,44 +13,30 @@
 
   <nav>
     <ul>
-      <li routerLink="/menu" routerLinkActive="active" >
+      <li routerLink="/menu" routerLinkActive="active">
         <span class="material-symbols-outlined">team_dashboard</span>
         Dashboard
       </li>
-      <li
-        routerLink="/campaign-status"
-        routerLinkActive="active"
-      >
+      <li routerLink="/campaign-status" routerLinkActive="active">
         <span class="material-symbols-outlined">apps</span>
         Campaigns
       </li>
-      <li
-        routerLink="/create-campaign"
-        routerLinkActive="active"
-      >
+      <li routerLink="/create-campaign" routerLinkActive="active">
         <span class="material-symbols-outlined">add_circle</span>
         Create Campaign
       </li>
-      <li
-        routerLink="/notifications"
-        routerLinkActive="active"
-      >
+      <li routerLink="/notifications" routerLinkActive="active">
         <span class="material-symbols-outlined">notifications</span>
         Notifications
+        <span class="badge">{{ unreadCount }}</span>
       </li>
 
       @if (role === 'admin') {
-      <li
-        routerLink="/user-management"
-        routerLinkActive="active"
-      >
+      <li routerLink="/user-management" routerLinkActive="active">
         <span class="material-symbols-outlined">manage_accounts</span>
         User Management
       </li>
-      <li
-        routerLink="/moderator-management"
-        routerLinkActive="active"
-      >
+      <li routerLink="/moderator-management" routerLinkActive="active">
         <span class="material-symbols-outlined">account_box</span>
         Moderator Management
       </li>

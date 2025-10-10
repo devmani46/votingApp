@@ -1,8 +1,15 @@
-import { Component, HostListener, OnInit, OnDestroy, inject } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  OnInit,
+  OnDestroy,
+  inject,
+} from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import { UserService } from '../../services/user';
 import { Subscription } from 'rxjs';
+import { SocketService } from '../../services/socket.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -17,9 +24,12 @@ export class NavBar implements OnInit, OnDestroy {
   menuOpen = false;
   private userSubscription?: Subscription;
   private authSubscription?: Subscription;
+  private unreadSubscription?: Subscription;
+  unreadCount = 0;
 
   private auth = inject(AuthService);
   private userService = inject(UserService);
+  private socketService = inject(SocketService);
 
   ngOnInit() {
     this.loadUser();
@@ -27,7 +37,7 @@ export class NavBar implements OnInit, OnDestroy {
     window.addEventListener('userProfileUpdated', this.handleUserProfileUpdate);
 
     // Subscribe to UserService for reactive updates
-    this.userSubscription = this.userService.currentUser$.subscribe(user => {
+    this.userSubscription = this.userService.currentUser$.subscribe((user) => {
       // console.log('NavBar received user update:', user);
       if (user) {
         this.updateUserDisplay(user);
@@ -35,21 +45,34 @@ export class NavBar implements OnInit, OnDestroy {
     });
 
     // Subscribe to AuthService for sessionStorage updates
-    this.authSubscription = this.auth.userUpdate$.subscribe(user => {
+    this.authSubscription = this.auth.userUpdate$.subscribe((user) => {
       if (user) {
         this.userService.syncWithAuthService();
       }
     });
+
+    // Subscribe to unread notifications count
+    this.unreadSubscription = this.socketService
+      .getUnreadCount()
+      .subscribe((count) => {
+        this.unreadCount = count;
+      });
   }
 
   ngOnDestroy() {
     window.removeEventListener('storage', this.syncUser);
-    window.removeEventListener('userProfileUpdated', this.handleUserProfileUpdate);
+    window.removeEventListener(
+      'userProfileUpdated',
+      this.handleUserProfileUpdate
+    );
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
+    }
+    if (this.unreadSubscription) {
+      this.unreadSubscription.unsubscribe();
     }
   }
 
@@ -83,7 +106,7 @@ export class NavBar implements OnInit, OnDestroy {
       // Ensure template can access properties
       photo_url: normalizedUser.photo,
       first_name: normalizedUser.firstName,
-      last_name: normalizedUser.lastName
+      last_name: normalizedUser.lastName,
     };
   }
 

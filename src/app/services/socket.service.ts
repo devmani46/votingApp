@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SocketService {
   private socket: Socket | null = null;
@@ -14,6 +14,9 @@ export class SocketService {
   private candidateAddedSubject = new Subject<any>();
   private candidateRemovedSubject = new Subject<any>();
   private candidateUpdatedSubject = new Subject<any>();
+  private notificationSubject = new Subject<any>();
+  private unreadCountSubject = new BehaviorSubject<number>(0);
+  private notificationsPageActive = false;
 
   constructor() {}
 
@@ -22,6 +25,13 @@ export class SocketService {
 
     this.socket = io('http://localhost:4000', {
       withCredentials: true,
+    });
+
+    this.socket.on('notification:new', (data) => {
+      this.notificationSubject.next(data);
+      if (!this.notificationsPageActive) {
+        this.unreadCountSubject.next(this.unreadCountSubject.value + 1);
+      }
     });
 
     this.socket.on('connect', () => {
@@ -116,5 +126,21 @@ export class SocketService {
 
   onCandidateUpdated(): Observable<any> {
     return this.candidateUpdatedSubject.asObservable();
+  }
+
+  onNotification(): Observable<any> {
+    return this.notificationSubject.asObservable();
+  }
+
+  getUnreadCount(): Observable<number> {
+    return this.unreadCountSubject.asObservable();
+  }
+
+  resetUnreadCount(): void {
+    this.unreadCountSubject.next(0);
+  }
+
+  setNotificationsActive(active: boolean): void {
+    this.notificationsPageActive = active;
   }
 }

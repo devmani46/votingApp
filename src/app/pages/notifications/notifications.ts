@@ -8,6 +8,8 @@ import { NotificationBlock } from '../../components/notification-block/notificat
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
+import { SocketService } from '../../services/socket.service';
+
 @Component({
   selector: 'app-notifications',
   standalone: true,
@@ -24,18 +26,38 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 export class Notifications {
   notifications: Notification[] = [];
 
-  constructor(private notificationService: NotificationService) {}
+  constructor(
+    private notificationService: NotificationService,
+    private socketService: SocketService
+  ) {}
 
   ngOnInit() {
     console.log('[Component] NotificationsComponent init');
+    this.socketService.connect();
+    this.socketService.joinAdmin();
+    this.socketService.setNotificationsActive(true);
+    this.socketService.resetUnreadCount();
+
+    this.socketService.onNotification().subscribe((notif: Notification) => {
+      // Avoid duplicates
+      if (!this.notifications.find((n) => n.id === notif.id)) {
+        this.notifications.unshift(notif);
+      }
+    });
     this.notificationService.getNotifications().subscribe({
       next: (data) => {
-        console.log('[Component] Notifications data:', data);
-        this.notifications = data;
+        // Merge API and real-time notifications
+        const existingIds = new Set(this.notifications.map((n) => n.id));
+        const newNotifications = data.filter((n) => !existingIds.has(n.id));
+        this.notifications = [...newNotifications, ...this.notifications];
       },
       error: (err) =>
         console.error('[Component] Error fetching notifications:', err),
     });
+  }
+
+  ngOnDestroy() {
+    this.socketService.setNotificationsActive(false);
   }
 
   pageSize = 10;
