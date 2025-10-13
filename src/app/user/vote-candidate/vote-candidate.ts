@@ -8,6 +8,7 @@ import { NavBar } from '../../components/nav-bar/nav-bar';
 import { Footer } from '../../components/footer/footer';
 import { CampaignCard } from '../../components/campaign-card/campaign-card';
 import { Button } from '../../components/button/button';
+import { SocketService } from '../../services/socket.service';
 
 @Component({
   selector: 'app-vote-candidate',
@@ -22,6 +23,7 @@ export class VoteCandidate implements OnInit, OnDestroy {
   private campaignService = inject(CampaignService);
   private authService = inject(AuthService);
   private storageService = inject(StorageService);
+  private socketService = inject(SocketService);
 
   campaignId = signal<string>('');
   campaign = computed(() => this.campaignService.getCampaignById(this.campaignId()));
@@ -69,7 +71,11 @@ export class VoteCandidate implements OnInit, OnDestroy {
     this.loadCampaign();
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    if (this.campaignId()) {
+      this.campaignService.leaveCampaign(this.campaignId());
+    }
+  }
 
   @HostListener('window:keydown', ['$event'])
   handleKeyEvent(event: KeyboardEvent) {
@@ -106,7 +112,29 @@ export class VoteCandidate implements OnInit, OnDestroy {
     }
 
     this.campaignId.set(id);
-    this.isLoading.set(false);
+    this.campaignService.joinCampaign(id);
+
+    // Always fetch the campaign to ensure we have the latest data with candidates
+    this.campaignService.getCampaign(id).subscribe({
+      next: (campaign) => {
+        // Update the local campaigns list
+        this.campaignService['_campaigns'].update(list => {
+          const existingIndex = list.findIndex(c => c.id === id);
+          if (existingIndex >= 0) {
+            list[existingIndex] = campaign;
+          } else {
+            list.push(campaign);
+          }
+          return [...list];
+        });
+        this.isLoading.set(false);
+      },
+      error: (error) => {
+        console.error('Failed to load campaign:', error);
+        this.isLoading.set(false);
+      }
+    });
+
     this.loadVotedCampaigns();
     this.checkIfAlreadyVoted();
   }

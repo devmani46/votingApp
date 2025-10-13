@@ -97,11 +97,13 @@ export class UserCampaign {
 
   openCampaignDetails(campaign: any) {
     this.selectedCampaignId.set(campaign.id);
+    this.campaignService.joinCampaign(campaign.id);
   }
 
   closeCampaignDialog(event?: MouseEvent) {
     if (event && event.target !== event.currentTarget) return;
     this.selectedCampaignId.set('');
+    this.campaignService.leaveCampaign(this.selectedCampaignId());
   }
 
   getWinnerPhotoUrl(candidate: any): string {

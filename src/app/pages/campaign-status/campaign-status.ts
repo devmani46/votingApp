@@ -70,6 +70,12 @@ export class CampaignStatus {
 
   constructor() {
     this.socketService.joinAdmin();
+    // Join all campaign rooms for real-time updates
+    effect(() => {
+      this.campaigns().forEach(campaign => {
+        this.campaignService.joinCampaign(campaign.id);
+      });
+    });
     window.addEventListener('storage', this.handleStorageChange);
     this.destroyRef.onDestroy(() => {
       window.removeEventListener('storage', this.handleStorageChange);

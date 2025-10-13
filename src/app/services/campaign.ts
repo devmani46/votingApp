@@ -52,12 +52,13 @@ export class CampaignService {
     });
 
     this.socketService.onVoteUpdated().subscribe(data => {
+      console.log('Received vote:updated event:', data);
       this._campaigns.update(list =>
         list.map(c => {
           if (c.id === data.campaignId) {
             return {
               ...c,
-              candidates: c.candidates.map(cd => cd.id === data.candidateId ? { ...cd, votes: data.votes[cd.id] || 0 } : cd)
+              candidates: c.candidates.map(cd => ({ ...cd, votes: data.votes[cd.id] || 0 }))
             };
           }
           return c;
@@ -66,6 +67,7 @@ export class CampaignService {
     });
 
     this.socketService.onCandidateAdded().subscribe(data => {
+      console.log('Received candidate:added event:', data);
       this._campaigns.update(list =>
         list.map(c => {
           if (c.id === data.campaignId) {
@@ -211,5 +213,17 @@ export class CampaignService {
       candidates: winners,
       draw: winners.length > 1
     };
+  }
+
+  joinCampaign(campaignId: string): void {
+    this.socketService.joinCampaign(campaignId);
+  }
+
+  leaveCampaign(campaignId: string): void {
+    this.socketService.leaveCampaign(campaignId);
+  }
+
+  getCampaign(id: string): Observable<Campaign> {
+    return this.http.get<Campaign>(`${this.apiUrl}/campaigns/${id}`, { withCredentials: true });
   }
 }
