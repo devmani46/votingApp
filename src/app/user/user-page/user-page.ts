@@ -21,8 +21,8 @@ import { CampaignService } from '../../services/campaign';
 import { AuthService } from '../../services/auth';
 import { UserService } from '../../services/user';
 import { StorageService } from '../../services/storage';
-// import { NotificationBlock } from '../../components/notification-block/notification-block';
-// import { NotificationService, Notification } from '../../services/notification';
+import { NotificationBlock } from '../../components/notification-block/notification-block';
+import { NotificationService, Notification } from '../../services/notification';
 
 @Component({
   selector: 'app-user-page',
@@ -34,7 +34,7 @@ import { StorageService } from '../../services/storage';
     Button,
     FuiInput,
     CampaignCard,
-    // NotificationBlock,
+    NotificationBlock,
   ],
   templateUrl: './user-page.html',
   styleUrls: ['./user-page.scss'],
@@ -61,16 +61,15 @@ export class UserPage implements OnInit {
   photoPreview: string | null = null;
   selectedCampaign: any = null;
   winner: any = null;
-  // notifications: Notification[] = [];
+  notifications: Notification[] = [];
 
-  // constructor(private notificationService: NotificationService) {}
-  constructor() {}
+  constructor(private notificationService: NotificationService) {}
 
   ngOnInit() {
-    // this.notificationService.getNotifications().subscribe({
-    //   next: (data) => (this.notifications = data),
-    //   error: (err) => console.error('[Notifications Error]', err),
-    // });
+    this.notificationService.getNotifications().subscribe({
+      next: (data) => (this.notifications = data),
+      error: (err) => console.error('[Notifications Error]', err),
+    });
     this.refreshUserData();
   }
 
@@ -258,8 +257,7 @@ export class UserPage implements OnInit {
       bio: this.form.value.bio,
       photo_url: this.photoPreview || this.user.photo_url,
     };
-    if (this.form.value.password)
-      userData.password = this.form.value.password;
+    if (this.form.value.password) userData.password = this.form.value.password;
 
     const currentUser = this.authService.getCurrentUser();
     if (currentUser && currentUser.id) {

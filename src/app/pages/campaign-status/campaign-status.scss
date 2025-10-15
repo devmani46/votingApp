@@ -12,6 +12,45 @@
   --temp: blue;
 }
 
+cdk-row,
+cdk-header-row,
+cdk-footer-row {
+  display: flex;
+}
+
+cdk-cell,
+cdk-header-cell,
+cdk-footer-cell {
+  flex: 1;
+  padding-left: 10px;
+}
+
+cdk-cell {
+  padding: 10px 0 10px 10px;
+  flex-grow: 2;
+}
+
+cdk-row:nth-child(even) {
+  background-color: var(--bg-100); // white
+}
+
+cdk-row {
+  transition: all 0.2s ease;
+  &:hover {
+    background-color: var(--accent);
+    color: var(--bg-100);
+    transform: scale(1.05);
+    box-shadow: 10px 10px 10px var(--accent-800);
+    border-radius: 5px;
+    cursor: pointer;
+  }
+}
+
+cdk-header-cell {
+  font-weight: 700;
+  padding-bottom: 10px;
+}
+
 .campaigns-container {
   flex: 1;
   padding: 4rem;
@@ -54,6 +93,12 @@
   gap: 1rem;
   margin-bottom: 2rem;
   flex-wrap: wrap;
+
+  .change-view-btn {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+  }
 }
 
 .search-input {
@@ -111,6 +156,11 @@
 
   .campaign-paginator {
     background-color: var(--bg-200);
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 5px;
   }
 }
 

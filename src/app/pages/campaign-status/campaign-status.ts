@@ -17,6 +17,7 @@ import { SocketService } from '../../services/socket.service';
 import { CampaignCard } from '../../components/campaign-card/campaign-card';
 import { Button } from '../../components/button/button';
 import { BurgerMenu } from '../../components/burger-menu/burger-menu';
+import { CdkTableModule } from '@angular/cdk/table';
 
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -31,6 +32,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
     Button,
     BurgerMenu,
     NgxEchartsModule,
+    CdkTableModule,
     MatPaginatorModule,
   ],
   templateUrl: './campaign-status.html',
@@ -42,15 +44,22 @@ export class CampaignStatus {
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  displayedColumns = [
+    'title',
+    'votes',
+    'start_date_column',
+    'end_date_column',
+    'actions',
+  ];
 
-  viewMode = signal<'cards' | 'charts'>('cards');
+  viewMode = signal<'Cards' | 'Charts' | 'List'>('Cards');
   searchTerm = signal('');
   selectedCampaignId = signal<string | null>(null);
   campaigns = this.campaignService.campaigns;
 
   selectedCampaign = computed(() => {
     const id = this.selectedCampaignId();
-    return id ? this.campaigns().find(c => c.id === id) || null : null;
+    return id ? this.campaigns().find((c) => c.id === id) || null : null;
   });
 
   filteredCampaigns = computed(() => {
@@ -72,7 +81,7 @@ export class CampaignStatus {
     this.socketService.joinAdmin();
     // Join all campaign rooms for real-time updates
     effect(() => {
-      this.campaigns().forEach(campaign => {
+      this.campaigns().forEach((campaign) => {
         this.campaignService.joinCampaign(campaign.id);
       });
     });
@@ -88,7 +97,13 @@ export class CampaignStatus {
   }
 
   toggleView() {
-    this.viewMode.set(this.viewMode() === 'cards' ? 'charts' : 'cards');
+    this.viewMode.set(
+      this.viewMode() === 'Cards'
+        ? 'List'
+        : this.viewMode() === 'List'
+        ? 'Charts'
+        : 'Cards'
+    );
     this.closeCampaignDetails();
   }
 

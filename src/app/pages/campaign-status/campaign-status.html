@@ -8,7 +8,8 @@
 
     <div class="dashboard-controls">
       <app-button shape="circular" appearance="outline" (click)="toggleView()">
-        Switch to {{ viewMode() === "cards" ? "Charts" : "Cards" }} View
+        {{ viewMode() }}
+        View
       </app-button>
 
       <app-button shape="circular" appearance="outline" (click)="exportCSV()">
@@ -22,10 +23,16 @@
         [ngModel]="searchTerm()"
         (ngModelChange)="searchTerm.set($event)"
       />
+
+      <button class="change-view-btn">
+        @if(viewMode() === 'Cards') {
+        <span class="material-symbols-outlined">cards</span><span>Card</span>
+        }
+      </button>
     </div>
 
     <div class="dashboard-content">
-      @if (viewMode() === 'cards') {
+      @if (viewMode() === 'Cards') {
       <div class="campaign-cards">
         @for (campaign of pagedCampaigns(); track trackByCampaignId($index,
         campaign)) {
@@ -153,7 +160,7 @@
         }
       </div>
 
-      @if (viewMode() === 'charts') {
+      @if (viewMode() === 'Charts') {
       <div class="chart-view">
         @for (campaign of filteredCampaigns(); track trackByCampaignId($index,
         campaign)) {
@@ -188,6 +195,66 @@
         </div>
         }
       </div>
+      } @if(viewMode() === 'List') {
+
+      <cdk-table class="list-view" [dataSource]="pagedCampaigns()">
+        <ng-container cdkColumnDef="title">
+          <cdk-header-cell *cdkHeaderCellDef>Title</cdk-header-cell>
+          <cdk-cell *cdkCellDef="let campaign">{{ campaign.title }}</cdk-cell>
+        </ng-container>
+        <!-- Votes Column -->
+        <ng-container cdkColumnDef="votes">
+          <cdk-header-cell *cdkHeaderCellDef> Total Votes </cdk-header-cell>
+          <cdk-cell *cdkCellDef="let campaign">
+            {{ getTotalVotes(campaign) }}
+          </cdk-cell>
+        </ng-container>
+
+        <ng-container cdkColumnDef="start_date_column">
+          <cdk-header-cell *cdkHeaderCellDef>Start Date</cdk-header-cell>
+          <cdk-cell *cdkCellDef="let campaign">
+            {{ campaign.start_date | date }}
+          </cdk-cell>
+        </ng-container>
+
+        <ng-container cdkColumnDef="end_date_column">
+          <cdk-header-cell *cdkHeaderCellDef>End Date</cdk-header-cell>
+          <cdk-cell *cdkCellDef="let campaign">
+            {{ campaign.end_date | date }}
+          </cdk-cell>
+        </ng-container>
+
+        <ng-container cdkColumnDef="actions">
+          <cdk-header-cell *cdkHeaderCellDef> Actions </cdk-header-cell>
+          <cdk-cell *cdkCellDef="let campaign">
+            <div class="action-buttons">
+              <app-button
+                size="small"
+                appearance="outline"
+                shape="circular"
+                (click)="editCampaign(campaign.id)"
+              >
+                <span class="material-symbols-outlined">edit</span>
+              </app-button>
+              <app-button
+                size="small"
+                appearance="primary"
+                shape="circular"
+                (click)="deleteCampaign(campaign.id)"
+              >
+                <span class="material-symbols-outlined">delete</span>
+              </app-button>
+            </div>
+          </cdk-cell>
+        </ng-container>
+
+        <cdk-header-row *cdkHeaderRowDef="displayedColumns"></cdk-header-row>
+        <cdk-row
+          *cdkRowDef="let row; columns: displayedColumns"
+          (click)="openCampaignDetails(row)"
+        ></cdk-row>
+      </cdk-table>
+
       }
     </div>
   </div>
