@@ -90,38 +90,40 @@
       <div class="dialog-content" (click)="$event.stopPropagation()">
         <h3>{{ editId() !== null ? "Edit Moderator" : "Add Moderator" }}</h3>
 
-        <div class="moderator-form">
-          <label>First Name</label>
-          <app-fui-input
-            [formControl]="firstNameControl"
-            placeholder="First Name"
-          ></app-fui-input>
+        <form [formGroup]="form()">
+          <div class="moderator-form">
+            <label>First Name</label>
+            <app-fui-input
+              formControlName="first_name"
+              placeholder="First Name"
+            ></app-fui-input>
 
-          <label>Last Name</label>
-          <app-fui-input
-            [formControl]="lastNameControl"
-            placeholder="Last Name"
-          ></app-fui-input>
+            <label>Last Name</label>
+            <app-fui-input
+              formControlName="last_name"
+              placeholder="Last Name"
+            ></app-fui-input>
 
-          <label>Username</label>
-          <app-fui-input
-            [formControl]="usernameControl"
-            placeholder="Username"
-          ></app-fui-input>
+            <label>Username</label>
+            <app-fui-input
+              formControlName="username"
+              placeholder="Username"
+            ></app-fui-input>
 
-          <label>Email</label>
-          <app-fui-input
-            [formControl]="emailControl"
-            placeholder="Moderator Email"
-          ></app-fui-input>
+            <label>Email</label>
+            <app-fui-input
+              formControlName="email"
+              placeholder="Moderator Email"
+            ></app-fui-input>
 
-          <label>Password</label>
-          <app-fui-input
-            [formControl]="passwordControl"
-            type="password"
-            placeholder="Password"
-          ></app-fui-input>
-        </div>
+            <label>Password</label>
+            <app-fui-input
+              formControlName="password"
+              type="password"
+              placeholder="Password"
+            ></app-fui-input>
+          </div>
+        </form>
 
         <div class="dialog-actions">
           <app-button appearance="secondary" (click)="closeDialog()"

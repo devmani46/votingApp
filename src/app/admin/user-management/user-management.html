@@ -97,47 +97,49 @@
   @if (showDialog()) {
   <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">
     <div class="dialog-content" (click)="$event.stopPropagation()">
-      <h3>{{ editId() !== null ? "Edit User" : "Add User" }}</h3>
+        <h3>{{ editId() !== null ? "Edit User" : "Add User" }}</h3>
 
-      <div class="user-form">
-        <label>First Name</label>
-        <app-fui-input
-          [formControl]="firstNameControl"
-          placeholder="First Name"
-        ></app-fui-input>
+        <form [formGroup]="form()">
+          <div class="user-form">
+            <label>First Name</label>
+            <app-fui-input
+              formControlName="first_name"
+              placeholder="First Name"
+            ></app-fui-input>
 
-        <label>Last Name</label>
-        <app-fui-input
-          [formControl]="lastNameControl"
-          placeholder="Last Name"
-        ></app-fui-input>
+            <label>Last Name</label>
+            <app-fui-input
+              formControlName="last_name"
+              placeholder="Last Name"
+            ></app-fui-input>
 
-        <label>Username</label>
-        <app-fui-input
-          [formControl]="usernameControl"
-          placeholder="Username"
-        ></app-fui-input>
+            <label>Username</label>
+            <app-fui-input
+              formControlName="username"
+              placeholder="Username"
+            ></app-fui-input>
 
-        <label>Email</label>
-        <app-fui-input
-          [formControl]="emailControl"
-          placeholder="Email"
-        ></app-fui-input>
+            <label>Email</label>
+            <app-fui-input
+              formControlName="email"
+              placeholder="Email"
+            ></app-fui-input>
 
-        <label>Password</label>
-        <app-fui-input
-          [formControl]="passwordControl"
-          placeholder="Password"
-          type="password"
-        ></app-fui-input>
-      </div>
+            <label>Password</label>
+            <app-fui-input
+              formControlName="password"
+              placeholder="Password"
+              type="password"
+            ></app-fui-input>
+          </div>
+        </form>
 
-      <div class="dialog-actions">
-        <app-button appearance="secondary" (click)="closeDialog()"
-          >Cancel</app-button
-        >
-        <app-button appearance="primary" (click)="saveUser()">Save</app-button>
-      </div>
+        <div class="dialog-actions">
+          <app-button appearance="secondary" (click)="closeDialog()"
+            >Cancel</app-button
+          >
+          <app-button appearance="primary" (click)="saveUser()">Save</app-button>
+        </div>
     </div>
   </div>
   }
