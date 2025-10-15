@@ -3,7 +3,7 @@
     <form class="register-form" [formGroup]="form()" (ngSubmit)="onSubmit()">
       <h2>Create an account</h2>
       <div class="names" style="display: flex; gap: 1rem">
-        <app-fui-field label="First Name" [errorMessage]="firstNameError()">
+        <app-fui-field label="First Name" [errorMessage]="errors().firstName">
           <app-fui-input
             size="large"
             placeholder="Enter first name"
@@ -13,7 +13,7 @@
           ></app-fui-input>
         </app-fui-field>
 
-        <app-fui-field label="Last Name" [errorMessage]="lastNameError()">
+        <app-fui-field label="Last Name" [errorMessage]="errors().lastName">
           <app-fui-input
             size="large"
             placeholder="Enter last name"
@@ -24,7 +24,7 @@
         </app-fui-field>
       </div>
 
-      <app-fui-field label="Username" [errorMessage]="usernameError()">
+      <app-fui-field label="Username" [errorMessage]="errors().username">
         <app-fui-input
           size="large"
           placeholder="Choose a username"
@@ -34,7 +34,7 @@
         ></app-fui-input>
       </app-fui-field>
 
-      <app-fui-field label="Email" [errorMessage]="emailError()">
+      <app-fui-field label="Email" [errorMessage]="errors().email">
         <app-fui-input
           size="large"
           placeholder="Enter your email"
@@ -44,7 +44,7 @@
         ></app-fui-input>
       </app-fui-field>
 
-      <app-fui-field label="Password" [errorMessage]="passwordError()">
+      <app-fui-field label="Password" [errorMessage]="errors().password">
         <app-fui-input
           size="large"
           placeholder="Enter password"
@@ -54,7 +54,7 @@
         ></app-fui-input>
       </app-fui-field>
 
-      <app-fui-field label="Confirm Password" [errorMessage]="confirmPasswordError()">
+      <app-fui-field label="Confirm Password" [errorMessage]="errors().confirmPassword">
         <app-fui-input
           size="large"
           placeholder="Confirm password"

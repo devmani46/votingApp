@@ -59,18 +59,11 @@ export class Login {
   rememberMe = computed(() => this.form().controls.rememberMe);
   campaigns: Signal<Campaign[]>;
 
-  emailError = computed(() => {
-    if (!this.submitted()) return '';
-    if (this.email().hasError('required')) return 'Email is required';
-    if (this.email().hasError('email')) return 'Invalid email';
-    return '';
-  });
-
-  passwordError = computed(() =>
-    this.submitted() && this.password().hasError('required')
-      ? 'Password is required'
-      : ''
-  );
+  errors = computed(() => ({
+    email: this.submitted() && this.email().hasError('required') ? 'Email is required' :
+           this.submitted() && this.email().hasError('email') ? 'Invalid email' : '',
+    password: this.submitted() && this.password().hasError('required') ? 'Password is required' : ''
+  }));
 
   constructor(private campaignService: CampaignService) {
     this.campaigns = this.campaignService.campaigns;

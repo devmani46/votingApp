@@ -3,7 +3,7 @@
     <form [formGroup]="form()" (ngSubmit)="onSubmit()">
       <h2>Sign in</h2>
 
-      <app-fui-field label="Email" [errorMessage]="emailError()">
+      <app-fui-field label="Email" [errorMessage]="errors().email">
         <app-fui-input
           size="large"
           placeholder="Enter your email"
@@ -12,7 +12,7 @@
         ></app-fui-input>
       </app-fui-field>
 
-      <app-fui-field label="Password" [errorMessage]="passwordError()">
+      <app-fui-field label="Password" [errorMessage]="errors().password">
         <app-fui-input
           size="large"
           placeholder="Enter password"

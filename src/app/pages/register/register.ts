@@ -92,35 +92,16 @@ export class Register {
   password = computed(() => this.form().controls.password);
   confirmPassword = computed(() => this.form().controls.confirmPassword);
 
-  firstNameError = computed(() =>
-    this.submitted() && this.firstName().hasError('required') ? 'First name is required' : ''
-  );
-
-  lastNameError = computed(() =>
-    this.submitted() && this.lastName().hasError('required') ? 'Last name is required' : ''
-  );
-
-  usernameError = computed(() =>
-    this.submitted() && this.username().hasError('required') ? 'Username is required' : ''
-  );
-
-  emailError = computed(() => {
-    if (!this.submitted()) return '';
-    if (this.email().hasError('required')) return 'Email is required';
-    if (this.email().hasError('email')) return 'Invalid email';
-    return '';
-  });
-
-  passwordError = computed(() =>
-    this.submitted() && this.password().hasError('required') ? 'Password is required' : ''
-  );
-
-  confirmPasswordError = computed(() => {
-    if (!this.submitted()) return '';
-    if (this.confirmPassword().hasError('required')) return 'Confirm password is required';
-    if (this.confirmPassword().hasError('mismatch')) return 'Passwords do not match';
-    return '';
-  });
+  errors = computed(() => ({
+    firstName: this.submitted() && this.firstName().hasError('required') ? 'First name is required' : '',
+    lastName: this.submitted() && this.lastName().hasError('required') ? 'Last name is required' : '',
+    username: this.submitted() && this.username().hasError('required') ? 'Username is required' : '',
+    email: this.submitted() && this.email().hasError('required') ? 'Email is required' :
+           this.submitted() && this.email().hasError('email') ? 'Invalid email' : '',
+    password: this.submitted() && this.password().hasError('required') ? 'Password is required' : '',
+    confirmPassword: this.submitted() && this.confirmPassword().hasError('required') ? 'Confirm password is required' :
+                     this.submitted() && this.confirmPassword().hasError('mismatch') ? 'Passwords do not match' : ''
+  }));
 
   constructor() {}
 
