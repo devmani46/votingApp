@@ -44,8 +44,8 @@
     @for (candidate of campaign()!.candidates; let i = $index; track i) {
     <div
       class="candidate-wrapper"
-      [class.disabled]="hasVoted(campaign()!.id)"
-      (click)="hasVoted(campaign()!.id) ? null : openCandidatePopup(i)"
+      [class.voted]="getVotedCandidate(campaign()!.id) === candidate.id"
+      (click)="openCandidatePopup(i)"
       tabindex="0"
     >
       <app-campaign-card
@@ -54,7 +54,6 @@
         [description]="candidate.bio"
         [image]="candidate.photo_url || '/assets/default-user.png'"
         size="medium"
-        [disabled]="hasVoted(campaign()!.id)"
       ></app-campaign-card>
     </div>
     }

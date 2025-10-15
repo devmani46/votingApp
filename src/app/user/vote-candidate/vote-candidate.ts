@@ -28,7 +28,7 @@ export class VoteCandidate implements OnInit, OnDestroy {
   campaignId = signal<string>('');
   campaign = computed(() => this.campaignService.getCampaignById(this.campaignId()));
   showPopup = false;
-  private votedCampaigns: Record<string, string[]> = {};
+  private votedCampaigns: Record<string, Record<string, string>> = {};
   private currentUserEmail: string = '';
   candidatePopupOpen = false;
   activeIndex = signal<number | null>(null);
@@ -100,6 +100,9 @@ export class VoteCandidate implements OnInit, OnDestroy {
       event.preventDefault();
       if (this.activeIndex() !== null && this.campaign()?.id && !this.hasVoted(this.campaign()!.id)) {
         this.vote(this.activeIndex()!);
+      } else if (this.activeIndex() !== null && this.campaign()?.id && this.hasVoted(this.campaign()!.id)) {
+        // Show popup if already voted
+        this.showPopup = true;
       }
     }
   }
@@ -162,18 +165,23 @@ export class VoteCandidate implements OnInit, OnDestroy {
     this.campaignService
       .castVote(this.campaign()!.id, this.campaign()!.candidates[candidateIndex].id)
       .subscribe(() => {
-        this.storageService.addVotedCampaign(this.currentUserEmail, this.campaign()!.id);
+        this.storageService.addVotedCampaign(this.currentUserEmail, this.campaign()!.id, this.campaign()!.candidates[candidateIndex].id);
 
         if (!this.votedCampaigns[this.currentUserEmail]) {
-          this.votedCampaigns[this.currentUserEmail] = [];
+          this.votedCampaigns[this.currentUserEmail] = {};
         }
-        this.votedCampaigns[this.currentUserEmail].push(this.campaign()!.id);
+        this.votedCampaigns[this.currentUserEmail][this.campaign()!.id] = this.campaign()!.candidates[candidateIndex].id;
       });
   }
 
   hasVoted(campaignId?: string): boolean {
     if (!campaignId || !this.currentUserEmail) return false;
-    return this.votedCampaigns[this.currentUserEmail]?.includes(campaignId) ?? false;
+    return !!this.votedCampaigns[this.currentUserEmail]?.[campaignId];
+  }
+
+  getVotedCandidate(campaignId?: string): string | null {
+    if (!campaignId || !this.currentUserEmail) return null;
+    return this.votedCampaigns[this.currentUserEmail]?.[campaignId] || null;
   }
 
   closePopup() {

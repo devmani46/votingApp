@@ -12,7 +12,7 @@ export class StorageService {
   private tokenSignal = signal<string | null>(localStorage.getItem(this.tokenKey));
   private userSignal = signal<any | null>(this.parseUser(localStorage.getItem(this.userKey)));
   private roleSignal = signal<string | null>(localStorage.getItem(this.roleKey));
-  private votedCampaignsSignal = signal<Record<string, string[]>>(this.parseVotedCampaigns(localStorage.getItem(this.votedCampaignsKey)));
+  private votedCampaignsSignal = signal<Record<string, Record<string, string>>>(this.parseVotedCampaigns(localStorage.getItem(this.votedCampaignsKey)));
 
   private parseUser(userStr: string | null): any | null {
     if (!userStr) return null;
@@ -71,7 +71,7 @@ export class StorageService {
     this.roleSignal.set(null);
   }
 
-  private parseVotedCampaigns(votedCampaignsStr: string | null): Record<string, string[]> {
+  private parseVotedCampaigns(votedCampaignsStr: string | null): Record<string, Record<string, string>> {
     if (!votedCampaignsStr) return {};
     try {
       return JSON.parse(votedCampaignsStr);
@@ -80,31 +80,34 @@ export class StorageService {
     }
   }
 
-  getVotedCampaigns(): Record<string, string[]> {
+  getVotedCampaigns(): Record<string, Record<string, string>> {
     return this.votedCampaignsSignal();
   }
 
-  addVotedCampaign(userEmail: string, campaignId: string) {
+  addVotedCampaign(userEmail: string, campaignId: string, candidateId: string) {
     const votedCampaigns = this.getVotedCampaigns();
     if (!votedCampaigns[userEmail]) {
-      votedCampaigns[userEmail] = [];
+      votedCampaigns[userEmail] = {};
     }
-    if (!votedCampaigns[userEmail].includes(campaignId)) {
-      votedCampaigns[userEmail].push(campaignId);
-      localStorage.setItem(this.votedCampaignsKey, JSON.stringify(votedCampaigns));
-      this.votedCampaignsSignal.set(votedCampaigns);
-    }
+    votedCampaigns[userEmail][campaignId] = candidateId;
+    localStorage.setItem(this.votedCampaignsKey, JSON.stringify(votedCampaigns));
+    this.votedCampaignsSignal.set(votedCampaigns);
   }
 
   hasVotedForCampaign(userEmail: string, campaignId: string): boolean {
     const votedCampaigns = this.getVotedCampaigns();
-    return votedCampaigns[userEmail]?.includes(campaignId) ?? false;
+    return !!votedCampaigns[userEmail]?.[campaignId];
+  }
+
+  getVotedCandidate(userEmail: string, campaignId: string): string | null {
+    const votedCampaigns = this.getVotedCampaigns();
+    return votedCampaigns[userEmail]?.[campaignId] || null;
   }
 
   removeVotedCampaign(userEmail: string, campaignId: string) {
     const votedCampaigns = this.getVotedCampaigns();
     if (votedCampaigns[userEmail]) {
-      votedCampaigns[userEmail] = votedCampaigns[userEmail].filter(id => id !== campaignId);
+      delete votedCampaigns[userEmail][campaignId];
       localStorage.setItem(this.votedCampaignsKey, JSON.stringify(votedCampaigns));
       this.votedCampaignsSignal.set(votedCampaigns);
     }
