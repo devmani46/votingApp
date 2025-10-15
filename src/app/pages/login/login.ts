@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject, Signal } from '@angular/core';
+import { Component, signal, computed, inject, Signal, ChangeDetectionStrategy } from '@angular/core';
 import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
@@ -36,6 +36,7 @@ type LoginForm = {
   ],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Login {
   private fb = inject(NonNullableFormBuilder);
@@ -56,6 +57,7 @@ export class Login {
   email = computed(() => this.form().controls.email);
   password = computed(() => this.form().controls.password);
   rememberMe = computed(() => this.form().controls.rememberMe);
+  campaigns: Signal<Campaign[]>;
 
   emailError = computed(() => {
     if (!this.submitted()) return '';
@@ -100,9 +102,9 @@ export class Login {
     }
   }
 
-  campaigns: Signal<Campaign[]>;
 
   get totalCampaigns(): number {
+    console.log('1');
     return this.campaigns().length;
   }
 }

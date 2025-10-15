@@ -9,8 +9,9 @@ import {
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
-  FormBuilder,
+  NonNullableFormBuilder,
   Validators,
+  FormGroup,
   FormControl,
 } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -25,6 +26,14 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 type SortField = 'first_name' | 'email' | 'username';
 type SortDirection = 'asc' | 'desc';
+
+type UserForm = {
+  first_name: FormControl<string>;
+  last_name: FormControl<string>;
+  username: FormControl<string>;
+  email: FormControl<string>;
+  password: FormControl<string>;
+};
 
 @Component({
   selector: 'app-user-management',
@@ -42,7 +51,7 @@ type SortDirection = 'asc' | 'desc';
   styleUrls: ['./user-management.scss'],
 })
 export class UserManagement {
-  private fb = inject(FormBuilder);
+  private fb = inject(NonNullableFormBuilder);
   private userService = inject(UserService);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -52,11 +61,23 @@ export class UserManagement {
   sortField = signal<SortField>('first_name');
   sortDirection = signal<SortDirection>('asc');
 
-  firstNameControl = new FormControl('', Validators.required);
-  lastNameControl = new FormControl('', Validators.required);
-  usernameControl = new FormControl('', Validators.required);
-  emailControl = new FormControl('', [Validators.required, Validators.email]);
-  passwordControl = new FormControl('', Validators.required);
+  form = signal<FormGroup<UserForm>>(
+    this.fb.group<UserForm>({
+      first_name: this.fb.control('', { validators: [Validators.required] }),
+      last_name: this.fb.control('', { validators: [Validators.required] }),
+      username: this.fb.control('', { validators: [Validators.required] }),
+      email: this.fb.control('', {
+        validators: [Validators.required, Validators.email],
+      }),
+      password: this.fb.control('', { validators: [Validators.required] }),
+    })
+  );
+
+  firstNameControl = computed(() => this.form().controls.first_name);
+  lastNameControl = computed(() => this.form().controls.last_name);
+  usernameControl = computed(() => this.form().controls.username);
+  emailControl = computed(() => this.form().controls.email);
+  passwordControl = computed(() => this.form().controls.password);
 
   searchControl = new FormControl('');
   searchValue = toSignal(this.searchControl.valueChanges, { initialValue: '' });
@@ -108,29 +129,23 @@ export class UserManagement {
     if (id !== null) {
       const user = this.users().find((u) => u.id === id);
       if (user) {
-        this.firstNameControl.setValue(user.first_name);
-        this.lastNameControl.setValue(user.last_name);
-        this.usernameControl.setValue(user.username);
-        this.emailControl.setValue(user.email);
-        this.passwordControl.reset(''); // Don't populate password when editing
+        this.form().setValue({
+          first_name: user.first_name,
+          last_name: user.last_name,
+          username: user.username,
+          email: user.email,
+          password: '',
+        });
       }
     } else {
-      this.firstNameControl.reset('');
-      this.lastNameControl.reset('');
-      this.usernameControl.reset('');
-      this.emailControl.reset('');
-      this.passwordControl.reset('');
+      this.form().reset();
     }
   }
 
   closeDialog() {
     this.showDialog.set(false);
     this.editId.set(null);
-    this.firstNameControl.reset('');
-    this.lastNameControl.reset('');
-    this.usernameControl.reset('');
-    this.emailControl.reset('');
-    this.passwordControl.reset('');
+    this.form().reset();
   }
 
   @HostListener('document:keydown', ['$event'])
@@ -147,22 +162,9 @@ export class UserManagement {
   }
 
   saveUser() {
-    const user: Partial<User> = {
-      first_name: this.firstNameControl.value ?? '',
-      last_name: this.lastNameControl.value ?? '',
-      username: this.usernameControl.value ?? '',
-      email: this.emailControl.value ?? '',
-      password: this.passwordControl.value ?? '',
-    };
+    if (this.form().invalid) return;
 
-    if (
-      !user.first_name ||
-      !user.last_name ||
-      !user.username ||
-      !user.email ||
-      !user.password
-    )
-      return;
+    const user = this.form().getRawValue();
 
     if (this.editId() !== null) {
       this.userService.updateUser(this.editId()!, user).subscribe(() => {
@@ -170,8 +172,6 @@ export class UserManagement {
         this.closeDialog();
       });
     } else {
-      // Note: Adding new users would require a separate API endpoint
-      // For now, we'll just close the dialog
       this.closeDialog();
     }
   }

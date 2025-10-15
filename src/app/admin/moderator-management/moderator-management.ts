@@ -2,8 +2,9 @@ import { Component, signal, computed, HostListener, inject } from '@angular/core
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
-  FormBuilder,
+  NonNullableFormBuilder,
   Validators,
+  FormGroup,
   FormControl,
 } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -15,6 +16,14 @@ import { ModeratorService, Moderator } from '../../services/moderator';
 
 type SortField = 'first_name' | 'email';
 type SortDirection = 'asc' | 'desc';
+
+type ModeratorForm = {
+  first_name: FormControl<string>;
+  last_name: FormControl<string>;
+  username: FormControl<string>;
+  email: FormControl<string>;
+  password: FormControl<string>;
+};
 
 @Component({
   selector: 'app-moderator-management',
@@ -31,7 +40,7 @@ type SortDirection = 'asc' | 'desc';
   styleUrls: ['./moderator-management.scss'],
 })
 export class ModeratorManagement {
-  private fb = inject(FormBuilder);
+  private fb = inject(NonNullableFormBuilder);
   private moderatorService = inject(ModeratorService);
 
   moderators = signal<Moderator[]>([]);
@@ -40,11 +49,23 @@ export class ModeratorManagement {
   sortField = signal<SortField>('first_name');
   sortDirection = signal<SortDirection>('asc');
 
-  firstNameControl = new FormControl('', Validators.required);
-  lastNameControl = new FormControl('', Validators.required);
-  usernameControl = new FormControl('', Validators.required);
-  emailControl = new FormControl('', [Validators.required, Validators.email]);
-  passwordControl = new FormControl('', Validators.required);
+  form = signal<FormGroup<ModeratorForm>>(
+    this.fb.group<ModeratorForm>({
+      first_name: this.fb.control('', { validators: [Validators.required] }),
+      last_name: this.fb.control('', { validators: [Validators.required] }),
+      username: this.fb.control('', { validators: [Validators.required] }),
+      email: this.fb.control('', {
+        validators: [Validators.required, Validators.email],
+      }),
+      password: this.fb.control('', { validators: [Validators.required] }),
+    })
+  );
+
+  firstNameControl = computed(() => this.form().controls.first_name);
+  lastNameControl = computed(() => this.form().controls.last_name);
+  usernameControl = computed(() => this.form().controls.username);
+  emailControl = computed(() => this.form().controls.email);
+  passwordControl = computed(() => this.form().controls.password);
 
   searchControl = new FormControl('');
   searchValue = toSignal(this.searchControl.valueChanges, { initialValue: '' });
@@ -96,26 +117,23 @@ export class ModeratorManagement {
     if (id !== null) {
       const mod = this.moderators().find(m => m.id === id);
       if (mod) {
-        this.firstNameControl.setValue(mod.first_name);
-        this.lastNameControl.setValue(mod.last_name);
-        this.usernameControl.setValue(mod.username);
-        this.emailControl.setValue(mod.email);
+        this.form().setValue({
+          first_name: mod.first_name,
+          last_name: mod.last_name,
+          username: mod.username,
+          email: mod.email,
+          password: '', // Don't populate password when editing
+        });
       }
     } else {
-      this.firstNameControl.reset('');
-      this.lastNameControl.reset('');
-      this.usernameControl.reset('');
-      this.emailControl.reset('');
+      this.form().reset();
     }
   }
 
   closeDialog() {
     this.showDialog.set(false);
     this.editId.set(null);
-    this.firstNameControl.reset('');
-    this.lastNameControl.reset('');
-    this.usernameControl.reset('');
-    this.emailControl.reset('');
+    this.form().reset();
   }
 
   @HostListener('document:keydown', ['$event'])
@@ -132,15 +150,9 @@ export class ModeratorManagement {
   }
 
   saveModerator() {
-    const moderatorData = {
-      first_name: this.firstNameControl.value ?? '',
-      last_name: this.lastNameControl.value ?? '',
-      username: this.usernameControl.value ?? '',
-      email: this.emailControl.value ?? '',
-      password: this.passwordControl.value ?? '',
-    };
+    if (this.form().invalid) return;
 
-    if (!moderatorData.first_name || !moderatorData.last_name || !moderatorData.username || !moderatorData.email || !moderatorData.password) return;
+    const moderatorData = this.form().getRawValue();
 
     if (this.editId() !== null) {
       this.moderatorService.updateModerator(this.editId()!, moderatorData).subscribe(() => {
