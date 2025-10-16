@@ -39,7 +39,7 @@ export class VoteCandidate implements OnInit, OnDestroy {
   );
   showPopup = false;
   private votedCampaigns: Record<string, Record<string, string>> = {};
-  private currentUserEmail: string = '';
+  private currentUserId: string = '';
   candidatePopupOpen = false;
   activeIndex = signal<number | null>(null);
   activeCandidate = computed(() => {
@@ -75,7 +75,7 @@ export class VoteCandidate implements OnInit, OnDestroy {
 
   constructor() {
     const currentUser = this.authService.getCurrentUser();
-    this.currentUserEmail = currentUser?.email || '';
+    this.currentUserId = currentUser?.id || '';
   }
 
   ngOnInit() {
@@ -168,9 +168,9 @@ export class VoteCandidate implements OnInit, OnDestroy {
   private checkIfAlreadyVoted() {
     if (
       this.campaign()?.id &&
-      this.currentUserEmail &&
+      this.currentUserId &&
       this.storageService.hasVotedForCampaign(
-        this.currentUserEmail,
+        this.currentUserId,
         this.campaign()!.id
       )
     ) {
@@ -179,7 +179,7 @@ export class VoteCandidate implements OnInit, OnDestroy {
   }
 
   vote(candidateIndex: number) {
-    if (!this.campaign()?.id || !this.currentUserEmail) return;
+    if (!this.campaign()?.id || !this.currentUserId) return;
     if (this.hasVoted(this.campaign()!.id)) {
       this.showPopup = true;
       return;
@@ -191,27 +191,27 @@ export class VoteCandidate implements OnInit, OnDestroy {
       )
       .subscribe(() => {
         this.storageService.addVotedCampaign(
-          this.currentUserEmail,
+          this.currentUserId,
           this.campaign()!.id,
           this.campaign()!.candidates[candidateIndex].id
         );
 
-        if (!this.votedCampaigns[this.currentUserEmail]) {
-          this.votedCampaigns[this.currentUserEmail] = {};
+        if (!this.votedCampaigns[this.currentUserId]) {
+          this.votedCampaigns[this.currentUserId] = {};
         }
-        this.votedCampaigns[this.currentUserEmail][this.campaign()!.id] =
+        this.votedCampaigns[this.currentUserId][this.campaign()!.id] =
           this.campaign()!.candidates[candidateIndex].id;
       });
   }
 
   hasVoted(campaignId?: string): boolean {
-    if (!campaignId || !this.currentUserEmail) return false;
-    return !!this.votedCampaigns[this.currentUserEmail]?.[campaignId];
+    if (!campaignId || !this.currentUserId) return false;
+    return !!this.votedCampaigns[this.currentUserId]?.[campaignId];
   }
 
   getVotedCandidate(campaignId?: string): string | null {
-    if (!campaignId || !this.currentUserEmail) return null;
-    return this.votedCampaigns[this.currentUserEmail]?.[campaignId] || null;
+    if (!campaignId || !this.currentUserId) return null;
+    return this.votedCampaigns[this.currentUserId]?.[campaignId] || null;
   }
 
   closePopup() {

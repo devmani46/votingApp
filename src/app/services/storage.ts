@@ -84,30 +84,30 @@ export class StorageService {
     return this.votedCampaignsSignal();
   }
 
-  addVotedCampaign(userEmail: string, campaignId: string, candidateId: string) {
+  addVotedCampaign(userId: string, campaignId: string, candidateId: string) {
     const votedCampaigns = this.getVotedCampaigns();
-    if (!votedCampaigns[userEmail]) {
-      votedCampaigns[userEmail] = {};
+    if (!votedCampaigns[userId]) {
+      votedCampaigns[userId] = {};
     }
-    votedCampaigns[userEmail][campaignId] = candidateId;
+    votedCampaigns[userId][campaignId] = candidateId;
     localStorage.setItem(this.votedCampaignsKey, JSON.stringify(votedCampaigns));
     this.votedCampaignsSignal.set(votedCampaigns);
   }
 
-  hasVotedForCampaign(userEmail: string, campaignId: string): boolean {
+  hasVotedForCampaign(userId: string, campaignId: string): boolean {
     const votedCampaigns = this.getVotedCampaigns();
-    return !!votedCampaigns[userEmail]?.[campaignId];
+    return !!votedCampaigns[userId]?.[campaignId];
   }
 
-  getVotedCandidate(userEmail: string, campaignId: string): string | null {
+  getVotedCandidate(userId: string, campaignId: string): string | null {
     const votedCampaigns = this.getVotedCampaigns();
-    return votedCampaigns[userEmail]?.[campaignId] || null;
+    return votedCampaigns[userId]?.[campaignId] || null;
   }
 
-  removeVotedCampaign(userEmail: string, campaignId: string) {
+  removeVotedCampaign(userId: string, campaignId: string) {
     const votedCampaigns = this.getVotedCampaigns();
-    if (votedCampaigns[userEmail]) {
-      delete votedCampaigns[userEmail][campaignId];
+    if (votedCampaigns[userId]) {
+      delete votedCampaigns[userId][campaignId];
       localStorage.setItem(this.votedCampaignsKey, JSON.stringify(votedCampaigns));
       this.votedCampaignsSignal.set(votedCampaigns);
     }

@@ -115,7 +115,7 @@ export class CampaignService {
   }
 
   private loadCampaigns() {
-    this.http.get<Campaign[]>(`${this.apiUrl}/campaigns`).subscribe({
+    this.http.get<Campaign[]>(`${this.apiUrl}/campaigns?limit=1000`).subscribe({
       next: (campaigns) => {
         const normalized = campaigns.map((c) => ({
           ...c,
@@ -290,6 +290,12 @@ export class CampaignService {
 
   getCampaign(id: string): Observable<Campaign> {
     return this.http.get<Campaign>(`${this.apiUrl}/campaigns/${id}`, {
+      withCredentials: true,
+    });
+  }
+
+  getUserPastCampaigns(): Observable<Campaign[]> {
+    return this.http.get<Campaign[]>(`${this.apiUrl}/campaigns/user/past`, {
       withCredentials: true,
     });
   }
