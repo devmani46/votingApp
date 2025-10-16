@@ -216,7 +216,7 @@ cdk-header-cell {
   right: 200px;
   width: 60vw;
   height: 80vh;
-  background: #e5e5e510;
+  background: #fffcf080;
   backdrop-filter: blur(50px);
   box-shadow: -4px 0 15px rgba(0, 0, 0, 0.15);
   border: solid 2px #e5e5e580;
@@ -241,11 +241,11 @@ cdk-header-cell {
   padding: 1.5rem;
 
   .winner {
-    background-color: #e5e5e530;
+    background-color: #fffcf0;
     border: solid 1px #e5e5e580;
     padding: 1rem;
     border-radius: 10px;
-    color: var(--bg-100);
+    color: var(--text);
 
     h2 {
       font-size: 1.2rem;
@@ -302,9 +302,9 @@ cdk-header-cell {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    background-color: #e5e5e530;
+    background-color: #fffcf0;
     border: solid 1px #e5e5e580;
-    color: var(--bg-100);
+    color: var(--text);
     border-radius: 5px;
     padding: 1rem;
     .stat-value {
@@ -326,9 +326,9 @@ cdk-header-cell {
     width: 100%;
     height: 280px;
     border-radius: 0.75rem;
-    border: solid 1px #e5e5e580;
+    border: solid 1px #fffcf0;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    background: #e5e5e530;
+    background: #fffcf0;
   }
 }
 

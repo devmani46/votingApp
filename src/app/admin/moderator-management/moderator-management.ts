@@ -1,4 +1,11 @@
-import { Component, signal, computed, HostListener, inject } from '@angular/core';
+import {
+  Component,
+  signal,
+  computed,
+  HostListener,
+  inject,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -13,6 +20,9 @@ import { Button } from '../../components/button/button';
 import { BurgerMenu } from '../../components/burger-menu/burger-menu';
 import { CdkTableModule } from '@angular/cdk/table';
 import { ModeratorService, Moderator } from '../../services/moderator';
+
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 type SortField = 'first_name' | 'email';
 type SortDirection = 'asc' | 'desc';
@@ -35,6 +45,7 @@ type ModeratorForm = {
     Button,
     BurgerMenu,
     CdkTableModule,
+    MatPaginatorModule,
   ],
   templateUrl: './moderator-management.html',
   styleUrls: ['./moderator-management.scss'],
@@ -42,6 +53,7 @@ type ModeratorForm = {
 export class ModeratorManagement {
   private fb = inject(NonNullableFormBuilder);
   private moderatorService = inject(ModeratorService);
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   moderators = signal<Moderator[]>([]);
   showDialog = signal(false);
@@ -105,7 +117,7 @@ export class ModeratorManagement {
   }
 
   loadModerators() {
-    this.moderatorService.getAll().subscribe(moderators => {
+    this.moderatorService.getAll().subscribe((moderators) => {
       this.moderators.set(moderators);
     });
   }
@@ -115,7 +127,7 @@ export class ModeratorManagement {
     this.editId.set(id);
 
     if (id !== null) {
-      const mod = this.moderators().find(m => m.id === id);
+      const mod = this.moderators().find((m) => m.id === id);
       if (mod) {
         this.form().setValue({
           first_name: mod.first_name,
@@ -155,10 +167,12 @@ export class ModeratorManagement {
     const moderatorData = this.form().getRawValue();
 
     if (this.editId() !== null) {
-      this.moderatorService.updateModerator(this.editId()!, moderatorData).subscribe(() => {
-        this.loadModerators();
-        this.closeDialog();
-      });
+      this.moderatorService
+        .updateModerator(this.editId()!, moderatorData)
+        .subscribe(() => {
+          this.loadModerators();
+          this.closeDialog();
+        });
     } else {
       this.moderatorService.createModerator(moderatorData).subscribe(() => {
         this.loadModerators();
@@ -168,7 +182,9 @@ export class ModeratorManagement {
   }
 
   deleteModerator(id: string) {
-    const confirmDelete = window.confirm('Are you sure you want to delete this moderator?');
+    const confirmDelete = window.confirm(
+      'Are you sure you want to delete this moderator?'
+    );
     if (confirmDelete) {
       this.moderatorService.deleteModerator(id).subscribe(() => {
         this.loadModerators();
@@ -183,5 +199,20 @@ export class ModeratorManagement {
       this.sortField.set(field);
       this.sortDirection.set('asc');
     }
+  }
+
+  pageSize = 10;
+  currentPage = 0;
+
+  pagedUsers() {
+    const all = this.filteredModerators();
+    const startIndex = this.currentPage * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    return all.slice(startIndex, endIndex);
+  }
+
+  onPageChange(event: PageEvent) {
+    this.pageSize = event.pageSize;
+    this.currentPage = event.pageIndex;
   }
 }

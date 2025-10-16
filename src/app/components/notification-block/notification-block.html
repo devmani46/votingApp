@@ -2,7 +2,7 @@
   <h2>{{ type }}</h2>
 
   @if(type === 'campaign_created' || type === 'campaign_updated' || type ===
-  'campaign_deleted') {
+  'campaign_deleted' || type === 'campaign_ended') {
 
   <h3>Title: {{ metadata?.['campaign_title'] }}</h3>
   <div class="span-containers">

@@ -1,4 +1,12 @@
-import { Component, inject, OnDestroy, OnInit, HostListener, signal, computed } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+  HostListener,
+  signal,
+  computed,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CampaignService, Campaign } from '../../services/campaign';
@@ -26,7 +34,9 @@ export class VoteCandidate implements OnInit, OnDestroy {
   private socketService = inject(SocketService);
 
   campaignId = signal<string>('');
-  campaign = computed(() => this.campaignService.getCampaignById(this.campaignId()));
+  campaign = computed(() =>
+    this.campaignService.getCampaignById(this.campaignId())
+  );
   showPopup = false;
   private votedCampaigns: Record<string, Record<string, string>> = {};
   private currentUserEmail: string = '';
@@ -35,7 +45,8 @@ export class VoteCandidate implements OnInit, OnDestroy {
   activeCandidate = computed(() => {
     const index = this.activeIndex();
     const c = this.campaign();
-    if (index === null || !c || !c.candidates || index >= c.candidates.length) return null;
+    if (index === null || !c || !c.candidates || index >= c.candidates.length)
+      return null;
     const cand = c.candidates[index];
     return {
       name: cand.name,
@@ -98,9 +109,17 @@ export class VoteCandidate implements OnInit, OnDestroy {
     }
     if (event.key === 'Enter') {
       event.preventDefault();
-      if (this.activeIndex() !== null && this.campaign()?.id && !this.hasVoted(this.campaign()!.id)) {
+      if (
+        this.activeIndex() !== null &&
+        this.campaign()?.id &&
+        !this.hasVoted(this.campaign()!.id)
+      ) {
         this.vote(this.activeIndex()!);
-      } else if (this.activeIndex() !== null && this.campaign()?.id && this.hasVoted(this.campaign()!.id)) {
+      } else if (
+        this.activeIndex() !== null &&
+        this.campaign()?.id &&
+        this.hasVoted(this.campaign()!.id)
+      ) {
         // Show popup if already voted
         this.showPopup = true;
       }
@@ -121,8 +140,8 @@ export class VoteCandidate implements OnInit, OnDestroy {
     this.campaignService.getCampaign(id).subscribe({
       next: (campaign) => {
         // Update the local campaigns list
-        this.campaignService['_campaigns'].update(list => {
-          const existingIndex = list.findIndex(c => c.id === id);
+        this.campaignService['_campaigns'].update((list) => {
+          const existingIndex = list.findIndex((c) => c.id === id);
           if (existingIndex >= 0) {
             list[existingIndex] = campaign;
           } else {
@@ -135,7 +154,7 @@ export class VoteCandidate implements OnInit, OnDestroy {
       error: (error) => {
         console.error('Failed to load campaign:', error);
         this.isLoading.set(false);
-      }
+      },
     });
 
     this.loadVotedCampaigns();
@@ -150,7 +169,10 @@ export class VoteCandidate implements OnInit, OnDestroy {
     if (
       this.campaign()?.id &&
       this.currentUserEmail &&
-      this.storageService.hasVotedForCampaign(this.currentUserEmail, this.campaign()!.id)
+      this.storageService.hasVotedForCampaign(
+        this.currentUserEmail,
+        this.campaign()!.id
+      )
     ) {
       this.showPopup = true;
     }
@@ -163,14 +185,22 @@ export class VoteCandidate implements OnInit, OnDestroy {
       return;
     }
     this.campaignService
-      .castVote(this.campaign()!.id, this.campaign()!.candidates[candidateIndex].id)
+      .castVote(
+        this.campaign()!.id,
+        this.campaign()!.candidates[candidateIndex].id
+      )
       .subscribe(() => {
-        this.storageService.addVotedCampaign(this.currentUserEmail, this.campaign()!.id, this.campaign()!.candidates[candidateIndex].id);
+        this.storageService.addVotedCampaign(
+          this.currentUserEmail,
+          this.campaign()!.id,
+          this.campaign()!.candidates[candidateIndex].id
+        );
 
         if (!this.votedCampaigns[this.currentUserEmail]) {
           this.votedCampaigns[this.currentUserEmail] = {};
         }
-        this.votedCampaigns[this.currentUserEmail][this.campaign()!.id] = this.campaign()!.candidates[candidateIndex].id;
+        this.votedCampaigns[this.currentUserEmail][this.campaign()!.id] =
+          this.campaign()!.candidates[candidateIndex].id;
       });
   }
 
