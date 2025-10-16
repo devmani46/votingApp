@@ -124,6 +124,10 @@
         }
       }
     }
+
+    .moderator-paginator {
+      background-color: var(--bg-200);
+    }
   }
 
   /* Dialog styles */
@@ -236,4 +240,5 @@
 
 .action-buttons {
   display: flex;
+  gap: 0.5rem;
 }

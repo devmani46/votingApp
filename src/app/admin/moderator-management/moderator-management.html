@@ -24,19 +24,19 @@
     <cdk-table [dataSource]="filteredModerators()" class="moderators-table">
       <ng-container cdkColumnDef="username">
         <cdk-header-cell *cdkHeaderCellDef (click)="changeSort('first_name')">
-          Name
-          @if (sortField() === 'first_name') {
-            <span>{{ sortDirection() === "asc" ? "↑" : "↓" }}</span>
+          Name @if (sortField() === 'first_name') {
+          <span>{{ sortDirection() === "asc" ? "↑" : "↓" }}</span>
           }
         </cdk-header-cell>
-        <cdk-cell *cdkCellDef="let mod"> {{ mod.first_name }} {{ mod.last_name }} </cdk-cell>
+        <cdk-cell *cdkCellDef="let mod">
+          {{ mod.first_name }} {{ mod.last_name }}
+        </cdk-cell>
       </ng-container>
 
       <ng-container cdkColumnDef="email">
         <cdk-header-cell *cdkHeaderCellDef (click)="changeSort('email')">
-          Email
-          @if (sortField() === 'email') {
-            <span>{{ sortDirection() === "asc" ? "↑" : "↓" }}</span>
+          Email @if (sortField() === 'email') {
+          <span>{{ sortDirection() === "asc" ? "↑" : "↓" }}</span>
           }
         </cdk-header-cell>
         <cdk-cell *cdkCellDef="let mod"> {{ mod.email }} </cdk-cell>
@@ -49,7 +49,9 @@
 
       <ng-container cdkColumnDef="joinDate">
         <cdk-header-cell *cdkHeaderCellDef> Join Date </cdk-header-cell>
-        <cdk-cell *cdkCellDef="let mod"> {{ mod.created_at | date:'short' }} </cdk-cell>
+        <cdk-cell *cdkCellDef="let mod">
+          {{ mod.created_at | date : "short" }}
+        </cdk-cell>
       </ng-container>
 
       <ng-container cdkColumnDef="actions">
@@ -58,7 +60,8 @@
           <div class="action-buttons">
             <app-button
               size="small"
-              appearance="secondary"
+              appearance="outline"
+              shape="circular"
               (click)="openDialog(mod.id)"
             >
               <span class="material-symbols-outlined">edit</span>
@@ -66,6 +69,7 @@
             <app-button
               size="small"
               appearance="primary"
+              shape="circular"
               (click)="deleteModerator(mod.id)"
             >
               <span class="material-symbols-outlined">delete</span>
@@ -78,62 +82,72 @@
       <cdk-row *cdkRowDef="let row; columns: displayedColumns"></cdk-row>
     </cdk-table>
 
+    <mat-paginator
+      [length]="filteredModerators().length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 15, 20]"
+      (page)="onPageChange($event)"
+      aria-label="Select page"
+      class="moderator-paginator"
+    >
+    </mat-paginator>
+
     @if (filteredModerators().length === 0) {
-      <div class="empty-state">
-        <p>No Moderator found.</p>
-      </div>
+    <div class="empty-state">
+      <p>No Moderator found.</p>
+    </div>
     }
   </div>
 
   @if (showDialog()) {
-    <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">
-      <div class="dialog-content" (click)="$event.stopPropagation()">
-        <h3>{{ editId() !== null ? "Edit Moderator" : "Add Moderator" }}</h3>
+  <div class="dialog-backdrop" (click)="closeDialogOnBackdrop($event)">
+    <div class="dialog-content" (click)="$event.stopPropagation()">
+      <h3>{{ editId() !== null ? "Edit Moderator" : "Add Moderator" }}</h3>
 
-        <form [formGroup]="form()">
-          <div class="moderator-form">
-            <label>First Name</label>
-            <app-fui-input
-              formControlName="first_name"
-              placeholder="First Name"
-            ></app-fui-input>
+      <form [formGroup]="form()">
+        <div class="moderator-form">
+          <label>First Name</label>
+          <app-fui-input
+            formControlName="first_name"
+            placeholder="First Name"
+          ></app-fui-input>
 
-            <label>Last Name</label>
-            <app-fui-input
-              formControlName="last_name"
-              placeholder="Last Name"
-            ></app-fui-input>
+          <label>Last Name</label>
+          <app-fui-input
+            formControlName="last_name"
+            placeholder="Last Name"
+          ></app-fui-input>
 
-            <label>Username</label>
-            <app-fui-input
-              formControlName="username"
-              placeholder="Username"
-            ></app-fui-input>
+          <label>Username</label>
+          <app-fui-input
+            formControlName="username"
+            placeholder="Username"
+          ></app-fui-input>
 
-            <label>Email</label>
-            <app-fui-input
-              formControlName="email"
-              placeholder="Moderator Email"
-            ></app-fui-input>
+          <label>Email</label>
+          <app-fui-input
+            formControlName="email"
+            placeholder="Moderator Email"
+          ></app-fui-input>
 
-            <label>Password</label>
-            <app-fui-input
-              formControlName="password"
-              type="password"
-              placeholder="Password"
-            ></app-fui-input>
-          </div>
-        </form>
-
-        <div class="dialog-actions">
-          <app-button appearance="secondary" (click)="closeDialog()"
-            >Cancel</app-button
-          >
-          <app-button appearance="primary" (click)="saveModerator()"
-            >Save</app-button
-          >
+          <label>Password</label>
+          <app-fui-input
+            formControlName="password"
+            type="password"
+            placeholder="Password"
+          ></app-fui-input>
         </div>
+      </form>
+
+      <div class="dialog-actions">
+        <app-button appearance="secondary" (click)="closeDialog()"
+          >Cancel</app-button
+        >
+        <app-button appearance="primary" (click)="saveModerator()"
+          >Save</app-button
+        >
       </div>
     </div>
+  </div>
   }
 </div>

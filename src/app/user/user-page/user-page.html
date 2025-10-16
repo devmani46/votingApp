@@ -31,11 +31,11 @@
 
     <div class="past-campaigns">
       <h2>Your Past Campaigns</h2>
-      @if (pastCampaigns().length === 0) {
+      @if (pastCampaignsFromApi().length === 0) {
       <p>You have not participated in any campaigns yet.</p>
       } @else {
       <div class="campaign-list">
-        @for (c of pastCampaigns(); track c.id) {
+        @for (c of pastCampaignsFromApi(); track c.id) {
         <app-campaign-card
           [id]="c.id"
           [title]="c.title"

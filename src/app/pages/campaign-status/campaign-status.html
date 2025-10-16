@@ -70,15 +70,6 @@
         }
       </div>
 
-      <mat-paginator
-        [length]="filteredCampaigns().length"
-        [pageSize]="pageSize"
-        [pageSizeOptions]="[4, 8, 12]"
-        (page)="onPageChange($event)"
-        aria-label="Select page"
-        class="campaign-paginator"
-      >
-      </mat-paginator>
       }
 
       <div
@@ -256,6 +247,16 @@
       </cdk-table>
 
       }
+
+      <mat-paginator
+        [length]="filteredCampaigns().length"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[4, 8, 12]"
+        (page)="onPageChange($event)"
+        aria-label="Select page"
+        class="campaign-paginator"
+      >
+      </mat-paginator>
     </div>
   </div>
 </div>

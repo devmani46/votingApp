@@ -4,6 +4,7 @@ import {
   inject,
   HostListener,
   computed,
+  signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -62,6 +63,7 @@ export class UserPage implements OnInit {
   selectedCampaign: any = null;
   winner: any = null;
   notifications: Notification[] = [];
+  private currentUserId: string = '';
 
   constructor(private notificationService: NotificationService) {}
 
@@ -71,10 +73,12 @@ export class UserPage implements OnInit {
       error: (err) => console.error('[Notifications Error]', err),
     });
     this.refreshUserData();
+    this.loadPastCampaignsFromApi();
   }
 
   refreshUserData() {
     const currentUser = this.authService.getCurrentUser();
+    this.currentUserId = currentUser?.id || '';
     if (currentUser && currentUser.id) {
       this.userService.getCurrentUser().subscribe({
         next: (freshUserData) => {
@@ -135,24 +139,48 @@ export class UserPage implements OnInit {
   pastCampaigns = computed(() => {
     const campaigns = this.campaignService.campaigns();
     const today = new Date();
-    const currentUser = this.authService.getCurrentUser();
-    const userEmail = currentUser?.email;
-    if (!userEmail) return [];
-    return campaigns
+    if (!this.currentUserId) return [];
+    console.log('All campaigns:', campaigns.length);
+    console.log('User ID:', this.currentUserId);
+    const votedCampaigns = this.storageService.getVotedCampaigns();
+    console.log('Voted campaigns data:', votedCampaigns);
+    const filtered = campaigns
       .filter((c) => {
         const endDate = new Date(c.end_date);
         const hasEnded = endDate < today;
         const hasParticipated = this.storageService.hasVotedForCampaign(
-          userEmail,
+          this.currentUserId,
           c.id
         );
+        console.log(`Campaign ${c.id}: ended=${hasEnded}, participated=${hasParticipated}`);
         return hasEnded && hasParticipated;
       })
       .map((c) => ({
         ...c,
         winner: this.campaignService.getWinner(c),
       }));
+    console.log('Past campaigns:', filtered.length);
+    return filtered;
   });
+
+  private _pastCampaignsFromApi = signal<any[]>([]);
+  pastCampaignsFromApi = this._pastCampaignsFromApi.asReadonly();
+
+  loadPastCampaignsFromApi() {
+    this.campaignService.getUserPastCampaigns().subscribe({
+      next: (campaigns) => {
+        const withWinners = campaigns.map((c) => ({
+          ...c,
+          winner: this.campaignService.getWinner(c),
+        }));
+        this._pastCampaignsFromApi.set(withWinners);
+      },
+      error: (err) => {
+        console.error('Failed to load past campaigns from API:', err);
+        this._pastCampaignsFromApi.set([]);
+      },
+    });
+  }
 
   openCampaignDetails(campaign: any) {
     this.selectedCampaign = campaign;
